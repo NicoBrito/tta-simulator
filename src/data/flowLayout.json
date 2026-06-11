@@ -1,0 +1,5625 @@
+{
+  "meta": {
+    "source": "Diagrama_Flujo_TTA_Ver_05.drawio",
+    "units": "px",
+    "note": "Posiciones originales del draw.io. Semilla del layout de la Vista 1; las cajas son arrastrables."
+  },
+  "nodes": [
+    {
+      "id": "10",
+      "label": "INICIO DEL SISTEMA",
+      "shape": "process",
+      "x": 1159.67,
+      "y": -930.0,
+      "w": 250.0,
+      "h": 60.0,
+      "kind": "node"
+    },
+    {
+      "id": "11",
+      "label": "Leer modo de operación definido por el Operador directamente en el selector del Tablero TTA\nMODO AUTO o MODO MANUAL",
+      "shape": "process",
+      "x": 1109.67,
+      "y": -740.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-100",
+      "label": "NO",
+      "shape": "process",
+      "x": 0.0395,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-821",
+      "label": "SÍ",
+      "shape": "process",
+      "x": 0.0142,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "12",
+      "label": "¿MODO AUTOMÁTICO?",
+      "shape": "decision",
+      "x": 1134.67,
+      "y": -640.0,
+      "w": 300.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "13",
+      "label": "MODO MANUAL\nExperion no controla tablero TTAOperador actúa sobre\nbobinas KM (-S1 .. -S4) mediante los selectores de operación frontal del tablero TTA",
+      "shape": "process",
+      "x": 897.01,
+      "y": -280.0,
+      "w": 225.33,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "14",
+      "label": "MODO AUTOMATICO\nControl por software Experion",
+      "shape": "process",
+      "x": 1499.67,
+      "y": -630.0,
+      "w": 170.0,
+      "h": 60.0,
+      "kind": "node"
+    },
+    {
+      "id": "15",
+      "label": "Leer estado de entradas de energía\nCB1, CB2, CB3 (cerrado/falla-trip) + Relés Asimetría Barras R-AS-P, R-AS-A, R-AS-B",
+      "shape": "process",
+      "x": 1409.67,
+      "y": -329.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "16",
+      "label": "Leer señal BLACKOUT\n(lectura remota desde otro proceso del sistema de control Experion)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": -229.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-267",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.1364,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "17",
+      "label": "¿BLACKOUT = 1?",
+      "shape": "decision",
+      "x": 1459.67,
+      "y": -139.0,
+      "w": 250.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "18",
+      "label": "Activar Relé control de carga climaKA-9 = 1\n(bota carga de clima no crítica)",
+      "shape": "process",
+      "x": 1799.6699999999998,
+      "y": -129.0,
+      "w": 180.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "20",
+      "label": "Proceso Salida 1 (S1): TDAF y COMP.",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 171.0,
+      "w": 350.0,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "21",
+      "label": "Leer preferencias Operador para Salida 1 (S1) Preferencia 1, 2, 3 (F1, F2, F3)Restricción: las preferencias no se pueden repetir para una misma salida",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 241.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "22",
+      "label": "Verificar fuente PREFERENCIA 1 (F1) para Salida 1 (S1)\nSubproceso DISP: Verificar disponibilidad de fuenteEnvío a Subproceso DISP (Salida, Entrada): (S1,F1)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 331.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-457",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9202,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "23",
+      "label": "¿Fuente PREFERENCIA 1 disponible?(Fuente OK = 1 )",
+      "shape": "decision",
+      "x": 1434.67,
+      "y": 411.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "24",
+      "label": "Verificar fuente PREFERENCIA 2 (F2) para Salida 1 (S1)\nSubproceso DISP: Verificar disponibilidad de fuenteEnvío a Subproceso DISP (Salida,Entrada): (S1,F2)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 531.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-826",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8812,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-829",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.303,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "25",
+      "label": "¿Fuente PREFERENCIA 1 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.67,
+      "y": 621.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "26",
+      "label": "Verificar fuente PREFERENCIA 3 (F3) para Salida 1 (S1)\nSubproceso DISP: Verificar disponibilidad de fuenteEnvío a Subproceso DISP (Salida,Entrada): (S1,F3)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 739.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-465",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9667,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-391",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6402,
+      "y": -4.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "27",
+      "label": "¿Fuente PREFERENCIA 2 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.67,
+      "y": 829.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "32",
+      "label": "Leer R-AS-BP\nEstado energía BARRA TDAF y COMP.",
+      "shape": "process",
+      "x": 1798.0,
+      "y": 1235.0,
+      "w": 197.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "33",
+      "label": "¿R-AS-BP = 1?",
+      "shape": "decision",
+      "x": 1746.9999999999998,
+      "y": 1334.0000000000002,
+      "w": 300.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "34",
+      "label": "⚠ ALARMA\nFalla Asimétrica en la BARRA TDAF y COMP.",
+      "shape": "process",
+      "x": 1401.9999999999995,
+      "y": 1423.0000000000002,
+      "w": 160.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "35",
+      "label": "✓ Salida 1 (S1) energizada\nTDAF y COMP. Fuente conectada y barra sin falla asimétrica",
+      "shape": "process",
+      "x": 1746.0,
+      "y": 2138.0,
+      "w": 302.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "40",
+      "label": "Proceso Salida 2 (S2): COMPUTACION RESPALDADA",
+      "shape": "process",
+      "x": 1384.67,
+      "y": 2276.0,
+      "w": 400.0,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "41",
+      "label": "Leer preferencias Operador para Salida 2 (S2)\nPreferencia 1, 2, 3 (F1, F2, F3)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 2356.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "42",
+      "label": "Verificar fuente PREFERENCIA 1 para Salida 2 (S2)\nSubproceso DISP: Verificar disponibilidad de fuente (F1)Envío a Subproceso DISP (Salida,Entrada): (S2,F1)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 2446.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-166",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8001,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "43",
+      "label": "¿Fuente PREFERENCIA 1 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.67,
+      "y": 2536.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "44",
+      "label": "Verificar fuente PREFERENCIA 2 para Salida 2 (S2)\nSubproceso DISP: Verificar disponibilidad de fuente (F2)Envío a Subproceso DISP (Salida,Entrada): (S2,F2)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 2656.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-165",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.7164,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "45",
+      "label": "¿Fuente PREFERENCIA 1 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.67,
+      "y": 2736.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "46",
+      "label": "Verificar fuente PREFERENCIA 3 para Salida 2 (S2)\nSubproceso DISP: Verificar disponibilidad de fuente (F3)Envío a Subproceso DISP (Salida,Entrada): (S2,F3)",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 2856.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-164",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6529,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-170",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9325,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "47",
+      "label": "¿Fuente PREFERENCIA 2 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.67,
+      "y": 2946.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "60",
+      "label": "PROCESO SALIDA 3: ILUMINACIÓN EMERGENCIA",
+      "shape": "process",
+      "x": 1384.6799999999998,
+      "y": 4407.0,
+      "w": 400.0,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "61",
+      "label": "Leer preferencias Operador para Salida 3 (S3)\nPreferencia 1, 2 (F2, F3)",
+      "shape": "process",
+      "x": 1409.6799999999998,
+      "y": 4503.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "62",
+      "label": "Verificar fuente PREFERENCIA 1 para Salida 3 (S3)\nSubproceso DISP: Verificar disponibilidad de fuente (F2)Envío a Subproceso DISP (Salida,Entrada): (S3,F2)",
+      "shape": "process",
+      "x": 1409.6799999999998,
+      "y": 4593.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-180",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.7519,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-841",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.4637,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "63",
+      "label": "¿Fuente PREFERENCIA 1 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.6799999999998,
+      "y": 4693.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "64",
+      "label": "Verificar fuente PREFERENCIA 2 para Salida 3 (S3)\nSubproceso DISP: Verificar disponibilidad de fuente (F3)Envío a Subproceso DISP (Salida,Entrada): (S3,F3)",
+      "shape": "process",
+      "x": 1409.6799999999998,
+      "y": 4813.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-181",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.584,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-248",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9577,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "65",
+      "label": "¿Fuente PREFERENCIA 2 disponible?(Fuente OK = 1)",
+      "shape": "decision",
+      "x": 1434.6799999999998,
+      "y": 4893.0,
+      "w": 300.0,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "81",
+      "label": "Retornar a \"Leer modo de operación\"\n↺ inicio del ciclo de control",
+      "shape": "process",
+      "x": 1409.67,
+      "y": 6470.0,
+      "w": 350.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "90",
+      "label": "SUBPROCESO DISP Verificar disponibilidad de la fuente\n(usado para Salidas S1, S2 y S3)Entrada desde Proceso principal (Salida,Entrada)Envía Fuente OK = 0 o Fuente OK = 1",
+      "shape": "process",
+      "x": 1434.33,
+      "y": 6873.0,
+      "w": 280.0,
+      "h": 77.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-108",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.2768,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-125",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8503,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-98",
+      "label": "¿MODO MANUAL?",
+      "shape": "decision",
+      "x": 1134.67,
+      "y": -510.0,
+      "w": 300.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-103",
+      "label": "ERROR en el selector del modo de operaciónExperion avisa con Alarma Visual",
+      "shape": "process",
+      "x": 942.01,
+      "y": -500.0,
+      "w": 135.33,
+      "h": 60.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-104",
+      "label": "Se asume MODO MANUAL",
+      "shape": "process",
+      "x": 942.01,
+      "y": -420.0,
+      "w": 135.33,
+      "h": 60.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-113",
+      "label": "",
+      "shape": "process",
+      "x": 1761.17,
+      "y": -379.0,
+      "w": 50.0,
+      "h": 150.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-114",
+      "label": "",
+      "shape": "process",
+      "x": 1459.67,
+      "y": -780.0,
+      "w": 50.0,
+      "h": 114.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-116",
+      "label": "S1 = Salida 1 = TDAF y COMP.",
+      "shape": "process",
+      "x": 1797.01,
+      "y": 191.0,
+      "w": 205.33,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-117",
+      "label": "S2 = Salida 2 = COMPUTACIÓN RESPALDADA",
+      "shape": "process",
+      "x": 1797.01,
+      "y": 211.0,
+      "w": 290.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-118",
+      "label": "S3 = Salida 3 = ILUMINACION EMERGENCIA",
+      "shape": "process",
+      "x": 1797.01,
+      "y": 231.0,
+      "w": 230.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-119",
+      "label": "MODO AUTOMATICO :  DI12 = 1 DI13 = 0",
+      "shape": "process",
+      "x": 1489.67,
+      "y": -756.0,
+      "w": 205.33,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-120",
+      "label": "MODO MANUAL :  DI12 = 0 DI13 = 1",
+      "shape": "process",
+      "x": 1489.67,
+      "y": -726.0,
+      "w": 205.33,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-121",
+      "label": "FALLA SELECTOR:  DI12 = 0 , DI13 = 0 DI12 = 1 , DI13 = 1",
+      "shape": "process",
+      "x": 1489.67,
+      "y": -694.0,
+      "w": 205.33,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-129",
+      "label": "CB1 = BREAKER 1 = Entrada PRINCIPAL (estado dado por C-AUX CB1)",
+      "shape": "process",
+      "x": 1790.17,
+      "y": -379.0,
+      "w": 340.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-130",
+      "label": "CB2 = BREAKER 2 = Entrada DB A (estado dado por C-AUX CB2)",
+      "shape": "process",
+      "x": 1790.17,
+      "y": -359.0,
+      "w": 310.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-132",
+      "label": "CB3 = BREAKER 3 = Entrada DB B (estado dado por C-AUX CB3)",
+      "shape": "process",
+      "x": 1790.17,
+      "y": -336.0,
+      "w": 330.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-133",
+      "label": "R-AS-P = 1  Energía OK en BARRA PRINCIPAL mediante relé de asimetría",
+      "shape": "process",
+      "x": 1790.17,
+      "y": -306.0,
+      "w": 340.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-134",
+      "label": "R-AS-A = 1 Energía OK en BARRA DB A mediante relé de asimetría",
+      "shape": "process",
+      "x": 1790.17,
+      "y": -284.0,
+      "w": 340.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-135",
+      "label": "R-AS-B = 1 Energía OK en BARRA DB B mediante relé de asimetría",
+      "shape": "process",
+      "x": 1790.17,
+      "y": -259.0,
+      "w": 340.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-136",
+      "label": "PREFERENCIA 1 = F1 = Entrada PRINCIPAL",
+      "shape": "process",
+      "x": 1797.01,
+      "y": 256.0,
+      "w": 230.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-137",
+      "label": "PREFERENCIA 2 = F2 = Entrada DB A",
+      "shape": "process",
+      "x": 1797.01,
+      "y": 277.0,
+      "w": 230.0,
+      "h": 26.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-138",
+      "label": "PREFERENCIA 3 = F3 = Entrada DB B",
+      "shape": "process",
+      "x": 1797.01,
+      "y": 295.0,
+      "w": 230.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-141",
+      "label": "",
+      "shape": "process",
+      "x": 2004.0,
+      "y": 1244.24,
+      "w": 50.0,
+      "h": 31.51,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-145",
+      "label": "R-AS-BP = Energía en BARRA TDAF y COMP. mediante relé de asimetría",
+      "shape": "process",
+      "x": 2033.01,
+      "y": 1244.9999999999998,
+      "w": 420.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-211",
+      "label": "",
+      "shape": "process",
+      "x": 1762.68,
+      "y": 4513.0,
+      "w": 50.0,
+      "h": 30.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-212",
+      "label": "Salida 3 (ILUMINACIÓN DE EMERGENCIA) solo tiene 2 posibles entradas: DB A (F2) o DB B (F3)",
+      "shape": "process",
+      "x": 1791.18,
+      "y": 4513.0,
+      "w": 295.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-262",
+      "label": "Desactiar Relé control de carga climaKA-9 = 0",
+      "shape": "process",
+      "x": 1494.6599999999999,
+      "y": 1.0,
+      "w": 180.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-274",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.421,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-456",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9341,
+      "y": -3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-269",
+      "label": "¿Salida = S1?",
+      "shape": "decision",
+      "x": 1476.67,
+      "y": 7241.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-333",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9358,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-402",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.0649,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-271",
+      "label": "¿Salida = S2?",
+      "shape": "decision",
+      "x": 1476.67,
+      "y": 7371.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-305",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-346",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-275",
+      "label": "C-AUX CB1 CERRADO = 1C-AUX CB1 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": 3072.67,
+      "y": 7793.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-284",
+      "label": "¿R-AS-P = 1?",
+      "shape": "decision",
+      "x": 3075.0,
+      "y": 7943.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": "Retorno a Proceso principal  desde donde fue llamado",
+      "shape": "process",
+      "x": 1483.3400000000001,
+      "y": 8503.0,
+      "w": 183.33,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-290",
+      "label": "Fuente P1 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 3426.67,
+      "y": 8152.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-291",
+      "label": "Estado CB1Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 3426.67,
+      "y": 7893.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-293",
+      "label": "Leer estado interruptor CB de la fuenteCB1 para P1CB2 para P2 CB3 para P3",
+      "shape": "process",
+      "x": 1459.16,
+      "y": 7013.0,
+      "w": 230.33,
+      "h": 60.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-294",
+      "label": "Leer estado Relés Asimetría barrasR-AS-P para BARRA PRINCIPALR-AS-A para BARRA DB AR-AS-B para BARRA DB B",
+      "shape": "process",
+      "x": 1459.16,
+      "y": 7114.0,
+      "w": 230.33,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-304",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.217,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-315",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8798,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-301",
+      "label": "¿Entrada = P1?",
+      "shape": "decision",
+      "x": 3077.67,
+      "y": 7511.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-308",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-309",
+      "label": "C-AUX CB2 CERRADO = 1C-AUX CB2 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": 2546.67,
+      "y": 7793.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-310",
+      "label": "¿R-AS-A = 1?",
+      "shape": "decision",
+      "x": 2548.9999999999995,
+      "y": 7943.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-321",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.7595,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-814",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.2095,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-313",
+      "label": "¿Entrada = P2?",
+      "shape": "decision",
+      "x": 2551.67,
+      "y": 7653.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-317",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-262",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.72,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-318",
+      "label": "C-AUX CB3 CERRADO = 1C-AUX CB3 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": 2074.33,
+      "y": 7793.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-319",
+      "label": "¿R-AS-B = 1?",
+      "shape": "decision",
+      "x": 2076.66,
+      "y": 7943.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-329",
+      "label": "Fuente P2 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": 2581.67,
+      "y": 8152.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-336",
+      "label": "Fuente P1 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": 3107.67,
+      "y": 8152.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-340",
+      "label": "Fuente P3 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": 2108.67,
+      "y": 8152.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-343",
+      "label": "BARRA PRINCIPALsin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 3285.67,
+      "y": 8028.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-358",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-362",
+      "label": "Fuente P2 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 2902.67,
+      "y": 8152.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-364",
+      "label": "Estado CB2Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 2902.67,
+      "y": 7893.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-366",
+      "label": "BARRA DB Asin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 2761.67,
+      "y": 8028.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-372",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S1,F1)",
+      "shape": "process",
+      "x": 2171.0,
+      "y": 501.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-376",
+      "label": "MOXA 2",
+      "shape": "process",
+      "x": 1597.3300000000002,
+      "y": -786.0,
+      "w": 60.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-377",
+      "label": "",
+      "shape": "process",
+      "x": 1761.68,
+      "y": 195.0,
+      "w": 50.0,
+      "h": 126.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-378",
+      "label": "",
+      "shape": "process",
+      "x": 1984.67,
+      "y": -129.0,
+      "w": 50.0,
+      "h": 54.5,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-379",
+      "label": "KA-9 = 0 (DO15 MOXA 2) Desactiva Relé control de Carga Clima",
+      "shape": "process",
+      "x": 2014.67,
+      "y": -129.0,
+      "w": 305.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-382",
+      "label": "KA-9 = 1 (DO15 MOXA 2) Activa Relé control de Carga Clima",
+      "shape": "process",
+      "x": 2014.67,
+      "y": -104.5,
+      "w": 305.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-384",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S1,F2)",
+      "shape": "process",
+      "x": 1990.0,
+      "y": 711.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-388",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S1,F3)",
+      "shape": "process",
+      "x": 1812.68,
+      "y": 921.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-397",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.3967,
+      "y": -3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-459",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9813,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-389",
+      "label": "¿CONTACTOR OK = 1?",
+      "shape": "decision",
+      "x": 1814.67,
+      "y": 1078.0,
+      "w": 165.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-401",
+      "label": "Apertura de Contactor KM1-P",
+      "shape": "process",
+      "x": 1109.35,
+      "y": 1693.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-410",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6136,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-423",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5914,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-403",
+      "label": "¿Fuente = F1?",
+      "shape": "decision",
+      "x": 1417.0,
+      "y": 1508.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-424",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.275,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-434",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8053,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-405",
+      "label": "¿Fuente = F2?",
+      "shape": "decision",
+      "x": 1417.0,
+      "y": 1628.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-438",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.4857,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-242",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8262,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-413",
+      "label": "¿Abrió KM1-P?",
+      "shape": "decision",
+      "x": 1105.6799999999998,
+      "y": 1763.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-415",
+      "label": "⚠ ALARMAFalla Contactor KM1-PExperion Alarma Visual",
+      "shape": "process",
+      "x": 1109.3400000000001,
+      "y": 1878.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-418",
+      "label": "Apertura de Contactor KM1-B",
+      "shape": "process",
+      "x": 1420.67,
+      "y": 1740.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-426",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6216,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-446",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8977,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-420",
+      "label": "¿Abrió KM1-B?",
+      "shape": "decision",
+      "x": 1417.0,
+      "y": 1808.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-421",
+      "label": "⚠ ALARMAFalla Contactor KM1-BExperion Alarma Visual",
+      "shape": "process",
+      "x": 1274.67,
+      "y": 1878.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-428",
+      "label": "Apertura de Contactor KM1-A",
+      "shape": "process",
+      "x": 1700.68,
+      "y": 1740.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-430",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6216,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-449",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9562,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-431",
+      "label": "¿Abrió KM1-A?",
+      "shape": "decision",
+      "x": 1697.01,
+      "y": 1808.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-432",
+      "label": "⚠ ALARMAFalla Contactor KM1-AExperion Alarma Visual",
+      "shape": "process",
+      "x": 1554.6799999999998,
+      "y": 1878.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": "⚠ ALARMASin energía disponible para la Salida 1 (S1)\nTDAF y COMP.",
+      "shape": "process",
+      "x": 907.5,
+      "y": 2138.0,
+      "w": 265.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-101",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S2,F1)",
+      "shape": "process",
+      "x": 2172.99,
+      "y": 2624.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-102",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S2,F2)",
+      "shape": "process",
+      "x": 1991.99,
+      "y": 2834.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-103",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S2,F3)",
+      "shape": "process",
+      "x": 1814.67,
+      "y": 3044.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-162",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5226,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-168",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9459,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-108",
+      "label": "¿CONTACTOR OK = 1?",
+      "shape": "decision",
+      "x": 1817.17,
+      "y": 3190.0,
+      "w": 165.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-110",
+      "label": "Leer R-AS-BA\nEstado energía BARRA COMPUTACION RESPALDADA",
+      "shape": "process",
+      "x": 1809.8300000000002,
+      "y": 3340.0,
+      "w": 180.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-115",
+      "label": "¿R-AS-BA = 1?",
+      "shape": "decision",
+      "x": 1750.0,
+      "y": 3435.0,
+      "w": 299.83,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-117",
+      "label": "⚠ ALARMA\nFalla Asimétrica en la BARRA COMPUTACION RESPALDADA",
+      "shape": "process",
+      "x": 1404.8299999999995,
+      "y": 3524.0,
+      "w": 160.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-118",
+      "label": "✓ Salida 2 (S2) energizada\nCOMPUTACION RESPALDADA Fuente conectada y barra sin falla asimétrica",
+      "shape": "process",
+      "x": 1748.8300000000002,
+      "y": 4239.0,
+      "w": 302.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-119",
+      "label": "",
+      "shape": "process",
+      "x": 1995.8300000000002,
+      "y": 3350.32,
+      "w": 50.0,
+      "h": 31.51,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-121",
+      "label": "Apertura de Contactor KM2-P",
+      "shape": "process",
+      "x": 1112.1799999999998,
+      "y": 3794.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-123",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6136,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-125",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5914,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-126",
+      "label": "¿Fuente = F1?",
+      "shape": "decision",
+      "x": 1419.83,
+      "y": 3609.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-128",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.275,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-130",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8053,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-131",
+      "label": "¿Fuente = F2?",
+      "shape": "decision",
+      "x": 1419.83,
+      "y": 3729.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-133",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.4857,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-241",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8246,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-135",
+      "label": "¿Abrió KM2-P?",
+      "shape": "decision",
+      "x": 1108.5099999999998,
+      "y": 3864.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-137",
+      "label": "⚠ ALARMAFalla Contactor KM2-PExperion Alarma Visual",
+      "shape": "process",
+      "x": 1112.17,
+      "y": 3979.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-139",
+      "label": "Apertura de Contactor KM2-B",
+      "shape": "process",
+      "x": 1423.5,
+      "y": 3841.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-141",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6216,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-143",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8977,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-144",
+      "label": "¿Abrió KM2-B?",
+      "shape": "decision",
+      "x": 1419.83,
+      "y": 3909.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-146",
+      "label": "⚠ ALARMAFalla Contactor KM2-BExperion Alarma Visual",
+      "shape": "process",
+      "x": 1277.5,
+      "y": 3979.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-148",
+      "label": "Apertura de Contactor KM2-A",
+      "shape": "process",
+      "x": 1703.5100000000004,
+      "y": 3841.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-150",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6216,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-152",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9562,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-153",
+      "label": "¿Abrió KM2-A?",
+      "shape": "decision",
+      "x": 1699.8400000000004,
+      "y": 3909.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-155",
+      "label": "⚠ ALARMAFalla Contactor KM2-AExperion Alarma Visual",
+      "shape": "process",
+      "x": 1557.5099999999998,
+      "y": 3979.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": "⚠ ALARMASin energía disponible para la Salida 2 (S2)\nCOMPUTACION RESPALDADA",
+      "shape": "process",
+      "x": 910.3299999999999,
+      "y": 4239.0,
+      "w": 265.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-158",
+      "label": "R-AS-BA = Energía en BARRA COMPUTACION RESPALDADA mediante relé de asimetría",
+      "shape": "process",
+      "x": 2025.01,
+      "y": 3350.32,
+      "w": 420.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-175",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S3,F2)",
+      "shape": "process",
+      "x": 1992.49,
+      "y": 4780.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-176",
+      "label": "Envío a Subproceso CONT(Salida, Entrada): (S3,F3)",
+      "shape": "process",
+      "x": 1815.17,
+      "y": 4990.0,
+      "w": 170.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-183",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5226,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-185",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9459,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-186",
+      "label": "¿CONTACTOR OK = 1?",
+      "shape": "decision",
+      "x": 1817.5100000000002,
+      "y": 5146.0,
+      "w": 165.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-188",
+      "label": "Leer R-AS-BB\nEstado energía BARRA ILUMINACION EMERGENCIA",
+      "shape": "process",
+      "x": 1810.17,
+      "y": 5296.0,
+      "w": 180.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-190",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.3081,
+      "y": 4.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-192",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.9037,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-193",
+      "label": "¿R-AS-BB = 1?",
+      "shape": "decision",
+      "x": 1750.3400000000001,
+      "y": 5391.0,
+      "w": 299.83,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-195",
+      "label": "⚠ ALARMA\nFalla Asimétrica en la BARRA ILUMINACION EMERGENCIA",
+      "shape": "process",
+      "x": 1405.1699999999996,
+      "y": 5480.0,
+      "w": 160.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-196",
+      "label": "✓ Salida 3 (S3) energizada\nILUMINACION EMERGENCIA Fuente conectada y barra sin falla asimétrica",
+      "shape": "process",
+      "x": 1749.17,
+      "y": 6195.0,
+      "w": 302.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-197",
+      "label": "",
+      "shape": "process",
+      "x": 1990.17,
+      "y": 5306.32,
+      "w": 50.0,
+      "h": 31.51,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-199",
+      "label": "Apertura de Contactor KM3-A",
+      "shape": "process",
+      "x": 1112.52,
+      "y": 5750.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-201",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6136,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-203",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5914,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-204",
+      "label": "¿Fuente = F2?",
+      "shape": "decision",
+      "x": 1420.17,
+      "y": 5565.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-211",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.4857,
+      "y": -2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-244",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8191,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-213",
+      "label": "¿Abrió KM3-A?",
+      "shape": "decision",
+      "x": 1108.85,
+      "y": 5820.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-215",
+      "label": "⚠ ALARMAFalla Contactor KM3-AExperion Alarma Visual",
+      "shape": "process",
+      "x": 1112.5100000000002,
+      "y": 5935.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-217",
+      "label": "Apertura de Contactor KM3-B",
+      "shape": "process",
+      "x": 1423.8400000000001,
+      "y": 5797.0,
+      "w": 122.67,
+      "h": 40.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-219",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6216,
+      "y": 1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-221",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.8977,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-222",
+      "label": "¿Abrió KM3-B?",
+      "shape": "decision",
+      "x": 1420.17,
+      "y": 5865.0,
+      "w": 130.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-224",
+      "label": "⚠ ALARMAFalla Contactor KM3-BExperion Alarma Visual",
+      "shape": "process",
+      "x": 1277.8400000000001,
+      "y": 5935.0,
+      "w": 122.67,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": "⚠ ALARMASin energía disponible para la Salida 3 (S3)\nILUMINACION EMERGENCIA",
+      "shape": "process",
+      "x": 910.67,
+      "y": 6195.0,
+      "w": 265.0,
+      "h": 50.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-243",
+      "label": "R-AS-BB = Energía en BARRA ILUMINACION EMERGENCIA mediante relé de asimetría",
+      "shape": "process",
+      "x": 2025.01,
+      "y": 5307.83,
+      "w": 420.0,
+      "h": 30.0,
+      "kind": "annotation"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-255",
+      "label": "Fuente P3 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 2398.67,
+      "y": 8152.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-257",
+      "label": "Estado CB2Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 2398.67,
+      "y": 7893.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-259",
+      "label": "BARRA DB Bsin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 2257.67,
+      "y": 8028.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-267",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-818",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.2933,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-268",
+      "label": "C-AUX CB1 CERRADO = 1C-AUX CB1 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": 465.3399999999999,
+      "y": 7792.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-271",
+      "label": "¿R-AS-P = 1?",
+      "shape": "decision",
+      "x": 467.66999999999985,
+      "y": 7942.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-274",
+      "label": "Fuente P1 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 819.3399999999999,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-276",
+      "label": "Estado CB1Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 819.3399999999999,
+      "y": 7892.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-278",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.217,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-280",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8798,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-281",
+      "label": "¿Entrada = P1?",
+      "shape": "decision",
+      "x": 470.3399999999999,
+      "y": 7510.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-283",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-284",
+      "label": "C-AUX CB2 CERRADO = 1C-AUX CB2 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": -60.66000000000008,
+      "y": 7792.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-286",
+      "label": "¿R-AS-A = 1?",
+      "shape": "decision",
+      "x": -58.33000000000061,
+      "y": 7942.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-288",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.217,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-290",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.7595,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-291",
+      "label": "¿Entrada = P2?",
+      "shape": "decision",
+      "x": -55.66000000000008,
+      "y": 7652.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-293",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-295",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.72,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-296",
+      "label": "C-AUX CB3 CERRADO = 1C-AUX CB3 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": -533.0,
+      "y": 7792.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-298",
+      "label": "¿R-AS-B = 1?",
+      "shape": "decision",
+      "x": -530.6700000000003,
+      "y": 7942.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-302",
+      "label": "Fuente P2 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": -25.660000000000082,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-306",
+      "label": "Fuente P1 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": 500.3399999999999,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-310",
+      "label": "Fuente P3 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": -498.6600000000001,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-312",
+      "label": "BARRA PRINCIPALsin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 678.3399999999999,
+      "y": 8027.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-314",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-319",
+      "label": "Fuente P2 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 295.3399999999999,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-321",
+      "label": "Estado CB2Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 295.3399999999999,
+      "y": 7892.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-323",
+      "label": "BARRA DB Asin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 154.33999999999992,
+      "y": 8027.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-326",
+      "label": "Fuente P3 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": -208.66000000000008,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-328",
+      "label": "Estado CB2Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": -208.66000000000008,
+      "y": 7892.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-330",
+      "label": "BARRA DB Bsin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": -349.6600000000001,
+      "y": 8027.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-353",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-354",
+      "label": "C-AUX CB2 CERRADO = 1C-AUX CB2 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": 1474.85,
+      "y": 7792.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-356",
+      "label": "¿R-AS-A = 1?",
+      "shape": "decision",
+      "x": 1477.1799999999994,
+      "y": 7942.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-358",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.217,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-360",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.7595,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-361",
+      "label": "¿Entrada = P2?",
+      "shape": "decision",
+      "x": 1479.85,
+      "y": 7652.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-363",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-365",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.72,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-366",
+      "label": "C-AUX CB3 CERRADO = 1C-AUX CB3 FALLA/TRIP = 0",
+      "shape": "decision",
+      "x": 1002.51,
+      "y": 7792.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-368",
+      "label": "¿R-AS-B = 1?",
+      "shape": "decision",
+      "x": 1004.8399999999997,
+      "y": 7942.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-372",
+      "label": "Fuente P2 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": 1509.85,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-380",
+      "label": "Fuente P3 disponible\nFuente OK = 1 (TRUE)",
+      "shape": "process",
+      "x": 1036.85,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-384",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-389",
+      "label": "Fuente P2 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 1830.8500000000004,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-391",
+      "label": "Estado CB2Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 1830.8500000000004,
+      "y": 7892.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-393",
+      "label": "BARRA DB Asin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 1689.8500000000004,
+      "y": 8027.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-396",
+      "label": "Fuente P3 NO disponible\nFuente OK = 0 (FALSE)",
+      "shape": "process",
+      "x": 1326.85,
+      "y": 8151.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-398",
+      "label": "Estado CB2Abierto/Falla/TripExperion Alarma Visual",
+      "shape": "process",
+      "x": 1326.85,
+      "y": 7892.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-400",
+      "label": "BARRA DB Bsin energía\nExperion Alarma Visual",
+      "shape": "process",
+      "x": 1185.85,
+      "y": 8027.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-408",
+      "label": "SUBPROCESO CONT Verificar disponibilidad de la fuente\n(usado para Salidas S1, S2 y S3)Entrada desde Proceso principal (Salida,Entrada)Envía CONTACTOR OK = 0 o CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 1435.01,
+      "y": 8780.0,
+      "w": 280.0,
+      "h": 90.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-410",
+      "label": "Leer estado interruptor CB de la fuenteCB1 para P1CB2 para P2 CB3 para P3",
+      "shape": "process",
+      "x": 1459.8400000000001,
+      "y": 8920.0,
+      "w": 230.33,
+      "h": 60.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-413",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.421,
+      "y": 2.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-415",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9341,
+      "y": -3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-416",
+      "label": "¿Salida = S1?",
+      "shape": "decision",
+      "x": 1477.0,
+      "y": 9060.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-418",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.9358,
+      "y": -1.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-420",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.0649,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-421",
+      "label": "¿Salida = S2?",
+      "shape": "decision",
+      "x": 1477.0,
+      "y": 9190.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-423",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-425",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-426",
+      "label": "¿Abrieron los 2 Contactores?",
+      "shape": "decision",
+      "x": 3491.67,
+      "y": 9751.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-432",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 3805.34,
+      "y": 10217.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-434",
+      "label": "Estado KM1-A / KM1-BFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 3805.67,
+      "y": 9852.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-438",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8798,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-598",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5223,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-439",
+      "label": "¿Entrada = P1?",
+      "shape": "decision",
+      "x": 3497.0,
+      "y": 9330.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-448",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.7595,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-715",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.1991,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-449",
+      "label": "¿Entrada = P2?",
+      "shape": "decision",
+      "x": 3007.0,
+      "y": 9472.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-467",
+      "label": "Falla Contactor KM1-PExperion Alarma Visual",
+      "shape": "process",
+      "x": 3707.67,
+      "y": 10079.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-585",
+      "label": "Abren ContactoresKM1-A y KM1-B",
+      "shape": "process",
+      "x": 3526.34,
+      "y": 9611.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-588",
+      "label": "Cierra Contactor KM1-P",
+      "shape": "process",
+      "x": 3526.34,
+      "y": 9908.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-594",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-597",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-591",
+      "label": "¿Cierra Contactor KM1-P?",
+      "shape": "decision",
+      "x": 3493.67,
+      "y": 9999.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-595",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 3526.67,
+      "y": 10216.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-600",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-602",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-603",
+      "label": "¿Abrieron los 2 Contactores?",
+      "shape": "decision",
+      "x": 3002.0,
+      "y": 9752.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-604",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 3309.67,
+      "y": 10218.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-606",
+      "label": "Estado KM1-P / KM1-BFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 3310.0,
+      "y": 9853.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-608",
+      "label": "Falla Contactor KM1-AExperion Alarma Visual",
+      "shape": "process",
+      "x": 3217.0,
+      "y": 10080.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-610",
+      "label": "Abre ContactoresKM1-P y KM1-B",
+      "shape": "process",
+      "x": 3036.67,
+      "y": 9612.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-612",
+      "label": "Cierra Contactor KM1-A",
+      "shape": "process",
+      "x": 3036.67,
+      "y": 9909.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-614",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-616",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-617",
+      "label": "¿Cierra Contactor KM1-A?",
+      "shape": "decision",
+      "x": 3004.0,
+      "y": 10000.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-618",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 3037.0,
+      "y": 10217.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-622",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-624",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-625",
+      "label": "¿Abrieron los 2 Contactores?",
+      "shape": "decision",
+      "x": 2493.33,
+      "y": 9752.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-626",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 2801.0,
+      "y": 10218.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-628",
+      "label": "Estado KM1-P / KM1-AFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 2801.33,
+      "y": 9853.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-630",
+      "label": "Falla Contactor KM1-BExperion Alarma Visual",
+      "shape": "process",
+      "x": 2708.33,
+      "y": 10080.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-632",
+      "label": "Abre ContactoresKM1-P y KM1-A",
+      "shape": "process",
+      "x": 2528.0,
+      "y": 9612.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-634",
+      "label": "Cierra Contactor KM1-B",
+      "shape": "process",
+      "x": 2528.0,
+      "y": 9909.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-636",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-638",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-639",
+      "label": "¿Cierra Contactor KM1-B?",
+      "shape": "decision",
+      "x": 2495.33,
+      "y": 10000.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-640",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 2528.33,
+      "y": 10217.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-642",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-644",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-645",
+      "label": "¿Abrió Contactor?",
+      "shape": "decision",
+      "x": 1737.0000000000002,
+      "y": 9753.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-646",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 2050.67,
+      "y": 10219.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-648",
+      "label": "Estado KM3-BFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 2051.0,
+      "y": 9854.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-650",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8798,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-714",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.7672,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-653",
+      "label": "¿Entrada = P2?",
+      "shape": "decision",
+      "x": 1480.52,
+      "y": 9472.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-660",
+      "label": "Falla Contactor KM3-AExperion Alarma Visual",
+      "shape": "process",
+      "x": 1953.0,
+      "y": 10081.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-662",
+      "label": "Abre ContactorKM3-B",
+      "shape": "process",
+      "x": 1771.6700000000003,
+      "y": 9613.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-664",
+      "label": "Cierra Contactor KM3-A",
+      "shape": "process",
+      "x": 1771.6700000000003,
+      "y": 9910.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-666",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-668",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-669",
+      "label": "¿Cierra Contactor KM3-A?",
+      "shape": "decision",
+      "x": 1739.0000000000002,
+      "y": 10001.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-670",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 1772.0000000000002,
+      "y": 10218.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-672",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-674",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-675",
+      "label": "¿Abrió Contactor?",
+      "shape": "decision",
+      "x": 1056.0,
+      "y": 9760.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-676",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 1363.67,
+      "y": 10220.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-678",
+      "label": "Estado KM3-AFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 1364.0,
+      "y": 9861.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-680",
+      "label": "Falla Contactor KM3-BExperion Alarma Visual",
+      "shape": "process",
+      "x": 1271.0,
+      "y": 10088.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-682",
+      "label": "Abre ContactorKM3-A",
+      "shape": "process",
+      "x": 1090.67,
+      "y": 9620.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-684",
+      "label": "Cierra Contactor KM3-B",
+      "shape": "process",
+      "x": 1090.67,
+      "y": 9917.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-686",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-688",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-689",
+      "label": "¿Cierra Contactor KM3-B?",
+      "shape": "decision",
+      "x": 1058.0,
+      "y": 10008.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-690",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 1091.0,
+      "y": 10219.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-718",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-720",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-721",
+      "label": "¿Abrieron los 2 Contactores?",
+      "shape": "decision",
+      "x": 498.5000000000001,
+      "y": 9759.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-722",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 812.1700000000002,
+      "y": 10219.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-724",
+      "label": "Estado KM2-A / KM2-BFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 812.5000000000001,
+      "y": 9860.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-726",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8798,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-728",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.5223,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-729",
+      "label": "¿Entrada = P1?",
+      "shape": "decision",
+      "x": 503.83000000000004,
+      "y": 9338.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-731",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.7595,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-733",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.1991,
+      "y": 3.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-734",
+      "label": "¿Entrada = P2?",
+      "shape": "decision",
+      "x": 13.83000000000007,
+      "y": 9480.0,
+      "w": 190.0,
+      "h": 80.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-737",
+      "label": "Falla Contactor KM2-PExperion Alarma Visual",
+      "shape": "process",
+      "x": 714.5000000000001,
+      "y": 10087.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-739",
+      "label": "Abre ContactoresKM2-A y KM2-B",
+      "shape": "process",
+      "x": 533.1700000000002,
+      "y": 9619.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-741",
+      "label": "Cierra Contactor KM2-P",
+      "shape": "process",
+      "x": 533.1700000000002,
+      "y": 9916.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-743",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-745",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-746",
+      "label": "¿Cierra Contactor KM2-P?",
+      "shape": "decision",
+      "x": 500.5000000000001,
+      "y": 10007.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-747",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 533.5000000000001,
+      "y": 10218.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-749",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-751",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-752",
+      "label": "¿Abrieron los 2 Contactores?",
+      "shape": "decision",
+      "x": 8.83000000000007,
+      "y": 9760.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-753",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": 316.5000000000001,
+      "y": 10220.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-755",
+      "label": "Estado KM2-P / KM2-BFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": 316.83000000000004,
+      "y": 9861.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-757",
+      "label": "Falla Contactor KM2-AExperion Alarma Visual",
+      "shape": "process",
+      "x": 223.83000000000007,
+      "y": 10088.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-759",
+      "label": "Abre ContactoresKM2-P y KM2-B",
+      "shape": "process",
+      "x": 43.50000000000014,
+      "y": 9620.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-761",
+      "label": "Cierra Contactor KM2-A",
+      "shape": "process",
+      "x": 43.50000000000014,
+      "y": 9917.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-763",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-765",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-766",
+      "label": "¿Cierra Contactor KM2-A?",
+      "shape": "decision",
+      "x": 10.83000000000007,
+      "y": 10008.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-767",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": 43.83000000000007,
+      "y": 10219.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-769",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.332,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-771",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.8067,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-772",
+      "label": "¿Abrió Contactor?",
+      "shape": "decision",
+      "x": -499.84000000000003,
+      "y": 9760.0,
+      "w": 200.0,
+      "h": 100.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-773",
+      "label": "CONTACTOR OK = 0",
+      "shape": "process",
+      "x": -192.16999999999993,
+      "y": 10220.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-775",
+      "label": "Estado KM3-AFalla ContactorExperion Alarma Visual",
+      "shape": "process",
+      "x": -191.84,
+      "y": 9861.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-777",
+      "label": "Falla Contactor KM3-BExperion Alarma Visual",
+      "shape": "process",
+      "x": -284.84000000000003,
+      "y": 10088.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-779",
+      "label": "Abre ContactorKM3-A",
+      "shape": "process",
+      "x": -465.16999999999996,
+      "y": 9620.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-781",
+      "label": "Cierra Contactor KM3-B",
+      "shape": "process",
+      "x": -465.16999999999996,
+      "y": 9917.5,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-783",
+      "label": "NO",
+      "shape": "process",
+      "x": -0.6843,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-785",
+      "label": "SÍ",
+      "shape": "process",
+      "x": -0.6122,
+      "y": 0.0,
+      "w": 120.0,
+      "h": 60.0,
+      "kind": "connector-label"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-786",
+      "label": "¿Cierra Contactor KM3-B?",
+      "shape": "decision",
+      "x": -497.84000000000003,
+      "y": 10008.0,
+      "w": 195.34,
+      "h": 70.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-787",
+      "label": "CONTACTOR OK = 1",
+      "shape": "process",
+      "x": -464.84000000000003,
+      "y": 10219.0,
+      "w": 130.0,
+      "h": 55.0,
+      "kind": "node"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": "Retorno a Proceso principal desde donde fue llamado",
+      "shape": "process",
+      "x": 1500.67,
+      "y": 10531.0,
+      "w": 183.33,
+      "h": 50.0,
+      "kind": "node"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e10_11",
+      "source": "10",
+      "target": "11",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-99",
+      "source": "12",
+      "target": "wAwO7pTqmTZ5cJB01p8_-98",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-811",
+      "source": "12",
+      "target": "14",
+      "label": ""
+    },
+    {
+      "id": "e11_12",
+      "source": "11",
+      "target": "12",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-126",
+      "source": "13",
+      "target": "11",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-128",
+      "source": "14",
+      "target": "15",
+      "label": ""
+    },
+    {
+      "id": "e15_16",
+      "source": "15",
+      "target": "16",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-263",
+      "source": "17",
+      "target": "wAwO7pTqmTZ5cJB01p8_-262",
+      "label": ""
+    },
+    {
+      "id": "e16_17",
+      "source": "16",
+      "target": "17",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-260",
+      "source": "18",
+      "target": "20",
+      "label": ""
+    },
+    {
+      "id": "e17_18",
+      "source": "17",
+      "target": "18",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-823",
+      "source": "20",
+      "target": "21",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-824",
+      "source": "21",
+      "target": "22",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-374",
+      "source": "23",
+      "target": "wAwO7pTqmTZ5cJB01p8_-372",
+      "label": ""
+    },
+    {
+      "id": "e22_23",
+      "source": "22",
+      "target": "23",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-827",
+      "source": "24",
+      "target": "25",
+      "label": ""
+    },
+    {
+      "id": "e23_24",
+      "source": "23",
+      "target": "24",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-825",
+      "source": "25",
+      "target": "wAwO7pTqmTZ5cJB01p8_-384",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-828",
+      "source": "25",
+      "target": "26",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-830",
+      "source": "26",
+      "target": "27",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-164",
+      "source": "27",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-390",
+      "source": "27",
+      "target": "wAwO7pTqmTZ5cJB01p8_-388",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-148",
+      "source": "32",
+      "target": "33",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-149",
+      "source": "33",
+      "target": "35",
+      "label": "SÍ"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-398",
+      "source": "33",
+      "target": "34",
+      "label": "NO"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-409",
+      "source": "34",
+      "target": "wAwO7pTqmTZ5cJB01p8_-403",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-831",
+      "source": "35",
+      "target": "40",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-832",
+      "source": "40",
+      "target": "41",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-833",
+      "source": "41",
+      "target": "42",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-834",
+      "source": "42",
+      "target": "43",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-105",
+      "source": "43",
+      "target": "_QdEOQcB5nZz9vFoksUz-101",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-844",
+      "source": "44",
+      "target": "45",
+      "label": ""
+    },
+    {
+      "id": "e43_44",
+      "source": "43",
+      "target": "44",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-106",
+      "source": "45",
+      "target": "_QdEOQcB5nZz9vFoksUz-102",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-835",
+      "source": "46",
+      "target": "47",
+      "label": ""
+    },
+    {
+      "id": "e45_46",
+      "source": "45",
+      "target": "46",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-107",
+      "source": "47",
+      "target": "_QdEOQcB5nZz9vFoksUz-103",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-169",
+      "source": "47",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-210",
+      "source": "60",
+      "target": "61",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-838",
+      "source": "61",
+      "target": "62",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-839",
+      "source": "62",
+      "target": "63",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-178",
+      "source": "63",
+      "target": "_QdEOQcB5nZz9vFoksUz-175",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-840",
+      "source": "63",
+      "target": "64",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-842",
+      "source": "64",
+      "target": "65",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-179",
+      "source": "65",
+      "target": "_QdEOQcB5nZz9vFoksUz-176",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-247",
+      "source": "65",
+      "target": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-404",
+      "source": "81",
+      "target": "11",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-298",
+      "source": "90",
+      "target": "wAwO7pTqmTZ5cJB01p8_-293",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-107",
+      "source": "wAwO7pTqmTZ5cJB01p8_-98",
+      "target": "wAwO7pTqmTZ5cJB01p8_-103",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-124",
+      "source": "wAwO7pTqmTZ5cJB01p8_-98",
+      "target": "13",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-109",
+      "source": "wAwO7pTqmTZ5cJB01p8_-103",
+      "target": "wAwO7pTqmTZ5cJB01p8_-104",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-122",
+      "source": "wAwO7pTqmTZ5cJB01p8_-104",
+      "target": "13",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-264",
+      "source": "wAwO7pTqmTZ5cJB01p8_-262",
+      "target": "20",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-273",
+      "source": "wAwO7pTqmTZ5cJB01p8_-269",
+      "target": "wAwO7pTqmTZ5cJB01p8_-271",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-302",
+      "source": "wAwO7pTqmTZ5cJB01p8_-269",
+      "target": "wAwO7pTqmTZ5cJB01p8_-301",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-332",
+      "source": "wAwO7pTqmTZ5cJB01p8_-271",
+      "target": "_QdEOQcB5nZz9vFoksUz-281",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-401",
+      "source": "wAwO7pTqmTZ5cJB01p8_-271",
+      "target": "_QdEOQcB5nZz9vFoksUz-361",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-285",
+      "source": "wAwO7pTqmTZ5cJB01p8_-275",
+      "target": "wAwO7pTqmTZ5cJB01p8_-284",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-326",
+      "source": "wAwO7pTqmTZ5cJB01p8_-275",
+      "target": "wAwO7pTqmTZ5cJB01p8_-291",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-344",
+      "source": "wAwO7pTqmTZ5cJB01p8_-284",
+      "target": "wAwO7pTqmTZ5cJB01p8_-343",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-403",
+      "source": "wAwO7pTqmTZ5cJB01p8_-290",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-324",
+      "source": "wAwO7pTqmTZ5cJB01p8_-291",
+      "target": "wAwO7pTqmTZ5cJB01p8_-290",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-299",
+      "source": "wAwO7pTqmTZ5cJB01p8_-293",
+      "target": "wAwO7pTqmTZ5cJB01p8_-294",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-300",
+      "source": "wAwO7pTqmTZ5cJB01p8_-294",
+      "target": "wAwO7pTqmTZ5cJB01p8_-269",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-303",
+      "source": "wAwO7pTqmTZ5cJB01p8_-301",
+      "target": "wAwO7pTqmTZ5cJB01p8_-275",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-314",
+      "source": "wAwO7pTqmTZ5cJB01p8_-301",
+      "target": "wAwO7pTqmTZ5cJB01p8_-313",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-307",
+      "source": "wAwO7pTqmTZ5cJB01p8_-309",
+      "target": "wAwO7pTqmTZ5cJB01p8_-310",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-330",
+      "source": "wAwO7pTqmTZ5cJB01p8_-310",
+      "target": "wAwO7pTqmTZ5cJB01p8_-329",
+      "label": "SÍ"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-320",
+      "source": "wAwO7pTqmTZ5cJB01p8_-313",
+      "target": "wAwO7pTqmTZ5cJB01p8_-318",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-813",
+      "source": "wAwO7pTqmTZ5cJB01p8_-313",
+      "target": "wAwO7pTqmTZ5cJB01p8_-309",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-316",
+      "source": "wAwO7pTqmTZ5cJB01p8_-318",
+      "target": "wAwO7pTqmTZ5cJB01p8_-319",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-260",
+      "source": "wAwO7pTqmTZ5cJB01p8_-318",
+      "target": "_QdEOQcB5nZz9vFoksUz-257",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-261",
+      "source": "wAwO7pTqmTZ5cJB01p8_-319",
+      "target": "_QdEOQcB5nZz9vFoksUz-259",
+      "label": "NO"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-328",
+      "source": "wAwO7pTqmTZ5cJB01p8_-329",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-333",
+      "source": "wAwO7pTqmTZ5cJB01p8_-284",
+      "target": "wAwO7pTqmTZ5cJB01p8_-336",
+      "label": "SÍ"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-335",
+      "source": "wAwO7pTqmTZ5cJB01p8_-336",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-337",
+      "source": "wAwO7pTqmTZ5cJB01p8_-319",
+      "target": "wAwO7pTqmTZ5cJB01p8_-340",
+      "label": "SÍ"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-339",
+      "source": "wAwO7pTqmTZ5cJB01p8_-340",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-345",
+      "source": "wAwO7pTqmTZ5cJB01p8_-343",
+      "target": "wAwO7pTqmTZ5cJB01p8_-290",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-357",
+      "source": "wAwO7pTqmTZ5cJB01p8_-309",
+      "target": "wAwO7pTqmTZ5cJB01p8_-364",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-359",
+      "source": "wAwO7pTqmTZ5cJB01p8_-310",
+      "target": "wAwO7pTqmTZ5cJB01p8_-366",
+      "label": "NO"
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-361",
+      "source": "wAwO7pTqmTZ5cJB01p8_-362",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-363",
+      "source": "wAwO7pTqmTZ5cJB01p8_-364",
+      "target": "wAwO7pTqmTZ5cJB01p8_-362",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-365",
+      "source": "wAwO7pTqmTZ5cJB01p8_-366",
+      "target": "wAwO7pTqmTZ5cJB01p8_-362",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-393",
+      "source": "wAwO7pTqmTZ5cJB01p8_-372",
+      "target": "wAwO7pTqmTZ5cJB01p8_-389",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-392",
+      "source": "wAwO7pTqmTZ5cJB01p8_-384",
+      "target": "wAwO7pTqmTZ5cJB01p8_-389",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-163",
+      "source": "wAwO7pTqmTZ5cJB01p8_-388",
+      "target": "wAwO7pTqmTZ5cJB01p8_-389",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-396",
+      "source": "wAwO7pTqmTZ5cJB01p8_-389",
+      "target": "32",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-458",
+      "source": "wAwO7pTqmTZ5cJB01p8_-389",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-414",
+      "source": "wAwO7pTqmTZ5cJB01p8_-401",
+      "target": "wAwO7pTqmTZ5cJB01p8_-413",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-407",
+      "source": "wAwO7pTqmTZ5cJB01p8_-403",
+      "target": "wAwO7pTqmTZ5cJB01p8_-405",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-412",
+      "source": "wAwO7pTqmTZ5cJB01p8_-403",
+      "target": "wAwO7pTqmTZ5cJB01p8_-401",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-422",
+      "source": "wAwO7pTqmTZ5cJB01p8_-405",
+      "target": "wAwO7pTqmTZ5cJB01p8_-418",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-433",
+      "source": "wAwO7pTqmTZ5cJB01p8_-405",
+      "target": "wAwO7pTqmTZ5cJB01p8_-428",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-437",
+      "source": "wAwO7pTqmTZ5cJB01p8_-413",
+      "target": "wAwO7pTqmTZ5cJB01p8_-415",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-440",
+      "source": "wAwO7pTqmTZ5cJB01p8_-413",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-450",
+      "source": "wAwO7pTqmTZ5cJB01p8_-415",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-417",
+      "source": "wAwO7pTqmTZ5cJB01p8_-418",
+      "target": "wAwO7pTqmTZ5cJB01p8_-420",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-419",
+      "source": "wAwO7pTqmTZ5cJB01p8_-420",
+      "target": "wAwO7pTqmTZ5cJB01p8_-421",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-442",
+      "source": "wAwO7pTqmTZ5cJB01p8_-420",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-445",
+      "source": "wAwO7pTqmTZ5cJB01p8_-421",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-427",
+      "source": "wAwO7pTqmTZ5cJB01p8_-428",
+      "target": "wAwO7pTqmTZ5cJB01p8_-431",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-429",
+      "source": "wAwO7pTqmTZ5cJB01p8_-431",
+      "target": "wAwO7pTqmTZ5cJB01p8_-432",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-448",
+      "source": "wAwO7pTqmTZ5cJB01p8_-431",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-447",
+      "source": "wAwO7pTqmTZ5cJB01p8_-432",
+      "target": "wAwO7pTqmTZ5cJB01p8_-455",
+      "label": ""
+    },
+    {
+      "id": "wAwO7pTqmTZ5cJB01p8_-462",
+      "source": "wAwO7pTqmTZ5cJB01p8_-455",
+      "target": "40",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-161",
+      "source": "_QdEOQcB5nZz9vFoksUz-101",
+      "target": "_QdEOQcB5nZz9vFoksUz-108",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-160",
+      "source": "_QdEOQcB5nZz9vFoksUz-102",
+      "target": "_QdEOQcB5nZz9vFoksUz-108",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-159",
+      "source": "_QdEOQcB5nZz9vFoksUz-103",
+      "target": "_QdEOQcB5nZz9vFoksUz-108",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-157",
+      "source": "_QdEOQcB5nZz9vFoksUz-108",
+      "target": "_QdEOQcB5nZz9vFoksUz-110",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-167",
+      "source": "_QdEOQcB5nZz9vFoksUz-108",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-109",
+      "source": "_QdEOQcB5nZz9vFoksUz-110",
+      "target": "_QdEOQcB5nZz9vFoksUz-115",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-111",
+      "source": "_QdEOQcB5nZz9vFoksUz-115",
+      "target": "_QdEOQcB5nZz9vFoksUz-118",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-113",
+      "source": "_QdEOQcB5nZz9vFoksUz-115",
+      "target": "_QdEOQcB5nZz9vFoksUz-117",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-116",
+      "source": "_QdEOQcB5nZz9vFoksUz-117",
+      "target": "_QdEOQcB5nZz9vFoksUz-126",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-174",
+      "source": "_QdEOQcB5nZz9vFoksUz-118",
+      "target": "60",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-120",
+      "source": "_QdEOQcB5nZz9vFoksUz-121",
+      "target": "_QdEOQcB5nZz9vFoksUz-135",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-122",
+      "source": "_QdEOQcB5nZz9vFoksUz-126",
+      "target": "_QdEOQcB5nZz9vFoksUz-131",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-124",
+      "source": "_QdEOQcB5nZz9vFoksUz-126",
+      "target": "_QdEOQcB5nZz9vFoksUz-121",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-127",
+      "source": "_QdEOQcB5nZz9vFoksUz-131",
+      "target": "_QdEOQcB5nZz9vFoksUz-139",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-129",
+      "source": "_QdEOQcB5nZz9vFoksUz-131",
+      "target": "_QdEOQcB5nZz9vFoksUz-148",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-132",
+      "source": "_QdEOQcB5nZz9vFoksUz-135",
+      "target": "_QdEOQcB5nZz9vFoksUz-137",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-240",
+      "source": "_QdEOQcB5nZz9vFoksUz-135",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-136",
+      "source": "_QdEOQcB5nZz9vFoksUz-137",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-138",
+      "source": "_QdEOQcB5nZz9vFoksUz-139",
+      "target": "_QdEOQcB5nZz9vFoksUz-144",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-140",
+      "source": "_QdEOQcB5nZz9vFoksUz-144",
+      "target": "_QdEOQcB5nZz9vFoksUz-146",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-142",
+      "source": "_QdEOQcB5nZz9vFoksUz-144",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-145",
+      "source": "_QdEOQcB5nZz9vFoksUz-146",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-147",
+      "source": "_QdEOQcB5nZz9vFoksUz-148",
+      "target": "_QdEOQcB5nZz9vFoksUz-153",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-149",
+      "source": "_QdEOQcB5nZz9vFoksUz-153",
+      "target": "_QdEOQcB5nZz9vFoksUz-155",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-151",
+      "source": "_QdEOQcB5nZz9vFoksUz-153",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-154",
+      "source": "_QdEOQcB5nZz9vFoksUz-155",
+      "target": "_QdEOQcB5nZz9vFoksUz-156",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-173",
+      "source": "_QdEOQcB5nZz9vFoksUz-156",
+      "target": "60",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-238",
+      "source": "_QdEOQcB5nZz9vFoksUz-175",
+      "target": "_QdEOQcB5nZz9vFoksUz-186",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-237",
+      "source": "_QdEOQcB5nZz9vFoksUz-176",
+      "target": "_QdEOQcB5nZz9vFoksUz-186",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-182",
+      "source": "_QdEOQcB5nZz9vFoksUz-186",
+      "target": "_QdEOQcB5nZz9vFoksUz-188",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-184",
+      "source": "_QdEOQcB5nZz9vFoksUz-186",
+      "target": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-187",
+      "source": "_QdEOQcB5nZz9vFoksUz-188",
+      "target": "_QdEOQcB5nZz9vFoksUz-193",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-189",
+      "source": "_QdEOQcB5nZz9vFoksUz-193",
+      "target": "_QdEOQcB5nZz9vFoksUz-196",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-191",
+      "source": "_QdEOQcB5nZz9vFoksUz-193",
+      "target": "_QdEOQcB5nZz9vFoksUz-195",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-194",
+      "source": "_QdEOQcB5nZz9vFoksUz-195",
+      "target": "_QdEOQcB5nZz9vFoksUz-204",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-246",
+      "source": "_QdEOQcB5nZz9vFoksUz-196",
+      "target": "81",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-198",
+      "source": "_QdEOQcB5nZz9vFoksUz-199",
+      "target": "_QdEOQcB5nZz9vFoksUz-213",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-200",
+      "source": "_QdEOQcB5nZz9vFoksUz-204",
+      "target": "_QdEOQcB5nZz9vFoksUz-217",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-202",
+      "source": "_QdEOQcB5nZz9vFoksUz-204",
+      "target": "_QdEOQcB5nZz9vFoksUz-199",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-210",
+      "source": "_QdEOQcB5nZz9vFoksUz-213",
+      "target": "_QdEOQcB5nZz9vFoksUz-215",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-239",
+      "source": "_QdEOQcB5nZz9vFoksUz-213",
+      "target": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-214",
+      "source": "_QdEOQcB5nZz9vFoksUz-215",
+      "target": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-216",
+      "source": "_QdEOQcB5nZz9vFoksUz-217",
+      "target": "_QdEOQcB5nZz9vFoksUz-222",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-218",
+      "source": "_QdEOQcB5nZz9vFoksUz-222",
+      "target": "_QdEOQcB5nZz9vFoksUz-224",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-220",
+      "source": "_QdEOQcB5nZz9vFoksUz-222",
+      "target": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-223",
+      "source": "_QdEOQcB5nZz9vFoksUz-224",
+      "target": "_QdEOQcB5nZz9vFoksUz-234",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-245",
+      "source": "_QdEOQcB5nZz9vFoksUz-234",
+      "target": "81",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-254",
+      "source": "_QdEOQcB5nZz9vFoksUz-255",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-256",
+      "source": "_QdEOQcB5nZz9vFoksUz-257",
+      "target": "_QdEOQcB5nZz9vFoksUz-255",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-258",
+      "source": "_QdEOQcB5nZz9vFoksUz-259",
+      "target": "_QdEOQcB5nZz9vFoksUz-255",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-266",
+      "source": "_QdEOQcB5nZz9vFoksUz-268",
+      "target": "_QdEOQcB5nZz9vFoksUz-276",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-817",
+      "source": "_QdEOQcB5nZz9vFoksUz-268",
+      "target": "_QdEOQcB5nZz9vFoksUz-271",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-269",
+      "source": "_QdEOQcB5nZz9vFoksUz-271",
+      "target": "_QdEOQcB5nZz9vFoksUz-312",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-273",
+      "source": "_QdEOQcB5nZz9vFoksUz-274",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-275",
+      "source": "_QdEOQcB5nZz9vFoksUz-276",
+      "target": "_QdEOQcB5nZz9vFoksUz-274",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-277",
+      "source": "_QdEOQcB5nZz9vFoksUz-281",
+      "target": "_QdEOQcB5nZz9vFoksUz-268",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-279",
+      "source": "_QdEOQcB5nZz9vFoksUz-281",
+      "target": "_QdEOQcB5nZz9vFoksUz-291",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-282",
+      "source": "_QdEOQcB5nZz9vFoksUz-284",
+      "target": "_QdEOQcB5nZz9vFoksUz-286",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-285",
+      "source": "_QdEOQcB5nZz9vFoksUz-286",
+      "target": "_QdEOQcB5nZz9vFoksUz-302",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-287",
+      "source": "_QdEOQcB5nZz9vFoksUz-291",
+      "target": "_QdEOQcB5nZz9vFoksUz-284",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-289",
+      "source": "_QdEOQcB5nZz9vFoksUz-291",
+      "target": "_QdEOQcB5nZz9vFoksUz-296",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-292",
+      "source": "_QdEOQcB5nZz9vFoksUz-296",
+      "target": "_QdEOQcB5nZz9vFoksUz-298",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-294",
+      "source": "_QdEOQcB5nZz9vFoksUz-296",
+      "target": "_QdEOQcB5nZz9vFoksUz-328",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-297",
+      "source": "_QdEOQcB5nZz9vFoksUz-298",
+      "target": "_QdEOQcB5nZz9vFoksUz-330",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-301",
+      "source": "_QdEOQcB5nZz9vFoksUz-302",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-303",
+      "source": "_QdEOQcB5nZz9vFoksUz-271",
+      "target": "_QdEOQcB5nZz9vFoksUz-306",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-305",
+      "source": "_QdEOQcB5nZz9vFoksUz-306",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-307",
+      "source": "_QdEOQcB5nZz9vFoksUz-298",
+      "target": "_QdEOQcB5nZz9vFoksUz-310",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-309",
+      "source": "_QdEOQcB5nZz9vFoksUz-310",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-311",
+      "source": "_QdEOQcB5nZz9vFoksUz-312",
+      "target": "_QdEOQcB5nZz9vFoksUz-274",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-313",
+      "source": "_QdEOQcB5nZz9vFoksUz-284",
+      "target": "_QdEOQcB5nZz9vFoksUz-321",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-315",
+      "source": "_QdEOQcB5nZz9vFoksUz-286",
+      "target": "_QdEOQcB5nZz9vFoksUz-323",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-318",
+      "source": "_QdEOQcB5nZz9vFoksUz-319",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-320",
+      "source": "_QdEOQcB5nZz9vFoksUz-321",
+      "target": "_QdEOQcB5nZz9vFoksUz-319",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-322",
+      "source": "_QdEOQcB5nZz9vFoksUz-323",
+      "target": "_QdEOQcB5nZz9vFoksUz-319",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-325",
+      "source": "_QdEOQcB5nZz9vFoksUz-326",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-327",
+      "source": "_QdEOQcB5nZz9vFoksUz-328",
+      "target": "_QdEOQcB5nZz9vFoksUz-326",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-329",
+      "source": "_QdEOQcB5nZz9vFoksUz-330",
+      "target": "_QdEOQcB5nZz9vFoksUz-326",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-352",
+      "source": "_QdEOQcB5nZz9vFoksUz-354",
+      "target": "_QdEOQcB5nZz9vFoksUz-356",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-355",
+      "source": "_QdEOQcB5nZz9vFoksUz-356",
+      "target": "_QdEOQcB5nZz9vFoksUz-372",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-357",
+      "source": "_QdEOQcB5nZz9vFoksUz-361",
+      "target": "_QdEOQcB5nZz9vFoksUz-354",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-359",
+      "source": "_QdEOQcB5nZz9vFoksUz-361",
+      "target": "_QdEOQcB5nZz9vFoksUz-366",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-362",
+      "source": "_QdEOQcB5nZz9vFoksUz-366",
+      "target": "_QdEOQcB5nZz9vFoksUz-368",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-364",
+      "source": "_QdEOQcB5nZz9vFoksUz-366",
+      "target": "_QdEOQcB5nZz9vFoksUz-398",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-367",
+      "source": "_QdEOQcB5nZz9vFoksUz-368",
+      "target": "_QdEOQcB5nZz9vFoksUz-400",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-371",
+      "source": "_QdEOQcB5nZz9vFoksUz-372",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-377",
+      "source": "_QdEOQcB5nZz9vFoksUz-368",
+      "target": "_QdEOQcB5nZz9vFoksUz-380",
+      "label": "SÍ"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-379",
+      "source": "_QdEOQcB5nZz9vFoksUz-380",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-383",
+      "source": "_QdEOQcB5nZz9vFoksUz-354",
+      "target": "_QdEOQcB5nZz9vFoksUz-391",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-385",
+      "source": "_QdEOQcB5nZz9vFoksUz-356",
+      "target": "_QdEOQcB5nZz9vFoksUz-393",
+      "label": "NO"
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-388",
+      "source": "_QdEOQcB5nZz9vFoksUz-389",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-390",
+      "source": "_QdEOQcB5nZz9vFoksUz-391",
+      "target": "_QdEOQcB5nZz9vFoksUz-389",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-392",
+      "source": "_QdEOQcB5nZz9vFoksUz-393",
+      "target": "_QdEOQcB5nZz9vFoksUz-389",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-395",
+      "source": "_QdEOQcB5nZz9vFoksUz-396",
+      "target": "wAwO7pTqmTZ5cJB01p8_-288",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-397",
+      "source": "_QdEOQcB5nZz9vFoksUz-398",
+      "target": "_QdEOQcB5nZz9vFoksUz-396",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-399",
+      "source": "_QdEOQcB5nZz9vFoksUz-400",
+      "target": "_QdEOQcB5nZz9vFoksUz-396",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-407",
+      "source": "_QdEOQcB5nZz9vFoksUz-408",
+      "target": "_QdEOQcB5nZz9vFoksUz-410",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-584",
+      "source": "_QdEOQcB5nZz9vFoksUz-410",
+      "target": "_QdEOQcB5nZz9vFoksUz-416",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-820",
+      "source": "_QdEOQcB5nZz9vFoksUz-410",
+      "target": "_QdEOQcB5nZz9vFoksUz-408",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-412",
+      "source": "_QdEOQcB5nZz9vFoksUz-416",
+      "target": "_QdEOQcB5nZz9vFoksUz-421",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-414",
+      "source": "_QdEOQcB5nZz9vFoksUz-416",
+      "target": "_QdEOQcB5nZz9vFoksUz-439",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-417",
+      "source": "_QdEOQcB5nZz9vFoksUz-421",
+      "target": "_QdEOQcB5nZz9vFoksUz-729",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-419",
+      "source": "_QdEOQcB5nZz9vFoksUz-421",
+      "target": "_QdEOQcB5nZz9vFoksUz-653",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-422",
+      "source": "_QdEOQcB5nZz9vFoksUz-426",
+      "target": "_QdEOQcB5nZz9vFoksUz-588",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-424",
+      "source": "_QdEOQcB5nZz9vFoksUz-426",
+      "target": "_QdEOQcB5nZz9vFoksUz-434",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-809",
+      "source": "_QdEOQcB5nZz9vFoksUz-432",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-433",
+      "source": "_QdEOQcB5nZz9vFoksUz-434",
+      "target": "_QdEOQcB5nZz9vFoksUz-432",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-437",
+      "source": "_QdEOQcB5nZz9vFoksUz-439",
+      "target": "_QdEOQcB5nZz9vFoksUz-449",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-586",
+      "source": "_QdEOQcB5nZz9vFoksUz-439",
+      "target": "_QdEOQcB5nZz9vFoksUz-585",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-447",
+      "source": "_QdEOQcB5nZz9vFoksUz-449",
+      "target": "_QdEOQcB5nZz9vFoksUz-632",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-619",
+      "source": "_QdEOQcB5nZz9vFoksUz-449",
+      "target": "_QdEOQcB5nZz9vFoksUz-610",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-466",
+      "source": "_QdEOQcB5nZz9vFoksUz-467",
+      "target": "_QdEOQcB5nZz9vFoksUz-432",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-587",
+      "source": "_QdEOQcB5nZz9vFoksUz-585",
+      "target": "_QdEOQcB5nZz9vFoksUz-426",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-592",
+      "source": "_QdEOQcB5nZz9vFoksUz-588",
+      "target": "_QdEOQcB5nZz9vFoksUz-591",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-593",
+      "source": "_QdEOQcB5nZz9vFoksUz-591",
+      "target": "_QdEOQcB5nZz9vFoksUz-467",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-596",
+      "source": "_QdEOQcB5nZz9vFoksUz-591",
+      "target": "_QdEOQcB5nZz9vFoksUz-595",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-807",
+      "source": "_QdEOQcB5nZz9vFoksUz-595",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-599",
+      "source": "_QdEOQcB5nZz9vFoksUz-603",
+      "target": "_QdEOQcB5nZz9vFoksUz-612",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-601",
+      "source": "_QdEOQcB5nZz9vFoksUz-603",
+      "target": "_QdEOQcB5nZz9vFoksUz-606",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-806",
+      "source": "_QdEOQcB5nZz9vFoksUz-604",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-605",
+      "source": "_QdEOQcB5nZz9vFoksUz-606",
+      "target": "_QdEOQcB5nZz9vFoksUz-604",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-620",
+      "source": "_QdEOQcB5nZz9vFoksUz-608",
+      "target": "_QdEOQcB5nZz9vFoksUz-604",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-609",
+      "source": "_QdEOQcB5nZz9vFoksUz-610",
+      "target": "_QdEOQcB5nZz9vFoksUz-603",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-611",
+      "source": "_QdEOQcB5nZz9vFoksUz-612",
+      "target": "_QdEOQcB5nZz9vFoksUz-617",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-613",
+      "source": "_QdEOQcB5nZz9vFoksUz-617",
+      "target": "_QdEOQcB5nZz9vFoksUz-608",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-615",
+      "source": "_QdEOQcB5nZz9vFoksUz-617",
+      "target": "_QdEOQcB5nZz9vFoksUz-618",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-805",
+      "source": "_QdEOQcB5nZz9vFoksUz-618",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-621",
+      "source": "_QdEOQcB5nZz9vFoksUz-625",
+      "target": "_QdEOQcB5nZz9vFoksUz-634",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-623",
+      "source": "_QdEOQcB5nZz9vFoksUz-625",
+      "target": "_QdEOQcB5nZz9vFoksUz-628",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-804",
+      "source": "_QdEOQcB5nZz9vFoksUz-626",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-627",
+      "source": "_QdEOQcB5nZz9vFoksUz-628",
+      "target": "_QdEOQcB5nZz9vFoksUz-626",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-629",
+      "source": "_QdEOQcB5nZz9vFoksUz-630",
+      "target": "_QdEOQcB5nZz9vFoksUz-626",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-631",
+      "source": "_QdEOQcB5nZz9vFoksUz-632",
+      "target": "_QdEOQcB5nZz9vFoksUz-625",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-633",
+      "source": "_QdEOQcB5nZz9vFoksUz-634",
+      "target": "_QdEOQcB5nZz9vFoksUz-639",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-635",
+      "source": "_QdEOQcB5nZz9vFoksUz-639",
+      "target": "_QdEOQcB5nZz9vFoksUz-630",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-637",
+      "source": "_QdEOQcB5nZz9vFoksUz-639",
+      "target": "_QdEOQcB5nZz9vFoksUz-640",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-803",
+      "source": "_QdEOQcB5nZz9vFoksUz-640",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-641",
+      "source": "_QdEOQcB5nZz9vFoksUz-645",
+      "target": "_QdEOQcB5nZz9vFoksUz-664",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-643",
+      "source": "_QdEOQcB5nZz9vFoksUz-645",
+      "target": "_QdEOQcB5nZz9vFoksUz-648",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-800",
+      "source": "_QdEOQcB5nZz9vFoksUz-646",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-647",
+      "source": "_QdEOQcB5nZz9vFoksUz-648",
+      "target": "_QdEOQcB5nZz9vFoksUz-646",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-649",
+      "source": "_QdEOQcB5nZz9vFoksUz-653",
+      "target": "_QdEOQcB5nZz9vFoksUz-682",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-713",
+      "source": "_QdEOQcB5nZz9vFoksUz-653",
+      "target": "_QdEOQcB5nZz9vFoksUz-662",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-659",
+      "source": "_QdEOQcB5nZz9vFoksUz-660",
+      "target": "_QdEOQcB5nZz9vFoksUz-646",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-661",
+      "source": "_QdEOQcB5nZz9vFoksUz-662",
+      "target": "_QdEOQcB5nZz9vFoksUz-645",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-663",
+      "source": "_QdEOQcB5nZz9vFoksUz-664",
+      "target": "_QdEOQcB5nZz9vFoksUz-669",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-665",
+      "source": "_QdEOQcB5nZz9vFoksUz-669",
+      "target": "_QdEOQcB5nZz9vFoksUz-660",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-667",
+      "source": "_QdEOQcB5nZz9vFoksUz-669",
+      "target": "_QdEOQcB5nZz9vFoksUz-670",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-799",
+      "source": "_QdEOQcB5nZz9vFoksUz-670",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-671",
+      "source": "_QdEOQcB5nZz9vFoksUz-675",
+      "target": "_QdEOQcB5nZz9vFoksUz-684",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-673",
+      "source": "_QdEOQcB5nZz9vFoksUz-675",
+      "target": "_QdEOQcB5nZz9vFoksUz-678",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-798",
+      "source": "_QdEOQcB5nZz9vFoksUz-676",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-677",
+      "source": "_QdEOQcB5nZz9vFoksUz-678",
+      "target": "_QdEOQcB5nZz9vFoksUz-676",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-679",
+      "source": "_QdEOQcB5nZz9vFoksUz-680",
+      "target": "_QdEOQcB5nZz9vFoksUz-676",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-681",
+      "source": "_QdEOQcB5nZz9vFoksUz-682",
+      "target": "_QdEOQcB5nZz9vFoksUz-675",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-683",
+      "source": "_QdEOQcB5nZz9vFoksUz-684",
+      "target": "_QdEOQcB5nZz9vFoksUz-689",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-685",
+      "source": "_QdEOQcB5nZz9vFoksUz-689",
+      "target": "_QdEOQcB5nZz9vFoksUz-680",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-687",
+      "source": "_QdEOQcB5nZz9vFoksUz-689",
+      "target": "_QdEOQcB5nZz9vFoksUz-690",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-797",
+      "source": "_QdEOQcB5nZz9vFoksUz-690",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-717",
+      "source": "_QdEOQcB5nZz9vFoksUz-721",
+      "target": "_QdEOQcB5nZz9vFoksUz-741",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-719",
+      "source": "_QdEOQcB5nZz9vFoksUz-721",
+      "target": "_QdEOQcB5nZz9vFoksUz-724",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-796",
+      "source": "_QdEOQcB5nZz9vFoksUz-722",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-723",
+      "source": "_QdEOQcB5nZz9vFoksUz-724",
+      "target": "_QdEOQcB5nZz9vFoksUz-722",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-725",
+      "source": "_QdEOQcB5nZz9vFoksUz-729",
+      "target": "_QdEOQcB5nZz9vFoksUz-734",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-727",
+      "source": "_QdEOQcB5nZz9vFoksUz-729",
+      "target": "_QdEOQcB5nZz9vFoksUz-739",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-730",
+      "source": "_QdEOQcB5nZz9vFoksUz-734",
+      "target": "_QdEOQcB5nZz9vFoksUz-779",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-732",
+      "source": "_QdEOQcB5nZz9vFoksUz-734",
+      "target": "_QdEOQcB5nZz9vFoksUz-759",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-736",
+      "source": "_QdEOQcB5nZz9vFoksUz-737",
+      "target": "_QdEOQcB5nZz9vFoksUz-722",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-738",
+      "source": "_QdEOQcB5nZz9vFoksUz-739",
+      "target": "_QdEOQcB5nZz9vFoksUz-721",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-740",
+      "source": "_QdEOQcB5nZz9vFoksUz-741",
+      "target": "_QdEOQcB5nZz9vFoksUz-746",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-742",
+      "source": "_QdEOQcB5nZz9vFoksUz-746",
+      "target": "_QdEOQcB5nZz9vFoksUz-737",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-744",
+      "source": "_QdEOQcB5nZz9vFoksUz-746",
+      "target": "_QdEOQcB5nZz9vFoksUz-747",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-795",
+      "source": "_QdEOQcB5nZz9vFoksUz-747",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-748",
+      "source": "_QdEOQcB5nZz9vFoksUz-752",
+      "target": "_QdEOQcB5nZz9vFoksUz-761",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-750",
+      "source": "_QdEOQcB5nZz9vFoksUz-752",
+      "target": "_QdEOQcB5nZz9vFoksUz-755",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-794",
+      "source": "_QdEOQcB5nZz9vFoksUz-753",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-754",
+      "source": "_QdEOQcB5nZz9vFoksUz-755",
+      "target": "_QdEOQcB5nZz9vFoksUz-753",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-756",
+      "source": "_QdEOQcB5nZz9vFoksUz-757",
+      "target": "_QdEOQcB5nZz9vFoksUz-753",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-758",
+      "source": "_QdEOQcB5nZz9vFoksUz-759",
+      "target": "_QdEOQcB5nZz9vFoksUz-752",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-760",
+      "source": "_QdEOQcB5nZz9vFoksUz-761",
+      "target": "_QdEOQcB5nZz9vFoksUz-766",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-762",
+      "source": "_QdEOQcB5nZz9vFoksUz-766",
+      "target": "_QdEOQcB5nZz9vFoksUz-757",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-764",
+      "source": "_QdEOQcB5nZz9vFoksUz-766",
+      "target": "_QdEOQcB5nZz9vFoksUz-767",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-793",
+      "source": "_QdEOQcB5nZz9vFoksUz-767",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-768",
+      "source": "_QdEOQcB5nZz9vFoksUz-772",
+      "target": "_QdEOQcB5nZz9vFoksUz-781",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-770",
+      "source": "_QdEOQcB5nZz9vFoksUz-772",
+      "target": "_QdEOQcB5nZz9vFoksUz-775",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-792",
+      "source": "_QdEOQcB5nZz9vFoksUz-773",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-774",
+      "source": "_QdEOQcB5nZz9vFoksUz-775",
+      "target": "_QdEOQcB5nZz9vFoksUz-773",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-776",
+      "source": "_QdEOQcB5nZz9vFoksUz-777",
+      "target": "_QdEOQcB5nZz9vFoksUz-773",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-778",
+      "source": "_QdEOQcB5nZz9vFoksUz-779",
+      "target": "_QdEOQcB5nZz9vFoksUz-772",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-780",
+      "source": "_QdEOQcB5nZz9vFoksUz-781",
+      "target": "_QdEOQcB5nZz9vFoksUz-786",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-782",
+      "source": "_QdEOQcB5nZz9vFoksUz-786",
+      "target": "_QdEOQcB5nZz9vFoksUz-777",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-784",
+      "source": "_QdEOQcB5nZz9vFoksUz-786",
+      "target": "_QdEOQcB5nZz9vFoksUz-787",
+      "label": ""
+    },
+    {
+      "id": "_QdEOQcB5nZz9vFoksUz-791",
+      "source": "_QdEOQcB5nZz9vFoksUz-787",
+      "target": "_QdEOQcB5nZz9vFoksUz-788",
+      "label": ""
+    }
+  ]
+}
