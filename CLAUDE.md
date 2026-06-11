@@ -1,7 +1,8 @@
 # CLAUDE.md — Simulador TTA (Tablero de Transferencia Automática)
 
 > Este archivo orquesta el trabajo de **Claude Code** sobre este repositorio.
-> Léelo completo antes de escribir una sola línea de código y vuelve a él ante cualquier duda de alcance o de regla de negocio.
+> Léelo completo antes de escribir una sola línea de código y vuelve a él ante
+> cualquier duda de alcance o de regla de negocio.
 
 ---
 
@@ -12,18 +13,16 @@ Un **dashboard interactivo** que simula, en el navegador, la lógica de control 
 es una **herramienta de demostración a cliente**, paso previo a programar esa misma
 lógica en un sistema **Honeywell Experion**.
 
-El objetivo es que el cliente vea, en tiempo real, cómo el control selecciona entre
-tres fuentes de energía cuando el operador inyecta fallas (toggles), y poder **validar
-visualmente que la lógica coincide con el diagrama de flujo de referencia**.
-
 El simulador tiene **dos vistas conmutables por pestañas**, ambas alimentadas por el
 mismo motor y el mismo estado:
-- **Vista Unifilar** — el tablero eléctrico con el flujo de energía (qué pasa). Ver `docs/06`.
-- **Vista de Flujo** — el diagrama de flujo "tipo draw.io", interactivo, que ilumina el
-  camino lógico recorrido (por qué pasa). Ver `docs/08`.
+- **Vista Unifilar** — el tablero eléctrico con el flujo de energía animado (qué pasa). Ver `docs/06`.
+- **Vista de Flujo** — el diagrama de flujo lógico "tipo draw.io", interactivo,
+  que ilumina el camino lógico recorrido (por qué pasa). Ver `docs/08`.
 
 - **Alcance:** 100% navegador. Sin backend, sin base de datos, sin PLC real.
-- **Idioma de código y comentarios:** español con términos técnicos en inglés (ej. `breaker`, `contactor`, `state`, `store`).
+- **Auth:** password simple por variable de entorno Vite (`VITE_APP_PASSWORD`). Ver `docs/05`, sección 3.
+- **Persistencia:** `localStorage` para posiciones de nodos y diagramas extra. Ver `docs/05`, sección 4.
+- **Idioma de código y comentarios:** español con términos técnicos en inglés.
 - **Idioma de UI:** español.
 - **Sistema eléctrico:** 220 V / 50 Hz (Chile / Enel).
 
@@ -33,9 +32,13 @@ mismo motor y el mismo estado:
 
 > **El motor decide. La UI refleja. El SVG nunca calcula nada.**
 
-Toda la lógica de transferencia y toda la física eléctrica viven en `src/engine/`,
-un módulo de **TypeScript puro, determinista y sin ninguna dependencia de React**.
-La interfaz solo envía eventos al motor y pinta el estado que el motor devuelve.
+Dirección de dependencias (no invertir nunca):
+
+```
+components/ (React)  →  store/ (Zustand)  →  engine/ (TypeScript puro)
+```
+
+`engine/` no importa React, Zustand, ni nada de UI. Es testeable de forma aislada.
 
 Si te encuentras escribiendo lógica de selección de fuente, evaluación de
 disponibilidad o cálculo de asimetría dentro de un componente de React, **detente**:
@@ -45,52 +48,44 @@ eso va en el motor.
 
 ## 3. Orden de lectura de la documentación
 
-Lee los documentos de `docs/` **en este orden**. Son la fuente de verdad; este
-`CLAUDE.md` solo coordina.
+Lee los documentos de `docs/` **en este orden**:
 
 1. `docs/00-vision-y-alcance.md` — propósito, contexto de negocio, qué NO hacer.
-2. `docs/01-glosario-y-senales.md` — vocabulario obligatorio: entradas, salidas, CB, KM, KA, R-AS, MOXA, contactos auxiliares.
-3. `docs/02-reglas-de-negocio.md` — **las reglas invariantes**. Es el documento más importante.
-4. `docs/03-diagrama-de-flujo.md` — la lógica transcrita rama por rama desde el `.drawio` original. Es la **fuente de verdad** de la lógica.
-5. `docs/04-modelo-electrico.md` — fasores, componentes simétricas, VUF, modo simple vs. avanzado.
-6. `docs/05-arquitectura-tecnica.md` — stack, estructura de carpetas, tipos, API del motor, flujo de datos.
-7. `docs/06-especificacion-ui.md` — **Vista Unifilar**: unifilar SVG, codificación por color, panel de control, mapeo a la propuesta visual.
-8. `docs/07-estrategia-de-pruebas.md` — cómo cada rama del flujo se traduce en un test.
-9. `docs/08-vista-flujo.md` — **Vista de Flujo**: diagrama interactivo "tipo draw.io", layout sembrado desde el `.drawio`, resaltado del camino lógico.
+2. `docs/01-glosario-y-senales.md` — vocabulario obligatorio.
+3. `docs/02-reglas-de-negocio.md` — **las reglas invariantes**. El documento más importante.
+4. `docs/03-diagrama-de-flujo.md` — lógica transcrita rama a rama. **Fuente de verdad.**
+5. `docs/04-modelo-electrico.md` — fasores, VUF, modos simple y avanzado.
+6. `docs/05-arquitectura-tecnica.md` — stack, auth, persistencia, estructura, tipos, API.
+7. `docs/06-especificacion-ui.md` — Vista Unifilar: SVG, colores, panel de control.
+8. `docs/07-estrategia-de-pruebas.md` — cada rama del flujo = un test.
+9. `docs/08-vista-flujo.md` — Vista de Flujo: diagrama interactivo, persistencia, múltiples diagramas.
 
 ---
 
 ## 4. Invariantes que NUNCA debes romper
 
-Estas reglas son no negociables. Cualquier código que las viole está mal,
-aunque "funcione".
-
-1. **Exclusividad de contactores:** para una misma salida, **solo un contactor KM
-   puede estar cerrado a la vez**. Antes de cerrar uno, los demás de esa salida deben abrirse.
-   Las fuentes nunca se acoplan.
-2. **Preferencias distintas:** las 3 preferencias de una salida deben ser fuentes
-   **distintas entre sí**. La salida S3 (Iluminación Emergencia) solo admite **DB A (F2) y DB B (F3)**, nunca PRINCIPAL.
-3. **Modo de operación excluyente:** `DI12` y `DI13` (MOXA 2) **nunca pueden ser iguales**.
-   AUTO = (1,0); MANUAL = (0,1); cualquier otra combinación = **falla de selector → se asume MANUAL**.
-4. **Confirmación obligatoria:** toda orden de cierre o apertura de un KM debe
-   verificarse leyendo su contacto auxiliar (`ESTADO KM`). Si no confirma → **alarma de falla de contactor**, sin reintentos infinitos.
-5. **Disponibilidad de fuente (Subproceso DISP):** una fuente está disponible **solo si**
-   `C-AUX CBn CERRADO = 1` **Y** `C-AUX CBn FALLA/TRIP = 0` **Y** `R-AS de su barra de entrada = 1`.
-6. **Determinismo del motor:** `step(state)` siempre produce el mismo resultado para
-   el mismo estado de entrada. Nada de `Date.now()`, `Math.random()` ni efectos secundarios dentro del motor.
-7. **El motor no importa React, ni Zustand, ni nada de UI.** Dirección de dependencia: `UI → store → engine`. Nunca al revés.
+1. **Exclusividad de contactores:** solo un KM cerrado por salida a la vez.
+2. **Preferencias distintas:** sin repetir fuente. S3 solo admite DB A y DB B.
+3. **Modo excluyente:** `DI12 ≠ DI13` siempre que el modo sea válido.
+4. **Confirmación obligatoria:** toda maniobra de KM se confirma por contacto auxiliar.
+5. **Disponibilidad de fuente:** `CB cerrado ∧ ¬trip ∧ R-AS=1` (RN-10).
+6. **Motor determinista:** `step(state)` puro. Sin `Date.now()`, `Math.random()` ni efectos.
+7. **Motor sin UI:** `engine/` no importa React, Zustand ni nada de presentación.
+8. **localStorage con try/catch:** toda escritura/lectura tiene fallback silencioso.
 
 ---
 
 ## 5. Stack tecnológico (no cambiar sin justificación)
 
-- **Build/runtime:** Vite + React 18 + TypeScript (modo `strict`).
-- **Estado:** Zustand (envuelve el motor).
+- **Build/runtime:** Vite + React 18 + TypeScript (`strict`).
+- **Estado:** Zustand.
 - **Estilos:** Tailwind CSS.
 - **Animación:** Framer Motion.
-- **Física:** mathjs (números complejos para fasores).
+- **Física:** mathjs.
 - **Pruebas:** Vitest.
-- **Render del unifilar:** SVG a medida vía React. **No** usar React Flow, mxGraph ni canvas/WebGL.
+- **Render:** SVG a medida. **No** React Flow, mxGraph ni canvas/WebGL.
+- **Auth:** `VITE_APP_PASSWORD` en env var + sessionStorage. Sin librerías de auth.
+- **Persistencia:** `localStorage`. Sin backend ni base de datos.
 
 ---
 
@@ -98,40 +93,44 @@ aunque "funcione".
 
 Respeta el orden. La corrección se valida antes de invertir en lo visual.
 
-- **Fase 0 — Scaffold:** Vite + React + TS + Tailwind + Zustand + Framer Motion + Vitest. Build verde.
-- **Fase 1 — Motor + tests (camino crítico):** `types`, `model`, `physics`, `sources` (DISP), `transfer`, `contactors` (CONT), `alarms`, `blackout`, `step`, `trace`. Tests contra cada rama de `docs/03-diagrama-de-flujo.md`. **No avances a la Fase 2 hasta que la suite esté verde.**
-- **Fase 2 — Vista Unifilar (SVG):** componentes que pintan color por estado (sin animación). Ver `docs/06`.
-- **Fase 3 — Panel de control + binding al store** (compartido por ambas vistas).
+- **Fase 0 — Scaffold:** Vite + React + TS + Tailwind + Zustand + Framer Motion +
+  Vitest + `LoginGate` + `.env.example`. Build verde.
+- **Fase 1 — Motor + tests (camino crítico):** `types`, `model`, `physics`, `disp`,
+  `transfer`, `cont`, `alarms`, `blackout`, `step`, `trace`. Tests contra cada rama
+  de `docs/03`. **No avanzar a Fase 2 hasta suite verde.**
+- **Fase 2 — Vista Unifilar (SVG):** componentes que pintan por estado (sin animación). Ver `docs/06`.
+- **Fase 3 — Panel de control + binding al store** (compartido entre vistas).
 - **Fase 4 — Animación y pulido UX + panel de alarmas** (Vista Unifilar).
-- **Fase 5 — Vista de Flujo:** lienzo SVG sembrado desde `src/data/flowLayout.json`, nodos arrastrables, pan/zoom, resaltado del camino activo usando `trace`. Pestañas entre vistas. Ver `docs/08`.
-- **Fase 6 — Física avanzada:** entrada fasorial, VUF calculado, caídas de tensión y validación de capacidad.
+- **Fase 5 — Vista de Flujo:** SVG sembrado desde `flowLayout.json`, drag/drop,
+  pan/zoom, persistencia en localStorage, `DiagramUploader`, `DiagramSelector`,
+  resaltado con `trace`. Pestañas entre vistas. Ver `docs/08`.
+- **Fase 6 — Física avanzada:** entrada fasorial, VUF calculado, caídas de tensión.
 
 ---
 
 ## 7. Convenciones de código
 
-- TypeScript `strict`. Nada de `any` salvo justificación escrita.
-- Estados del dominio como **uniones discriminadas**, no strings sueltos ni booleanos ambiguos.
-- Nombres de señales **idénticos al diagrama**: `KM1-P`, `CB1`, `R-AS-BP`, `KA-9`, etc. Usa esos identificadores literalmente.
-- Funciones del motor: puras, tipadas, una responsabilidad.
-- Cada regla de negocio relevante lleva un comentario `// REGLA: <id>` referenciando `docs/02-reglas-de-negocio.md`.
+- TypeScript `strict`. Nada de `any` salvo justificación escrita en comentario.
+- Estados del dominio como uniones discriminadas, no strings sueltos.
+- Nombres de señales **idénticos al diagrama**: `KM1-P`, `CB1`, `R-AS-BP`, `KA-9`.
+- Reglas de negocio comentadas con `// REGLA: RN-xx`.
+- Nodos del diagrama comentados con `// NODE: <id>` donde aplique en el motor.
 - Commits pequeños y temáticos por fase.
+- `.env.local` en `.gitignore`. Commitear solo `.env.example` (sin valor real).
 
 ---
 
 ## 8. Definición de "terminado" por fase
 
-Una fase está terminada cuando:
-- El código compila con `tsc --noEmit` sin errores.
-- (Fase 1+) `vitest run` está verde y cubre las ramas indicadas en `docs/07-estrategia-de-pruebas.md`.
-- El comportamiento coincide con `docs/03-diagrama-de-flujo.md` (trazabilidad explícita).
-- No se violó ningún invariante de la sección 4.
+- Compila con `tsc --noEmit` sin errores.
+- (Fase 1+) `vitest run` verde, cubriendo las ramas de `docs/07`.
+- Comportamiento coincide con `docs/03` (trazabilidad explícita).
+- No se viola ningún invariante de la sección 4.
 
 ---
 
 ## 9. Ante la duda
 
-Si una decisión no está cubierta por la documentación: **no inventes reglas de negocio
-ni umbrales eléctricos**. Marca un `// TODO(decisión-pendiente): <pregunta>` y sigue
-con lo que sí está definido. La fuente de verdad de la lógica es `docs/03`; la de las
-reglas es `docs/02`.
+No inventes reglas de negocio ni umbrales eléctricos. Marca
+`// TODO(decisión-pendiente): <pregunta>` y sigue con lo definido.
+Fuente de verdad de la lógica: `docs/03`. De las reglas: `docs/02`.

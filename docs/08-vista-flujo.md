@@ -4,131 +4,139 @@ El simulador tiene **dos vistas del mismo sistema**, conmutables por **pestañas
 
 - **Vista Unifilar (Vista 2)** — el tablero eléctrico interactivo (ver `06`).
 - **Vista de Flujo (Vista 1)** — el diagrama de flujo lógico "tipo draw.io",
-  **interactivo**, especificado en este documento.
+  interactivo, especificado en este documento.
 
-Ambas vistas leen del **mismo motor** (`engine/`) y del mismo `TtaState`. Una sola
-ejecución de `step` actualiza las dos. Cambiar de pestaña no recalcula nada: solo
-cambia la representación.
+Ambas vistas leen del **mismo motor** y del mismo `TtaState`. Cambiar de pestaña no
+recalcula nada: solo cambia la representación.
 
 ---
 
-## 1. Propósito de la Vista de Flujo
+## 1. Propósito
 
-Mientras la Vista Unifilar muestra **qué** pasa (la energía moviéndose), la Vista de
+Mientras la Vista Unifilar muestra **qué** pasa (energía moviéndose), la Vista de
 Flujo muestra **por qué** pasa: ilumina el **camino lógico** que el motor recorrió
-para llegar al estado actual (qué decisión tomó cada rombo, en qué rama cayó, en qué
-nodo terminó cada salida). Es el puente directo con la lógica que luego se programa en
-Experion.
+(qué decisión tomó cada rombo, en qué rama cayó, en qué nodo terminó cada salida).
+Es el puente directo con la lógica que luego se programa en Experion.
 
 ---
 
-## 2. Fuente del dibujo: `src/data/flowLayout.json`
+## 2. Fuente del dibujo y diagramas múltiples
 
-El layout **reusa las posiciones exactas del `.drawio` original**. Se exportó a
-`src/data/flowLayout.json` con esta forma:
+### Diagrama base
+El layout **reusa las posiciones exactas del `.drawio` original**. Vive en
+`src/data/flowLayout.json` (en el repo, cargado desde el bundle) con `id = 'default'`.
 
 ```jsonc
 {
-  "meta": { "source": "Diagrama_Flujo_TTA_Ver_05.drawio", "units": "px", "note": "..." },
+  "meta": { "source": "Diagrama_Flujo_TTA_Ver_05.drawio", "units": "px" },
   "nodes": [
     { "id": "10", "label": "INICIO DEL SISTEMA", "shape": "process",
-      "x": 1159.67, "y": -930, "w": 250, "h": 60, "kind": "node" },
-    // ...
+      "x": 1159.67, "y": -930, "w": 250, "h": 60, "kind": "node" }
   ],
   "edges": [
-    { "id": "...", "source": "<nodeId>", "target": "<nodeId>", "label": "SÍ" },
-    // ...
+    { "id": "...", "source": "<nodeId>", "target": "<nodeId>", "label": "SÍ" }
   ]
 }
 ```
 
-- **`shape`**: `process` (rectángulo), `decision` (rombo), `terminal` (inicio/fin).
-- **`kind`**:
-  - `node` — nodo del flujo lógico (224). Se dibuja y participa en el resaltado.
-  - `annotation` — leyenda/nota lateral (22). Se dibuja con estilo distinto (nota),
-    **no** participa en el flujo ejecutable. Son las definiciones tipo
-    "S1 = Salida 1 = TDAF y COMP.", el bloque MODO AUTO/MANUAL/FALLA SELECTOR, etc.
-  - `connector-label` — etiqueta suelta "SÍ"/"NO" (136). No se dibuja como caja; su
-    texto, cuando aplica, se usa como etiqueta de la arista correspondiente.
-- Coordenadas en px; el lienzo abarca aprox. `x ∈ [-533, 3806]`, `y ∈ [-930, 10531]`.
+Campos de `kind`:
+- `node` — nodo del flujo lógico (224). Se dibuja y participa en el resaltado.
+- `annotation` — leyenda/nota lateral (22). Estilo distinto; no participa en el flujo ejecutable.
+- `connector-label` — etiqueta "SÍ"/"NO" suelta (136). No se dibuja como caja; su texto se usa como etiqueta de la arista correspondiente.
 
-> El JSON es **semilla de posiciones**, no la lógica. La lógica es el motor (`engine/`)
-> y su fuente de verdad es `03-diagrama-de-flujo.md`. El mapeo nodo↔lógica se hace por
-> `id` (ver sección 5).
+### Diagramas extra (flujo de trabajo)
+El usuario puede agregar diagramas adicionales de otros proyectos o versiones:
 
----
+1. Exportar el draw.io como **XML** (File → Export → XML uncompressed).
+2. Convertir a `flowLayout.json` con el script de conversión (ver `docs/` para
+   referencia del parseador).
+3. Subir el JSON desde la app mediante **`<DiagramUploader>`** (input file `accept=".json"`).
+4. La app lo guarda en `localStorage` bajo `tta_diagram_<uuid>` y lo agrega al índice
+   `tta_diagrams_index`.
+5. El selector `<DiagramSelector>` permite conmutar entre diagramas cargados.
 
-## 3. Interacción requerida
-
-- **Pan y zoom** del lienzo (es grande y vertical).
-- **Arrastrar cajas:** cada nodo es **reposicionable** por el usuario (drag &
-  drop). Las aristas se reconectan visualmente al mover los nodos.
-- **Persistencia de posiciones en sesión:** si el usuario reacomoda, se mantiene
-  durante la sesión (en memoria / estado de React). **No** usar localStorage (ver
-  restricción de artifacts en `05`); si se requiere persistencia entre sesiones, es
-  decisión futura, no asumir.
-- **Botón "Restaurar layout":** vuelve a las posiciones originales del JSON.
-- **Las mismas condiciones del panel de control** (toggles, preferencias, modo)
-  afectan esta vista igual que a la unifilar, porque ambas leen del mismo estado.
+**El diagrama base siempre está disponible** aunque se borre el localStorage (viene
+en el bundle). Los diagramas extra solo persisten mientras localStorage esté íntegro.
 
 ---
 
-## 4. Tecnología de render
+## 3. Persistencia de posiciones
 
-- SVG a medida (coherente con la Vista Unifilar). **No** React Flow ni mxGraph.
-- El drag se implementa con manejadores de puntero sobre cada nodo SVG, actualizando
-  su `{x,y}` en un estado local de la vista (no en el `engine`).
-- Aristas como paths SVG (ortogonales tipo diagrama de flujo) calculados desde los
-  bordes de los nodos origen/destino.
+Las posiciones que el usuario arrastra se guardan en
+`localStorage` bajo `tta_layout_<diagramId>` (gestionado por `services/layoutStorage.ts`):
 
-> Justificación: mantener un único enfoque de render (SVG) en ambas vistas evita
-> introducir una librería de grafos solo para esto y conserva control total del estilo.
+```ts
+// layoutStorage.ts
+export function saveLayout(diagramId: string, positions: Record<string, {x:number, y:number}>): void
+export function loadLayout(diagramId: string): Record<string, {x:number, y:number}> | null
+export function clearLayout(diagramId: string): void
+```
+
+**Prioridad de posiciones al cargar:**
+1. Posiciones guardadas en `localStorage` para ese `diagramId` (si existen).
+2. Posiciones originales del JSON (semilla del `.drawio`).
+
+**Botón "Restaurar layout":** llama a `clearLayout(diagramId)` y recarga desde el JSON.
+Las posiciones restauradas se muestran inmediatamente pero no se guardan hasta el
+próximo drag (lazy save).
 
 ---
 
-## 5. Resaltado del camino activo (lo que conecta la vista con el motor)
+## 4. Interacción requerida
 
-El motor debe exponer, además del estado, una **traza de ejecución**: la lista
-ordenada de `id` de nodos que recorrió en el último `step`, y por cada decisión, la
-rama tomada.
+- **Pan y zoom** del lienzo (el diagrama base abarca aprox. `x ∈ [-533, 3806]`,
+  `y ∈ [-930, 10531]` — es grande y vertical).
+- **Arrastrar nodos:** cada nodo `kind: 'node'` es reposicionable. Las aristas se
+  recalculan al mover. Al soltar, se guarda la nueva posición en `localStorage`.
+- **Botón "Restaurar layout":** vuelve a posiciones originales del JSON.
+- **Selector de diagrama:** desplegable con los diagramas disponibles (base + extras).
+- **Uploader de diagrama:** input file para subir un JSON nuevo.
+- **Las mismas condiciones del panel de control** afectan esta vista porque ambas leen
+  del mismo store.
 
-Propuesta de extensión del motor (no rompe el determinismo):
+---
+
+## 5. Tecnología de render
+
+SVG a medida (coherente con la Vista Unifilar). **No** React Flow ni mxGraph.
+
+- Drag con `onPointerDown/Move/Up` sobre cada nodo SVG; posición en `uiStore`.
+- Aristas como paths SVG ortogonales calculados desde los bordes de nodos.
+- Pan/zoom con transform SVG (`translate` + `scale`) controlado por gestos de rueda y
+  arrastre del lienzo (no de un nodo).
+
+---
+
+## 6. Resaltado del camino activo
+
+El motor expone `trace(state): FlowTrace` (puro, derivado del mismo estado):
 
 ```ts
 export interface FlowTrace {
-  visited: string[];                 // ids de flowLayout.json en orden de recorrido
-  decisions: Record<string, 'SI'|'NO'>; // id de rombo -> rama tomada
-  perOutput: Record<OutputId, {      // dónde terminó cada salida
+  visited: string[];                           // ids en orden de recorrido
+  decisions: Record<string, 'SI' | 'NO'>;     // id de rombo → rama tomada
+  perOutput: Record<OutputId, {
     path: string[];
     outcome: 'energizada' | 'desenergizada' | 'alarma';
   }>;
 }
-
-export function step(state: TtaState): TtaState;       // sigue igual
-export function trace(state: TtaState): FlowTrace;     // deriva la traza del mismo estado
 ```
 
-`trace` es **puro y derivado del mismo estado** que `step`; no introduce aleatoriedad
-ni efectos. El mapeo nodo↔regla se documenta en una tabla de correspondencia (sección 6).
-
 La Vista de Flujo usa `FlowTrace` para:
-- pintar en **verde** los nodos/aristas `visited` (camino activo),
-- marcar en cada rombo la rama tomada (`decisions`),
-- resaltar en **rojo** los nodos de alarma alcanzados,
-- atenuar en **gris** los nodos no recorridos en este ciclo.
+- pintar en **verde** los nodos/aristas `visited`.
+- marcar en cada rombo la rama tomada.
+- resaltar en **rojo** nodos de alarma alcanzados.
+- atenuar en **gris** los nodos no recorridos.
 
-Codificación de color idéntica a la Vista Unifilar (`06`, sección 2).
+> El resaltado solo aplica al diagrama base (TTA). Diagramas extra se visualizan
+> estáticamente (pan/zoom/drag) sin resaltado lógico — iteración futura.
 
 ---
 
-## 6. Correspondencia nodo ↔ lógica (trazabilidad)
-
-Claude Code debe mantener un mapa explícito entre los `id` de `flowLayout.json` y los
-puntos de la lógica del motor, para poder construir `FlowTrace`. Anclas principales
-(por `id` del JSON; ver el archivo para el resto):
+## 7. Correspondencia nodo ↔ lógica
 
 | id | Nodo | Lógica asociada |
-|----|------|-----------------|
+|----|------|-----------------| 
 | `10` | INICIO DEL SISTEMA | arranque del ciclo |
 | `11` | Leer modo de operación | `resolveMode` |
 | `12` | ¿MODO AUTOMÁTICO? | decisión modo (RN-01) |
@@ -139,24 +147,24 @@ puntos de la lógica del motor, para poder construir `FlowTrace`. Anclas princip
 | `90` | SUBPROCESO DISP | `isAvailable` |
 | `_QdE...-408` | SUBPROCESO CONT | `maneuver` |
 
-> La tabla completa se deriva del JSON + `03`. Mantener `// REGLA: RN-xx` en el código
-> y un comentario con el `id` del nodo cuando aplique.
+La tabla completa se deriva de `flowLayout.json` + `03`. Comentar con `// NODE: <id>`
+en el código del motor donde corresponda.
 
 ---
 
-## 7. Navegación entre vistas
+## 8. Navegación entre vistas
 
-- Barra de pestañas superior: **[ Unifilar ] [ Flujo ]**.
-- El panel de control (toggles, preferencias, modo, alarmas) es **compartido** y
-  permanece visible o accesible en ambas pestañas.
-- El estado de selección de pestaña vive en el store de UI, no en el `engine`.
+- Pestañas superiores: **[ Unifilar ] [ Flujo ]**.
+- Panel de control y alarmas: compartidos, visibles en ambas pestañas.
+- Estado de pestaña activa y diagrama activo: en `uiStore`, no en el engine.
 
 ---
 
-## 8. Criterio de aceptación de la Vista 1
+## 9. Criterio de aceptación
 
 - Carga con las posiciones exactas del `.drawio` (comparables a la imagen original).
-- Las anotaciones se distinguen visualmente de los nodos de proceso.
-- Al inyectar una condición, el camino lógico se resalta coherentemente con el estado
-  que muestra la Vista Unifilar (misma verdad, dos representaciones).
-- Las cajas se pueden arrastrar y existe "Restaurar layout".
+- Posiciones arrastradas persisten al recargar la página.
+- "Restaurar layout" vuelve a las posiciones originales.
+- El usuario puede subir un JSON extra y conmutar entre diagramas.
+- Al inyectar una condición, el camino lógico se resalta coherentemente con la Vista Unifilar.
+- Los diagramas extra se visualizan (pan/zoom/drag) sin errores aunque no tengan resaltado lógico.
