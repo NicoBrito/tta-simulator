@@ -1,0 +1,29 @@
+:root {
+  /* Estado energizado / OK */
+  --color-energized: #22c55e;
+  --color-energized-dim: #16a34a;
+  --color-energized-glow: rgba(34, 197, 94, 0.3);
+
+  /* Estado sin energía */
+  --color-dead: #4b5563;
+  --color-dead-dim: #374151;
+
+  /* Estado de falla */
+  --color-fault: #ef4444;
+  --color-fault-dim: #dc2626;
+  --color-fault-glow: rgba(239, 68, 68, 0.3);
+
+  /* Fondo del SVG y paneles */
+  --color-bg-panel: #1f2937;
+  --color-bg-surface: #111827;
+  --color-border: #374151;
+
+  /* Anotaciones (Vista de Flujo) */
+  --color-annotation-bg: #fefce8;
+  --color-annotation-text: #713f12;
+
+  /* Texto */
+  --color-text-primary: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-text-label: #d1d5db;
+}

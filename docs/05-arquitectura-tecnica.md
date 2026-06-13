@@ -5,7 +5,7 @@
 > **El motor decide. La UI refleja. El SVG nunca calcula.**
 
 Dirección de dependencias (no invertir nunca):
-
+ 
 ```
 components/ (React)  →  store/ (Zustand)  →  engine/ (TypeScript puro)
                                               │
