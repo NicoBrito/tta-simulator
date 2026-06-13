@@ -51,7 +51,8 @@ Definir como design tokens en `styles/tokens.css` (variables CSS) y consumir en 
 
 Estructura visual de referencia: tres columnas de entrada (Principal, DB A, DB B),
 barras horizontales, y filas por salida (S1, S2, S3) con los contactores en la
-intersección salida × fuente. **S3 no tiene contactor hacia PRINCIPAL.**
+intersección salida × fuente. **Las tres salidas tienen contactor hacia las tres fuentes**
+(S3 incluye KM3-P, según el documento "Modo funcionamiento TTA").
 
 ## 4. Panel de control
 
@@ -59,10 +60,10 @@ intersección salida × fuente. **S3 no tiene contactor hacia PRINCIPAL.**
   `FALLA_SELECTOR`, mostrar el aviso correspondiente).
 - **Entradas (P / A / B):** toggles `Energía`, `CB Trip`, `Asim. bus`.
 - **Asimetría barras de salida:** toggles S1, S2, S3 (R-AS-BP/BA/BB).
-- **Falla de contactores:** toggles por KM (KM1/KM2/KM3 × P/A/B; sin KM3-P).
+- **Falla de contactores:** toggles por KM (KM1/KM2/KM3 × P/A/B, incluido KM3-P).
 - **Blackout:** toggle; cuando está activo, mostrar `KA-9` energizado.
 - **Preferencias del operador:** dropdowns 1ª/2ª/3ª por salida. Debe **impedir
-  repetir fuente** (RN-21) y **ocultar PRINCIPAL en S3** (RN-22); S3 muestra solo 2 niveles.
+  repetir fuente** (RN-21). Las tres salidas muestran 3 niveles con las fuentes P/A/B (RN-22).
 - **Reiniciar a estado nominal:** botón que restaura `nominalState()`.
 
 ## 5. Panel de alarmas
@@ -80,8 +81,8 @@ intersección salida × fuente. **S3 no tiene contactor hacia PRINCIPAL.**
 
 ## 7. Estado nominal de referencia
 
-Como en la propuesta visual: las tres entradas con energía, CB1/2/3 cerrados, S1 y S2
-tomando PRINCIPAL, S3 tomando DB A, sin alarmas, blackout NO, clima conectado.
+Las tres entradas con energía, CB1/2/3 cerrados, las tres salidas (S1, S2, S3) con
+preferencia [P, A, B] tomando PRINCIPAL, sin alarmas, blackout NO, clima conectado.
 Es el estado que produce `nominalState()` y al que vuelve el botón Reiniciar.
 
 ## 8. Accesibilidad y legibilidad

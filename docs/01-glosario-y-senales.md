@@ -24,9 +24,10 @@ diagrama de flujo y el unifilar.
 |----|--------------------|-----------|-----------------------------|-------------------|
 | **S1** | TDAF y COMP. | 100 A | R-AS-BP | P, A, B |
 | **S2** | COMPUTACIÓN RESPALDADA | 25 A | R-AS-BA | P, A, B |
-| **S3** | ILUMINACIÓN EMERGENCIA | 10 A | R-AS-BB | **solo A y B** |
+| **S3** | ILUMINACIÓN EMERGENCIA | 10 A | R-AS-BB | P, A, B |
 
-> **S3 no puede alimentarse de la PRINCIPAL.** Solo admite DB A (F2) y DB B (F3).
+> **S3 admite las tres fuentes (P, A, B).** Según el documento "Modo funcionamiento TTA",
+> la salida ILUMINACIÓN EMERGENCIA puede tomar PRINCIPAL, DB A o DB B (3 preferencias).
 
 ## Interruptores automáticos (breakers)
 
@@ -48,7 +49,7 @@ confirmados por contacto auxiliar `ESTADO KM`.
 |--------|-----------------|------------|------------|
 | **S1** | KM1-P | KM1-A | KM1-B |
 | **S2** | KM2-P | KM2-A | KM2-B |
-| **S3** | — (no aplica) | KM3-A | KM3-B |
+| **S3** | KM3-P | KM3-A | KM3-B |
 
 - `ESTADO KMx-y = 1` → contactor cerrado (confirmado). `= 0` → abierto.
 

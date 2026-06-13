@@ -1,102 +1,77 @@
-import { useMvpStore } from './store/mvpStore'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useSimulatorStore } from './store/simulatorStore'
+import Navbar from './components/Navbar/Navbar'
 import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram'
 import FlowDiagram from './components/FlowDiagram/FlowDiagram'
 import AlarmPanel from './components/AlarmPanel/AlarmPanel'
 import ControlPanel from './components/ControlPanel/ControlPanel'
 
-function TabButton({
-  label, active, onClick,
-}: { label: string; active: boolean; onClick: () => void }) {
+const SRC_NAMES: Record<string, string> = { P: 'PRINCIPAL', A: 'DB A', B: 'DB B' }
+
+// Toasts efímeros que anuncian transferencias del motor
+function TransferToasts() {
+  const notes = useSimulatorStore((s) => s.transferNotes)
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        padding: '8px 24px',
-        border: 'none',
-        borderBottom: active ? '2px solid var(--color-energized)' : '2px solid transparent',
-        background: 'transparent',
-        color: active ? 'var(--color-energized)' : 'var(--color-text-muted)',
-        fontWeight: active ? 700 : 400,
-        fontSize: 13,
-        cursor: 'pointer',
-        letterSpacing: 0.5,
-        transition: 'color 0.2s, border-color 0.2s',
-      }}
-    >
-      {label}
-    </button>
+    <div style={{
+      position: 'absolute', top: 18, left: 18,
+      display: 'flex', flexDirection: 'column', gap: 8, zIndex: 30, pointerEvents: 'none',
+    }}>
+      <AnimatePresence>
+        {notes.map((n) => {
+          const energ = n.outcome === 'energizada'
+          const fg = energ ? 'var(--energized-deep)' : 'var(--fault-deep)'
+          const bg = energ ? 'var(--energized-tint)' : 'var(--fault-tint)'
+          const bd = energ ? 'var(--energized)' : 'var(--fault)'
+          return (
+            <motion.div key={`${n.out}-${n.to}-${n.outcome}`}
+              initial={{ opacity: 0, x: -24, scale: 0.96 }} animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -24, scale: 0.96 }} transition={{ duration: 0.28, ease: 'easeOut' }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 9, padding: '9px 16px',
+                borderRadius: 'var(--r-md)', background: bg, color: fg,
+                borderLeft: `3px solid ${bd}`, border: `1px solid ${bd}`,
+                boxShadow: 'var(--shadow-md)', fontSize: 12.5, fontWeight: 600,
+              }}>
+              <span style={{
+                width: 8, height: 8, borderRadius: '50%', background: bd,
+              }} className={energ ? undefined : 'tta-fault-blink'} />
+              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{n.out}</span>
+              {energ && n.to
+                ? <>transfirió a <strong style={{ fontFamily: 'var(--font-mono)' }}>{SRC_NAMES[n.to]}</strong></>
+                : <>quedó desenergizada</>}
+            </motion.div>
+          )
+        })}
+      </AnimatePresence>
+    </div>
   )
 }
 
 export default function App() {
-  const { activeTab, setActiveTab } = useMvpStore()
+  const activeTab = useSimulatorStore((s) => s.activeTab)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--color-bg-surface)' }}>
-      {/* ── Header ── */}
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-          padding: '8px 20px 0',
-          borderBottom: '1px solid var(--color-border)',
-          background: 'var(--color-bg-panel)',
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ marginRight: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--color-text-primary)', letterSpacing: 0.5 }}>
-            SIMULADOR TTA
-          </div>
-          <div style={{ fontSize: 10, color: 'var(--color-text-muted)', letterSpacing: 1 }}>
-            TRANSFERENCIA AUTOMÁTICA — 220V / 50Hz
-          </div>
-        </div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-app)' }}>
+      <Navbar />
 
-        <div style={{ display: 'flex', gap: 0 }}>
-          <TabButton
-            label="⚡ Unifilar"
-            active={activeTab === 'unifilar'}
-            onClick={() => setActiveTab('unifilar')}
-          />
-          <TabButton
-            label="◈ Flujo"
-            active={activeTab === 'flujo'}
-            onClick={() => setActiveTab('flujo')}
-          />
-        </div>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
+        {/* Área de diagrama */}
+        <main style={{ flex: 1, position: 'relative', padding: 14, minWidth: 0, overflow: 'hidden' }}>
+          <TransferToasts />
+          <AnimatePresence mode="wait">
+            <motion.div key={activeTab}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              style={{ width: '100%', height: '100%' }}>
+              {activeTab === 'unifilar' ? <SingleLineDiagram /> : <FlowDiagram />}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
-        <div style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--color-text-muted)' }}>
-          Fase 0 — MVP
-        </div>
-      </header>
-
-      {/* ── Main content ── */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        {/* Diagrama (ocupa el espacio disponible) */}
-        <div style={{ flex: 1, padding: 16, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          {activeTab === 'unifilar' ? (
-            <SingleLineDiagram />
-          ) : (
-            <FlowDiagram />
-          )}
-        </div>
-
-        {/* Panel de control (solo visible con el unifilar, pero los toggles afectan ambas vistas) */}
-        <div
-          style={{
-            padding: 12,
-            flexShrink: 0,
-            overflowY: 'auto',
-          }}
-        >
-          <ControlPanel />
-        </div>
+        {/* Sidebar de control */}
+        <ControlPanel />
       </div>
 
-      {/* ── Alarmas ── */}
       <AlarmPanel />
     </div>
   )

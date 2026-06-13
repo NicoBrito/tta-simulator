@@ -1,29 +1,90 @@
 :root {
-  /* Estado energizado / OK */
-  --color-energized: #22c55e;
-  --color-energized-dim: #16a34a;
-  --color-energized-glow: rgba(34, 197, 94, 0.3);
+  /* ── Tipografía ── */
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  /* Estado sin energía */
-  --color-dead: #4b5563;
-  --color-dead-dim: #374151;
+  /* ── Superficies (tema claro industrial) ── */
+  --bg-app: #f4f6fb;          /* canvas general, off-white frío */
+  --bg-surface: #ffffff;      /* tarjetas, paneles, SVG */
+  --bg-subtle: #eef2f9;       /* zonas hundidas / secciones */
+  --bg-inset: #f8fafc;        /* fondo de inputs */
 
-  /* Estado de falla */
-  --color-fault: #ef4444;
-  --color-fault-dim: #dc2626;
-  --color-fault-glow: rgba(239, 68, 68, 0.3);
+  /* ── Bordes ── */
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-soft: #eef2f7;
 
-  /* Fondo del SVG y paneles */
-  --color-bg-panel: #1f2937;
-  --color-bg-surface: #111827;
-  --color-border: #374151;
+  /* ── Texto ── */
+  --text-primary: #0f1d33;
+  --text-secondary: #475569;
+  --text-muted: #8a99ad;
+  --text-inverse: #ffffff;
 
-  /* Anotaciones (Vista de Flujo) */
-  --color-annotation-bg: #fefce8;
-  --color-annotation-text: #713f12;
+  /* ── Marca ── */
+  --brand: #1351d8;           /* azul eléctrico */
+  --brand-dark: #0c3aa3;
+  --brand-tint: #e8eefc;
 
-  /* Texto */
-  --color-text-primary: #f3f4f6;
-  --color-text-muted: #9ca3af;
-  --color-text-label: #d1d5db;
+  /* ── Estados eléctricos ── */
+  --energized: #0f9d58;       /* verde energizado */
+  --energized-deep: #0a7a44;
+  --energized-glow: rgba(15, 157, 88, 0.22);
+  --energized-tint: #e6f6ee;
+
+  --dead: #a3b1c2;            /* sin energía (líneas) */
+  --dead-soft: #cdd6e2;
+  --dead-tint: #f0f3f7;
+
+  --fault: #e02424;          /* falla */
+  --fault-deep: #b91c1c;
+  --fault-glow: rgba(224, 36, 36, 0.22);
+  --fault-tint: #fdeaea;
+
+  --warn: #d97706;           /* alerta / asimetría / selector */
+  --warn-glow: rgba(217, 119, 6, 0.2);
+  --warn-tint: #fdf3e6;
+
+  /* ── Sombras ── */
+  --shadow-sm: 0 1px 2px rgba(15, 29, 51, 0.05), 0 1px 3px rgba(15, 29, 51, 0.04);
+  --shadow-md: 0 2px 4px rgba(15, 29, 51, 0.05), 0 6px 16px rgba(15, 29, 51, 0.08);
+  --shadow-lg: 0 8px 30px rgba(15, 29, 51, 0.12);
+  --shadow-brand: 0 4px 14px rgba(19, 81, 216, 0.25);
+
+  /* ── Radios ── */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+}
+
+/* ── Keyframes globales ── */
+
+/* Flujo de corriente: dash en movimiento sobre conductores energizados */
+@keyframes tta-flow {
+  to { stroke-dashoffset: -24; }
+}
+
+/* Pulso de transferencia / contactor maniobrando */
+@keyframes tta-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Parpadeo suave de elementos en falla */
+@keyframes tta-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* Anillo de alarma expandiéndose */
+@keyframes tta-ring {
+  0% { stroke-opacity: 0.55; stroke-width: 2; }
+  70% { stroke-opacity: 0; stroke-width: 10; }
+  100% { stroke-opacity: 0; stroke-width: 10; }
+}
+
+/* Reveal escalonado de secciones */
+@keyframes tta-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

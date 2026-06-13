@@ -36,14 +36,14 @@ Matriz por fuente:
 - F1 no, F2 sí → conecta F2
 - F1 y F2 no, F3 sí → conecta F3
 - las tres no disponibles → desenergizada + AL-04
-- S3 con solo 2 preferencias: F2 no, F3 sí → conecta F3; ambas no → AL-04
+- S3 con 3 preferencias [P, A, B]: igual que S1/S2 (incluye PRINCIPAL vía KM3-P)
 
 ### `cont.test.ts` — maniobra / Subproceso CONT (RN-30/31/32/33)
 - **Exclusividad:** al conectar S1→A, KM1-P y KM1-B quedan abiertos y solo KM1-A cerrado
 - cierre confirmado → `CONTACTOR OK = 1`
 - cierre no confirma (falla KM) → `CONTACTOR OK = 0` + AL-05
 - apertura no confirma → `CONTACTOR OK = 0` + AL-05
-- recorrer la tabla de maniobras de `03` (S1/S2/S3 × fuentes), incluida S3 (solo A/B)
+- recorrer la tabla de maniobras de `03` (S1/S2/S3 × P/A/B, incluida S3→P con KM3-P)
 - **Invariante:** en ningún resultado hay dos KM cerrados en la misma salida
 
 ### `symmetrical.test.ts` — física (modo avanzado, `04`)
@@ -78,7 +78,7 @@ Matriz por fuente:
 ## 3. Pruebas de UI (ligeras)
 Con @testing-library/react, solo lo esencial:
 - Los dropdowns de preferencia impiden repetir fuente (RN-21).
-- S3 no ofrece PRINCIPAL y muestra solo 2 niveles (RN-22).
+- Las tres salidas ofrecen P/A/B en 3 niveles (RN-22); KM3-P aparece en falla de contactores.
 - Al accionar un toggle, el elemento correspondiente del unifilar cambia de color
   acorde al estado del motor (no se prueba la animación, sí el estado visual).
 

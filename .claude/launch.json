@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "tta-dev",
-      "runtimeExecutable": "/Users/nicolasbrito/.nvm/versions/node/v20.19.0/bin/npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/Users/nicolasbrito/.nvm/versions/node/v24.14.0/bin/node",
+      "runtimeArgs": ["/Users/nicolasbrito/Documents/Personal/tta-simulator/node_modules/.bin/vite"],
       "port": 5173,
       "autoPort": true
     }

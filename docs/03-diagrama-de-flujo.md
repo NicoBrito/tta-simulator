@@ -51,12 +51,15 @@ Leer señal BLACKOUT (lectura remota desde otro proceso Experion)
 
 ### A.3 Proceso de una salida (patrón común a S1, S2, S3)
 
-El patrón es idéntico para las tres salidas. Diferencias: S1 y S2 tienen 3
-preferencias; **S3 tiene solo 2** (F2=DB A, F3=DB B).
+El patrón es idéntico para las tres salidas: **las tres tienen 3 preferencias** (F1, F2,
+F3) y admiten P/A/B. _Corrección documental: el `.drawio` Ver 05 dibujaba S3 con solo 2
+preferencias (sin KM3-P); el documento "Modo funcionamiento TTA" indica que S3 también
+admite PRINCIPAL, por lo que el motor implementa S3 con 3 preferencias y KM3-P. El
+`flowLayout.json` del bundle sigue mostrando la versión antigua — ver `09-estado-actual.md`._
 
 ```
 Proceso Salida Sx
-  └─► Leer preferencias del Operador para Sx (F1, F2, F3)   [S3: solo F2, F3]
+  └─► Leer preferencias del Operador para Sx (F1, F2, F3)   [aplica a S1, S2 y S3]
         (Restricción: preferencias no se repiten)
         │
         ▼
@@ -70,7 +73,7 @@ Proceso Salida Sx
               ▼                                         │
          ¿Fuente PREFERENCIA 2 disponible?              │
            SÍ ─► CONT(Sx, F2) ─────────────────────────┤
-           NO ─► Verificar PREFERENCIA 3 → DISP(Sx, F3) │   [S3 no tiene este nivel]
+           NO ─► Verificar PREFERENCIA 3 → DISP(Sx, F3) │   [aplica también a S3]
                     │                                    │
                     ▼                                    │
               ¿Fuente PREFERENCIA 3 disponible?          │
@@ -98,7 +101,7 @@ Proceso Salida Sx
 ```
 
 > **Mapa de relés de asimetría de salida:** S1→R-AS-BP, S2→R-AS-BA, S3→R-AS-BB.
-> **Mapa de contactores por salida:** S1→KM1-{P,A,B}, S2→KM2-{P,A,B}, S3→KM3-{A,B}.
+> **Mapa de contactores por salida:** S1→KM1-{P,A,B}, S2→KM2-{P,A,B}, S3→KM3-{P,A,B}.
 
 Tras procesar S3, el flujo **retorna a "Leer modo de operación"** (↺ inicio del ciclo).
 
@@ -180,8 +183,9 @@ SUBPROCESO CONT (Salida, Entrada)
 | S2 | P | KM2-A, KM2-B | KM2-P |
 | S2 | A | KM2-P, KM2-B | KM2-A |
 | S2 | B | KM2-P, KM2-A | KM2-B |
-| S3 | A | KM3-B | KM3-A |
-| S3 | B | KM3-A | KM3-B |
+| S3 | P | KM3-A, KM3-B | KM3-P |
+| S3 | A | KM3-P, KM3-B | KM3-A |
+| S3 | B | KM3-P, KM3-A | KM3-B |
 
 Para cada apertura: `¿Abrió(eron) Contactor(es)?` → NO ⇒ "Estado KMx-y Falla
 Contactor (Alarma Visual)" + `CONTACTOR OK = 0`.
@@ -214,7 +218,7 @@ flowchart TD
   AASIM --> DESEN([Sx desenergizada])
 ```
 
-> Para S3, eliminar el nivel `D3`/`C3` (solo F2 y F3).
+> Las tres salidas (S1, S2, S3) usan el patrón completo con los tres niveles D1/D2/D3.
 
 ---
 

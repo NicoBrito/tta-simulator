@@ -68,8 +68,11 @@ En el simulador, cada cambio de entrada del usuario dispara una ejecución del c
   (1ª, 2ª, 3ª) que apuntan a fuentes P/A/B.
 - **RN-21 — Preferencias distintas:** las preferencias de una salida **no se pueden
   repetir**; deben ser fuentes distintas entre sí. La UI debe impedir configurar repetidos.
-- **RN-22 — S3 restringida:** la salida S3 (Iluminación Emergencia) **solo** admite
-  DB A (F2) y DB B (F3); tiene **2 preferencias**, no 3. Nunca PRINCIPAL.
+- **RN-22 — Salidas con tres fuentes:** las tres salidas (S1, S2, S3) admiten las tres
+  fuentes (P, A, B) y tienen **3 preferencias**. La salida S3 (Iluminación Emergencia)
+  **también puede tomar PRINCIPAL**, según el documento "Modo funcionamiento TTA" (existe
+  el contactor KM3-P). _Nota: el `.drawio` Ver 05 original modelaba S3 con solo 2 fuentes;
+  esta regla lo corrige según la fuente de verdad documental._
 - **RN-23 — Cascada de selección:** para cada salida, evaluar la 1ª preferencia con DISP;
   si `Fuente OK = 1`, seleccionarla; si no, evaluar la 2ª; si no, la 3ª (cuando exista).
 - **RN-24 — Sin fuente disponible:** si ninguna preferencia está disponible →
@@ -89,8 +92,9 @@ En el simulador, cada cambio de entrada del usuario dispara una ejecución del c
   - S1 → A: abre KM1-P y KM1-B, cierra KM1-A.
   - S1 → B: abre KM1-P y KM1-A, cierra KM1-B.
   - S2 → P: abre KM2-A y KM2-B, cierra KM2-P. (análogo para A, B)
-  - S3 → A: abre KM3-B, cierra KM3-A.
-  - S3 → B: abre KM3-A, cierra KM3-B.
+  - S3 → P: abre KM3-A y KM3-B, cierra KM3-P.
+  - S3 → A: abre KM3-P y KM3-B, cierra KM3-A.
+  - S3 → B: abre KM3-P y KM3-A, cierra KM3-B.
 - **RN-31 — Confirmación de apertura:** tras ordenar abrir un KM, leer su `ESTADO KM`;
   si no pasó a 0 → **alarma visual** "Falla Contactor KMx-y" y `CONTACTOR OK = 0`.
 - **RN-32 — Confirmación de cierre:** tras ordenar cerrar el KM elegido, leer su
@@ -137,7 +141,7 @@ muestran en el panel de alarmas y resaltan el elemento afectado en el unifilar.
 ## Invariantes (resumen para validación rápida)
 
 1. Un solo KM cerrado por salida (RN-30).
-2. Preferencias distintas; S3 solo A/B (RN-21, RN-22).
+2. Preferencias distintas; las tres salidas admiten P/A/B (RN-21, RN-22).
 3. `DI12 != DI13` siempre que el modo sea válido (RN-01, RN-02).
 4. Toda maniobra de KM se confirma (RN-31, RN-32).
 5. `Fuente OK` requiere breaker cerrado + sin trip + sin asimetría (RN-10).

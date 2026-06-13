@@ -59,13 +59,14 @@ Lee los documentos de `docs/` **en este orden**:
 7. `docs/06-especificacion-ui.md` — Vista Unifilar: SVG, colores, panel de control.
 8. `docs/07-estrategia-de-pruebas.md` — cada rama del flujo = un test.
 9. `docs/08-vista-flujo.md` — Vista de Flujo: diagrama interactivo, persistencia, múltiples diagramas.
+10. `docs/09-estado-actual.md` — **estado vivo**: hecho / dudas / pendiente. Léelo para saber dónde está el proyecto.
 
 ---
 
 ## 4. Invariantes que NUNCA debes romper
 
 1. **Exclusividad de contactores:** solo un KM cerrado por salida a la vez.
-2. **Preferencias distintas:** sin repetir fuente. S3 solo admite DB A y DB B.
+2. **Preferencias distintas:** sin repetir fuente. Las tres salidas (S1/S2/S3) admiten P, A y B (S3 incluye KM3-P, según "Modo funcionamiento TTA").
 3. **Modo excluyente:** `DI12 ≠ DI13` siempre que el modo sea válido.
 4. **Confirmación obligatoria:** toda maniobra de KM se confirma por contacto auxiliar.
 5. **Disponibilidad de fuente:** `CB cerrado ∧ ¬trip ∧ R-AS=1` (RN-10).
