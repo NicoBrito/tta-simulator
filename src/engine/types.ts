@@ -39,6 +39,18 @@ export interface EngineInputs {
   sources: Record<SourceId, SourceInput>
   outputs: Record<OutputId, OutputConfig>
   contactorFaults: Partial<Record<ContactorId, boolean>>
+  // MODO MANUAL: fuente cuyo KM el operador comanda cerrado por salida (null = todos abiertos).
+  // El selector frontal es excluyente por construcción, así que respeta RN-30.
+  manualSelection: Record<OutputId, SourceId | null>
+}
+
+// Traza del camino lógico recorrido, para resaltar la Vista de Flujo (docs/08 §6)
+export interface FlowTrace {
+  visited: string[]                          // ids de nodo en orden de recorrido
+  decisions: Record<string, 'SI' | 'NO'>     // id de rombo → rama tomada
+  perOutput: Record<OutputId, {
+    outcome: 'energizada' | 'desenergizada' | 'alarma'
+  }>
 }
 
 // Estado completo derivado por el motor — nunca lo modifica la UI directamente

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { nominalInputs, step } from '../engine'
-import type { EngineInputs, TtaState, SourceId, OutputId, ContactorId } from '../engine'
+import { nominalInputs, step, trace } from '../engine'
+import type { EngineInputs, TtaState, FlowTrace, SourceId, OutputId, ContactorId } from '../engine'
 
 export type ActiveTab = 'unifilar' | 'flujo'
 
@@ -14,6 +14,7 @@ export interface TransferNote {
 interface SimulatorStore {
   inputs: EngineInputs
   derived: TtaState
+  flowTrace: FlowTrace
   activeTab: ActiveTab
 
   // Estado transitorio (UI): salidas que acaban de cambiar de fuente/estado
@@ -24,7 +25,9 @@ interface SimulatorStore {
   setMode: (mode: EngineInputs['modeSelector']) => void
   setBlackout: (v: boolean) => void
   setSourceUpstream: (src: SourceId, v: boolean) => void
-  setSourceBreaker: (src: SourceId, closed: boolean) => void
+  // Dos contactos auxiliares independientes del breaker (según "Modo funcionamiento TTA")
+  setSourceBreakerClosed: (src: SourceId, closed: boolean) => void
+  setSourceBreakerTrip: (src: SourceId, trip: boolean) => void
   setSourceAsymmetry: (src: SourceId, ok: boolean) => void
   setOutputPref: (out: OutputId, index: number, src: SourceId) => void
   setOutputAsymmetry: (out: OutputId, ok: boolean) => void
@@ -35,6 +38,8 @@ interface SimulatorStore {
   toggleSourceUpstream: (src: SourceId) => void
   toggleBreaker: (src: SourceId) => void
   toggleOutputAsymmetry: (out: OutputId) => void
+  // Maniobra manual de contactores (solo modo MANUAL / FALLA_SELECTOR)
+  toggleManualContactor: (out: OutputId, src: SourceId) => void
 }
 
 let pulseTimer: ReturnType<typeof setTimeout> | null = null
@@ -76,7 +81,7 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
     const next = step(inputs)
     const { ids, notes } = diffTransitions(prev, next)
 
-    set({ inputs, derived: next, transitioning: ids, transferNotes: notes })
+    set({ inputs, derived: next, flowTrace: trace(inputs), transitioning: ids, transferNotes: notes })
 
     if (pulseTimer) clearTimeout(pulseTimer)
     if (toastTimer) clearTimeout(toastTimer)
@@ -90,13 +95,22 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
   return {
     inputs: INIT_INPUTS,
     derived: step(INIT_INPUTS),
+    flowTrace: trace(INIT_INPUTS),
     activeTab: 'unifilar',
     transitioning: [],
     transferNotes: [],
 
     setActiveTab: (tab) => set({ activeTab: tab }),
 
-    setMode: (mode) => apply({ ...get().inputs, modeSelector: mode }),
+    setMode: (mode) => {
+      const cur = get()
+      let manualSelection = cur.inputs.manualSelection
+      // Al pasar de AUTO a MANUAL/FALLA, "congelar" el estado actual como punto de partida
+      if (cur.inputs.modeSelector === 'AUTO' && mode !== 'AUTO') {
+        manualSelection = { ...cur.derived.connected }
+      }
+      apply({ ...cur.inputs, modeSelector: mode, manualSelection })
+    },
 
     setBlackout: (v) => apply({ ...get().inputs, blackout: v }),
 
@@ -106,13 +120,23 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
         sources: { ...get().inputs.sources, [src]: { ...get().inputs.sources[src], upstreamEnergized: v } },
       }),
 
-    // Apagar el CB = trip (abierto + falla); encender = cerrado sin trip
-    setSourceBreaker: (src, closed) =>
+    // Contacto auxiliar CERRADO (abrir/cerrar el breaker, sin tocar el trip)
+    setSourceBreakerClosed: (src, closed) =>
       apply({
         ...get().inputs,
         sources: {
           ...get().inputs.sources,
-          [src]: { ...get().inputs.sources[src], breakerClosed: closed, breakerTrip: !closed },
+          [src]: { ...get().inputs.sources[src], breakerClosed: closed },
+        },
+      }),
+
+    // Contacto auxiliar FALLA/TRIP (independiente del estado abierto/cerrado)
+    setSourceBreakerTrip: (src, trip) =>
+      apply({
+        ...get().inputs,
+        sources: {
+          ...get().inputs.sources,
+          [src]: { ...get().inputs.sources[src], breakerTrip: trip },
         },
       }),
 
@@ -147,18 +171,39 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
       if (pulseTimer) clearTimeout(pulseTimer)
       if (toastTimer) clearTimeout(toastTimer)
       const inputs = nominalInputs()
-      set({ inputs, derived: step(inputs), transitioning: [], transferNotes: [] })
+      set({ inputs, derived: step(inputs), flowTrace: trace(inputs), transitioning: [], transferNotes: [] })
     },
 
     toggleSourceUpstream: (src) =>
       get().setSourceUpstream(src, !get().inputs.sources[src].upstreamEnergized),
 
+    // Click en el breaker del unifilar: si está en trip, lo resetea (cierra + quita trip);
+    // si no, simplemente abre/cierra.
     toggleBreaker: (src) => {
       const s = get().inputs.sources[src]
-      get().setSourceBreaker(src, !(s.breakerClosed && !s.breakerTrip))
+      if (s.breakerTrip) {
+        apply({
+          ...get().inputs,
+          sources: {
+            ...get().inputs.sources,
+            [src]: { ...s, breakerClosed: true, breakerTrip: false },
+          },
+        })
+      } else {
+        get().setSourceBreakerClosed(src, !s.breakerClosed)
+      }
     },
 
     toggleOutputAsymmetry: (out) =>
       get().setOutputAsymmetry(out, !get().inputs.outputs[out].outputAsymmetryOk),
+
+    toggleManualContactor: (out, src) => {
+      const cur = get().inputs.manualSelection[out]
+      const next = cur === src ? null : src // clic en el cerrado lo abre; otro lo selecciona
+      apply({
+        ...get().inputs,
+        manualSelection: { ...get().inputs.manualSelection, [out]: next },
+      })
+    },
   }
 })

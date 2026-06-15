@@ -79,9 +79,10 @@ igual que S1 y S2. Esto revierte la antigua restricción RN-22 ("S3 solo A/B").
 
 1. **Orden de preferencias por defecto de S3.** Se asumió [P, A, B] (como la imagen del
    documento). Confirmar si el cliente quiere otro orden nominal para Iluminación Emergencia.
-2. **CB "abierto" vs "falla/trip".** El documento define **dos contactos auxiliares
-   independientes** (`C-AUX CBn CERRADO` y `C-AUX CBn FALLA/TRIP`). Hoy el panel los junta en
-   un solo toggle (OFF = TRIP). ¿Necesitan controlarse por separado en el simulador?
+2. ~~**CB "abierto" vs "falla/trip".**~~ ✅ **Resuelto:** el panel ya tiene **dos toggles
+   independientes** por breaker (`CBn cerrado (C-AUX)` y `CBn Falla/Trip`), fieles a los dos
+   contactos auxiliares del documento. La alarma AL-02 diferencia "Abierto" de "Falla/Trip".
+   Click en el breaker del unifilar: lo abre/cierra, o lo resetea si está en trip.
 3. **Modo MANUAL.** El documento solo dice que existe; no detalla el comportamiento del
    simulador. Hoy en MANUAL el motor no maniobra (queda desenergizado). ¿Se requiere operación
    manual de los KM desde la UI?
@@ -93,15 +94,21 @@ igual que S1 y S2. Esto revierte la antigua restricción RN-22 ("S3 solo A/B").
 ## 4. Lo que falta por hacer (pendiente)
 
 ### Prioritario
-- [ ] **`trace(inputs)` en el motor + resaltado del camino lógico** en la Vista de Flujo
-      (pintar nodos visitados, rama SÍ/NO de cada rombo, nodos de alarma). Es el feature
-      central de la pestaña Flujo y aún no existe.
-- [ ] **Operación manual de contactores** en modo MANUAL (click sobre KM para abrir/cerrar).
+- [x] **`trace(inputs)` en el motor + resaltado del camino lógico** (`src/engine/trace.ts`).
+      La Vista de Flujo pinta en verde los nodos recorridos, marca la rama SÍ/NO de cada
+      rombo y resalta en rojo los nodos de alarma alcanzados; barra de estado por salida
+      (S1/S2/S3 ✓/⚠). _Limitación: ver §5 — el diagrama dibuja S3 con solo 2 preferencias._
+- [x] **Operación manual de contactores** en modo MANUAL: click sobre cada KM en el unifilar
+      para abrir/cerrar (selector excluyente por salida). Al pasar de AUTO a MANUAL se
+      "congela" el estado actual. Se mantiene la confirmación de contactor (AL-05) y la
+      asimetría de barra de salida (AL-06) según RN-04.
 
 ### Importante
-- [ ] **Persistencia de posiciones** del FlowDiagram en `localStorage` (`services/layoutStorage.ts`).
-- [ ] **Tests del motor (Vitest)** cubriendo cada rama de `docs/07` — hoy no hay tests.
-- [ ] **Separar CB abierto vs trip** en el panel (si el cliente lo pide, ver duda #2).
+- [x] **Persistencia de posiciones** del FlowDiagram en `localStorage` (`services/layoutStorage.ts`).
+      Carga al montar, guarda al soltar un nodo, "Restaurar layout" limpia y vuelve al JSON.
+- [ ] **Tests del motor (Vitest)** cubriendo cada rama de `docs/07` — pendiente (excluido por ahora a pedido).
+- [x] **Separar CB abierto vs trip** en el panel: dos contactos auxiliares independientes
+      (`breakerClosed` y `breakerTrip`), con alarma AL-02 diferenciada.
 
 ### Deseable
 - [ ] **Múltiples diagramas**: `DiagramUploader` + `DiagramSelector` (subir JSON extra).
@@ -120,4 +127,10 @@ igual que S1 y S2. Esto revierte la antigua restricción RN-22 ("S3 solo A/B").
 > refleja la versión antigua.
 >
 > **Acción pendiente:** regenerar el `.drawio` / `flowLayout.json` con la rama de S3→PRINCIPAL
-> (KM3-P). Mientras tanto, la Vista de Flujo es solo visual y no afecta la lógica del motor.
+> (KM3-P).
+>
+> **Impacto en el resaltado (`trace`):** el resaltado de S1 y S2 es exacto. Para **S3**, el
+> diagrama solo tiene 2 nodos de decisión de preferencia (`63`, `65`, etiquetados DB A / DB B),
+> así que la 1ª preferencia de S3 hacia PRINCIPAL no tiene nodo propio que iluminar; se resaltan
+> los nodos de CONT, asimetría y terminal de S3, pero la cascada de preferencias de S3 queda
+> parcialmente representada hasta regenerar el diagrama. El motor y el unifilar sí son correctos.

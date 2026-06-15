@@ -57,6 +57,59 @@
   --r-pill: 999px;
 }
 
+/* ── Tema oscuro ──────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  /* Superficies */
+  --bg-app:     #0d1520;
+  --bg-surface: #14202e;
+  --bg-subtle:  #1a2a3a;
+  --bg-inset:   #0f1a26;
+
+  /* Bordes */
+  --border:        #243344;
+  --border-strong: #2e4156;
+  --border-soft:   #1a2a38;
+
+  /* Texto */
+  --text-primary:   #e2eaf5;
+  --text-secondary: #8aaccc;
+  --text-muted:     #4d6880;
+  --text-inverse:   #0d1520;
+
+  /* Marca */
+  --brand:      #4a82f0;
+  --brand-dark: #2e62d4;
+  --brand-tint: #0e1e40;
+
+  /* Energizado */
+  --energized:      #0fba6a;
+  --energized-deep: #0da05a;
+  --energized-glow: rgba(15, 186, 106, 0.25);
+  --energized-tint: #082818;
+
+  /* Sin energía */
+  --dead:      #3a4f63;
+  --dead-soft: #243344;
+  --dead-tint: #111e2c;
+
+  /* Falla */
+  --fault:      #f03030;
+  --fault-deep: #d42020;
+  --fault-glow: rgba(240, 48, 48, 0.25);
+  --fault-tint: #2a0808;
+
+  /* Alerta */
+  --warn:      #e8890a;
+  --warn-glow: rgba(232, 137, 10, 0.22);
+  --warn-tint: #281800;
+
+  /* Sombras (más pronunciadas sobre fondos oscuros) */
+  --shadow-sm:    0 1px 3px rgba(0,0,0,0.35);
+  --shadow-md:    0 2px 8px rgba(0,0,0,0.45), 0 6px 20px rgba(0,0,0,0.30);
+  --shadow-lg:    0 8px 32px rgba(0,0,0,0.55);
+  --shadow-brand: 0 4px 14px rgba(74, 130, 240, 0.35);
+}
+
 /* ── Keyframes globales ── */
 
 /* Flujo de corriente: dash en movimiento sobre conductores energizados */

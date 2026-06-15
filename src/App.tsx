@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from './store/simulatorStore'
 import Navbar from './components/Navbar/Navbar'
@@ -5,6 +6,7 @@ import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram'
 import FlowDiagram from './components/FlowDiagram/FlowDiagram'
 import AlarmPanel from './components/AlarmPanel/AlarmPanel'
 import ControlPanel from './components/ControlPanel/ControlPanel'
+import SourceInputPanel from './components/SourceInputPanel/SourceInputPanel'
 
 const SRC_NAMES: Record<string, string> = { P: 'PRINCIPAL', A: 'DB A', B: 'DB B' }
 
@@ -49,23 +51,34 @@ function TransferToasts() {
 
 export default function App() {
   const activeTab = useSimulatorStore((s) => s.activeTab)
+  const [dark, setDark] = useState(false)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-app)' }}>
-      <Navbar />
+    <div data-theme={dark ? 'dark' : undefined}
+      style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-app)' }}>
+      <Navbar dark={dark} onToggleDark={() => setDark((d) => !d)} />
 
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
         {/* Área de diagrama */}
-        <main style={{ flex: 1, position: 'relative', padding: 14, minWidth: 0, overflow: 'hidden' }}>
-          <TransferToasts />
-          <AnimatePresence mode="wait">
-            <motion.div key={activeTab}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-              style={{ width: '100%', height: '100%' }}>
-              {activeTab === 'unifilar' ? <SingleLineDiagram /> : <FlowDiagram />}
-            </motion.div>
-          </AnimatePresence>
+        <main style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          gap: 10, padding: 14, minWidth: 0, overflow: 'hidden',
+        }}>
+          {/* Panel de fuentes — solo en vista unifilar */}
+          {activeTab === 'unifilar' && <SourceInputPanel />}
+
+          {/* Diagrama (ocupa el espacio restante) */}
+          <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+            <TransferToasts />
+            <AnimatePresence mode="wait">
+              <motion.div key={activeTab}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.18 }}
+                style={{ width: '100%', height: '100%' }}>
+                {activeTab === 'unifilar' ? <SingleLineDiagram /> : <FlowDiagram />}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </main>
 
         {/* Sidebar de control */}

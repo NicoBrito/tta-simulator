@@ -1,13 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from '../../store/simulatorStore'
-import type { SourceId, OutputId, ContactorId } from '../../engine'
+import type { OutputId, ContactorId } from '../../engine'
 
-const SOURCE_NAMES: Record<SourceId, string> = { P: 'PRINCIPAL', A: 'DB A', B: 'DB B' }
-const CB_NUMS: Record<SourceId, string> = { P: 'CB1', A: 'CB2', B: 'CB3' }
 const RAS_OUT: Record<OutputId, string> = { S1: 'R-AS-BP', S2: 'R-AS-BA', S3: 'R-AS-BB' }
-const ALL_SOURCES: SourceId[] = ['P', 'A', 'B']
-const LEVELS = ['1ª', '2ª', '3ª']
 
 type Tone = 'good' | 'danger' | 'warn'
 
@@ -113,50 +109,6 @@ function PillToggle({ label, value, onChange, tone = 'danger' }: {
   )
 }
 
-// ── Selector de preferencia por pills ────────────────────────────────────────────
-function PrefSelector({ out }: { out: OutputId }) {
-  const inputs = useSimulatorStore((s) => s.inputs)
-  const setOutputPref = useSimulatorStore((s) => s.setOutputPref)
-  const prefs = inputs.outputs[out].prefs
-  const available = ALL_SOURCES
-  const levels = LEVELS
-
-  return (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 5, fontFamily: 'var(--font-mono)' }}>
-        {out}
-      </div>
-      {levels.map((lvl, i) => {
-        const usedByOthers = prefs.filter((_, j) => j !== i)
-        return (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-            <span style={{ fontSize: 10, color: 'var(--text-muted)', width: 18 }}>{lvl}</span>
-            <div style={{ display: 'flex', gap: 4 }}>
-              {available.map((s) => {
-                const selected = prefs[i] === s
-                const disabled = !selected && usedByOthers.includes(s) // REGLA: RN-21
-                return (
-                  <button key={s} type="button" disabled={disabled}
-                    onClick={() => setOutputPref(out, i, s)}
-                    style={{
-                      padding: '5px 11px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-mono)',
-                      fontSize: 10.5, fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer',
-                      border: `1px solid ${selected ? 'var(--brand)' : 'var(--border)'}`,
-                      background: selected ? 'var(--brand)' : 'var(--bg-inset)',
-                      color: selected ? '#fff' : disabled ? 'var(--dead-soft)' : 'var(--text-secondary)',
-                      opacity: disabled ? 0.5 : 1, transition: 'all 0.15s ease',
-                    }}>
-                    {s}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
 
 const CONTACTORS_BY_OUTPUT: Record<OutputId, ContactorId[]> = {
   S1: ['KM1-P', 'KM1-A', 'KM1-B'],
@@ -170,9 +122,6 @@ export default function ControlPanel() {
   const derived = useSimulatorStore((s) => s.derived)
   const setMode = useSimulatorStore((s) => s.setMode)
   const setBlackout = useSimulatorStore((s) => s.setBlackout)
-  const setSourceUpstream = useSimulatorStore((s) => s.setSourceUpstream)
-  const setSourceBreaker = useSimulatorStore((s) => s.setSourceBreaker)
-  const setSourceAsymmetry = useSimulatorStore((s) => s.setSourceAsymmetry)
   const setOutputAsymmetry = useSimulatorStore((s) => s.setOutputAsymmetry)
   const setContactorFault = useSimulatorStore((s) => s.setContactorFault)
   const reset = useSimulatorStore((s) => s.reset)
@@ -187,6 +136,19 @@ export default function ControlPanel() {
       width: 308, flexShrink: 0, height: '100%', overflowY: 'auto',
       padding: '12px 10px', background: 'var(--bg-app)',
     }}>
+      {/* ── RESET ── accesible en la parte superior */}
+      <button type="button" onClick={reset} style={{
+        width: '100%', padding: '11px 0', borderRadius: 'var(--r-md)',
+        border: '1.5px solid var(--brand)', background: 'var(--brand-tint)',
+        color: 'var(--brand)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+        marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+        boxShadow: 'var(--shadow-sm)', transition: 'all 0.15s',
+      }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#d4e2fc' }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--brand-tint)' }}>
+        ↺ Reiniciar estado nominal
+      </button>
+
       {/* ── MODO ── */}
       <Section title="Modo de operación" icon="⚙️"
         badge={isFalla ? { text: 'FALLA SELECTOR', tone: 'warn' } : undefined}>
@@ -217,30 +179,6 @@ export default function ControlPanel() {
         )}
       </Section>
 
-      {/* ── ENTRADAS ── */}
-      <Section title="Entradas de energía" icon="🔌">
-        {ALL_SOURCES.map((src) => {
-          const s = inputs.sources[src]
-          const breakerOn = s.breakerClosed && !s.breakerTrip
-          return (
-            <div key={src} style={{
-              marginBottom: 10, padding: 9, borderRadius: 'var(--r-md)',
-              background: 'var(--bg-inset)', border: '1px solid var(--border-soft)',
-            }}>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 7 }}>
-                {SOURCE_NAMES[src]}
-              </div>
-              <RowToggle label="Energía aguas arriba" value={s.upstreamEnergized}
-                onChange={(v) => setSourceUpstream(src, v)} activeText="PRESENTE" inactiveText="CORTADA" />
-              <RowToggle label={`${CB_NUMS[src]} cerrado`} mono value={breakerOn}
-                onChange={(v) => setSourceBreaker(src, v)} activeText="CERR." inactiveText="TRIP" />
-              <RowToggle label="Asimetría barra (R-AS)" value={s.asymmetryOk}
-                onChange={(v) => setSourceAsymmetry(src, v)} activeText="OK" inactiveText="FALLA" tone={s.asymmetryOk ? 'good' : 'warn'} />
-            </div>
-          )
-        })}
-      </Section>
-
       {/* ── BLACKOUT ── */}
       <Section title="Blackout / clima" icon="🌩️"
         badge={derived.ka9 ? { text: 'KA-9 ON', tone: 'warn' } : undefined}>
@@ -264,16 +202,6 @@ export default function ControlPanel() {
         ))}
       </Section>
 
-      {/* ── PREFERENCIAS ── */}
-      <Section title="Preferencias del operador" icon="🎚️" defaultOpen={false}>
-        <PrefSelector out="S1" />
-        <PrefSelector out="S2" />
-        <PrefSelector out="S3" />
-        <div style={{ fontSize: 10, color: 'var(--text-muted)', lineHeight: 1.4 }}>
-          Las tres salidas admiten Principal, DB A y DB B. No se repiten fuentes (RN-21).
-        </div>
-      </Section>
-
       {/* ── FALLA CONTACTORES ── */}
       <Section title="Falla de contactores" icon="⚠️" defaultOpen={false}
         badge={faultCount > 0 ? { text: `${faultCount}`, tone: 'danger' } : undefined}>
@@ -290,17 +218,6 @@ export default function ControlPanel() {
         ))}
       </Section>
 
-      {/* ── RESET ── */}
-      <button type="button" onClick={reset} style={{
-        width: '100%', padding: '11px 0', borderRadius: 'var(--r-md)',
-        border: '1px solid var(--border-strong)', background: 'var(--bg-surface)',
-        color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-        marginTop: 4, boxShadow: 'var(--shadow-sm)', transition: 'all 0.15s',
-      }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-subtle)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-surface)' }}>
-        ↺ Reiniciar a estado nominal
-      </button>
     </aside>
   )
 }

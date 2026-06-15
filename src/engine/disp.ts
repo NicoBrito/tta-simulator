@@ -9,9 +9,11 @@ export function isAvailable(inputs: EngineInputs, src: SourceId, alarms: Alarm[]
 
   // REGLA: RN-11 — breaker abierto o en trip → Fuente OK = 0
   if (!s.breakerClosed || s.breakerTrip) {
+    // Mensaje diferenciado según el contacto auxiliar que falló
+    const motivo = s.breakerTrip ? 'Falla/Trip' : 'Abierto'
     pushAlarm(alarms, {
       id: 'AL-02',
-      mensaje: `Estado CB${cbNum} (${busName}) Abierto/Falla/Trip`,
+      mensaje: `Estado CB${cbNum} (${busName}) ${motivo}`,
       key: `AL-02-${src}`,
     })
     return false

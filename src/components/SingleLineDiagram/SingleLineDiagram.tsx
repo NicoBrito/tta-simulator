@@ -64,8 +64,10 @@ export default function SingleLineDiagram() {
   const toggleSourceUpstream = useSimulatorStore((s) => s.toggleSourceUpstream)
   const toggleBreaker = useSimulatorStore((s) => s.toggleBreaker)
   const toggleOutputAsymmetry = useSimulatorStore((s) => s.toggleOutputAsymmetry)
+  const toggleManualContactor = useSimulatorStore((s) => s.toggleManualContactor)
 
   const { contactors, connected, energized } = derived
+  const manual = inputs.modeSelector !== 'AUTO'
 
   // ── Derivaciones de estado ──
   const srcAvailable = (src: SourceId) => isAvailablePure(inputs, src)
@@ -106,8 +108,10 @@ export default function SingleLineDiagram() {
           <div style={{ fontSize: 13, fontWeight: 700, color: C_TEXT, letterSpacing: 0.2 }}>
             Diagrama unifilar
           </div>
-          <div style={{ fontSize: 11, color: C_MUTED }}>
-            Click sobre fuentes, breakers o barras para intervenir
+          <div style={{ fontSize: 11, color: manual ? 'var(--brand)' : C_MUTED, fontWeight: manual ? 600 : 400 }}>
+            {manual
+              ? 'MODO MANUAL · click sobre los contactores KM para abrirlos/cerrarlos'
+              : 'Click sobre fuentes, breakers o barras para intervenir'}
           </div>
         </div>
         <Legend />
@@ -185,9 +189,18 @@ export default function SingleLineDiagram() {
                 {(['P', 'A', 'B'] as SourceId[]).map((src) => {
                   const km = getContactorId(out, src)!
                   const isConnected = connected[out] === src
+                  // Falla registrada en inputs pero el motor no llegó a evaluar el cierre
+                  // (ocurre cuando otro KM de la misma salida también tiene falla y aborta la maniobra)
+                  const faultPending = (inputs.contactorFaults[km] ?? false) && contactors[km] !== 'falla'
                   return (
                     <Contactor key={src} x={COL[src]} y={ROW[out]} label={km}
-                      state={contactors[km]} maneuvering={maneuvering && isConnected} />
+                      state={contactors[km]} maneuvering={maneuvering && isConnected}
+                      faultPending={faultPending}
+                      clickable={manual}
+                      title={manual
+                        ? (contactors[km] === 'cerrado' ? `Abrir ${km}` : `Cerrar ${km} (conectar ${out} a ${src})`)
+                        : undefined}
+                      onClick={manual ? () => toggleManualContactor(out, src) : undefined} />
                   )
                 })}
               </g>
@@ -273,7 +286,7 @@ function Breaker({ x, y, src, inputs, status, onClick }: {
   const color = wireColor(status)
   return (
     <g className="tta-hit-group" onClick={onClick} style={{ cursor: 'pointer' }}>
-      <title>{closed ? `Abrir ${CB_NAMES[src]}` : `Cerrar ${CB_NAMES[src]}`}</title>
+      <title>{trip ? `Resetear ${CB_NAMES[src]} (cerrar)` : closed ? `Abrir ${CB_NAMES[src]}` : `Cerrar ${CB_NAMES[src]}`}</title>
       <rect x={x - 28} y={y} width={56} height={38} rx={8} fill="var(--bg-surface)"
         stroke={color} strokeWidth={2} className={trip ? 'tta-fault-blink' : undefined} />
       {/* contacto del breaker (línea inclinada si abierto) */}
@@ -290,16 +303,27 @@ function Breaker({ x, y, src, inputs, status, onClick }: {
 }
 
 // ── Contactor ──────────────────────────────────────────────────────────────────
-function Contactor({ x, y, label, state, maneuvering }: {
+function Contactor({ x, y, label, state, maneuvering, faultPending, clickable, title, onClick }: {
   x: number; y: number; label: string; state: ContactorState; maneuvering: boolean
+  faultPending?: boolean; clickable?: boolean; title?: string; onClick?: () => void
 }) {
   const closed = state === 'cerrado'
   const fault = state === 'falla'
   const color = fault ? C_FAULT : closed ? C_ON : C_DEAD
   return (
-    <g pointerEvents="none">
+    <g pointerEvents={clickable ? 'auto' : 'none'} onClick={onClick}
+      style={clickable ? { cursor: 'pointer' } : undefined}>
+      {title && <title>{title}</title>}
+      {/* Falla registrada en inputs pero no evaluada por el motor (otra falla abortó la maniobra antes) */}
+      {faultPending && !fault && (
+        <circle cx={x} cy={y} r={19} fill="none"
+          stroke="var(--warn)" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.75} />
+      )}
+      {/* Zona clickeable ampliada en modo manual */}
+      {clickable && <circle cx={x} cy={y} r={17} className="tta-hit" />}
       <circle cx={x} cy={y} r={15} fill="var(--bg-surface)" stroke={color} strokeWidth={2}
-        className={maneuvering ? 'tta-maneuver' : undefined} />
+        className={maneuvering ? 'tta-maneuver' : undefined}
+        strokeDasharray={clickable && !closed && !fault ? '3 2' : undefined} />
       {fault ? (
         <g className="tta-fault-blink">
           <line x1={x - 7} y1={y - 7} x2={x + 7} y2={y + 7} stroke={C_FAULT} strokeWidth={2.5} strokeLinecap="round" />

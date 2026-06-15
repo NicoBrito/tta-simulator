@@ -18,5 +18,6 @@ export function nominalInputs(): EngineInputs {
       S3: { prefs: ['P', 'A', 'B'], outputAsymmetryOk: true },
     },
     contactorFaults: {},
+    manualSelection: { S1: null, S2: null, S3: null },
   }
 }

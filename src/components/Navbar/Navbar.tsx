@@ -22,7 +22,7 @@ function BoltLogo() {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ dark, onToggleDark }: { dark: boolean; onToggleDark: () => void }) {
   const activeTab = useSimulatorStore((s) => s.activeTab)
   const setActiveTab = useSimulatorStore((s) => s.setActiveTab)
   const mode = useSimulatorStore((s) => s.derived.mode)
@@ -59,6 +59,16 @@ export default function Navbar() {
 
         {/* Estado a la derecha */}
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Toggle modo oscuro */}
+          <button type="button" onClick={onToggleDark} title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: 34, height: 34, borderRadius: 'var(--r-md)', flexShrink: 0,
+              border: '1px solid var(--border)', background: 'var(--bg-subtle)',
+              cursor: 'pointer', fontSize: 17, transition: 'all 0.15s',
+            }}>
+            {dark ? '☀️' : '🌙'}
+          </button>
           {ka9 && (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,

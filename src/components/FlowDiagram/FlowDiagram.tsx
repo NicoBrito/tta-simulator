@@ -1,25 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import flowData from '../../data/flowLayout.json'
+import { useSimulatorStore } from '../../store/simulatorStore'
+import { ALARM_NODE_IDS } from '../../engine'
+import type { OutputId } from '../../engine'
+import { saveLayout, loadLayout, clearLayout, type NodePositions } from '../../services/layoutStorage'
 
 interface FlowNode {
-  id: string
-  label: string
-  shape: string
-  x: number
-  y: number
-  w: number
-  h: number
+  id: string; label: string; shape: string
+  x: number; y: number; w: number; h: number
   kind: 'node' | 'annotation' | 'connector-label'
 }
+interface FlowEdge { id: string; source: string; target: string; label: string }
 
-interface FlowEdge {
-  id: string
-  source: string
-  target: string
-  label: string
-}
-
-type NodePositions = Record<string, { x: number; y: number }>
+const DIAGRAM_ID = 'default'
 
 const NODES = (flowData.nodes as FlowNode[]).filter((n) => n.kind !== 'connector-label')
 const EDGES = flowData.edges as FlowEdge[]
@@ -32,7 +25,6 @@ for (const n of flowData.nodes as FlowNode[]) {
 const ORIGINAL_POSITIONS: NodePositions = {}
 for (const n of NODES) ORIGINAL_POSITIONS[n.id] = { x: n.x, y: n.y }
 
-// Bounding box de todos los nodos (para ajustar la vista)
 const BBOX = (() => {
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
   for (const n of NODES) {
@@ -60,19 +52,31 @@ function DiamondPath({ w, h }: { w: number; h: number }) {
   return <path d={`M${cx},0 L${w},${cy} L${cx},${h} L0,${cy} Z`} />
 }
 
+const OUTCOME_STYLE: Record<string, { icon: string; color: string }> = {
+  energizada: { icon: '✓', color: 'var(--energized-deep)' },
+  alarma: { icon: '⚠', color: 'var(--fault-deep)' },
+  desenergizada: { icon: '○', color: 'var(--text-muted)' },
+}
+
 export default function FlowDiagram() {
   const svgRef = useRef<SVGSVGElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
+
+  const flowTrace = useSimulatorStore((s) => s.flowTrace)
+  const mode = useSimulatorStore((s) => s.derived.mode)
+  const visited = new Set(flowTrace.visited)
 
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 0.15 })
   const isPanning = useRef(false)
   const panStart = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
 
-  const [positions, setPositions] = useState<NodePositions>({ ...ORIGINAL_POSITIONS })
+  const [positions, setPositions] = useState<NodePositions>(
+    () => ({ ...ORIGINAL_POSITIONS, ...(loadLayout(DIAGRAM_ID) ?? {}) }),
+  )
   const draggingId = useRef<string | null>(null)
+  const dragMoved = useRef(false)
   const dragOffset = useRef({ x: 0, y: 0 })
 
-  // Ajusta la vista para encuadrar todo el diagrama
   const fitView = useCallback(() => {
     const rect = wrapRef.current?.getBoundingClientRect()
     if (!rect) return
@@ -85,7 +89,10 @@ export default function FlowDiagram() {
 
   useEffect(() => { fitView() }, [fitView])
 
-  const handleRestore = useCallback(() => setPositions({ ...ORIGINAL_POSITIONS }), [])
+  const handleRestore = useCallback(() => {
+    clearLayout(DIAGRAM_ID)
+    setPositions({ ...ORIGINAL_POSITIONS })
+  }, [])
 
   // ── Pan ──
   const onBgPointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
@@ -127,10 +134,11 @@ export default function FlowDiagram() {
     return () => el.removeEventListener('wheel', onWheel)
   }, [onWheel])
 
-  // ── Drag de nodos ──
+  // ── Drag de nodos (con persistencia al soltar) ──
   const onNodeDown = useCallback((e: React.PointerEvent, id: string) => {
     e.stopPropagation()
     draggingId.current = id
+    dragMoved.current = false
     const rect = svgRef.current?.getBoundingClientRect()
     if (!rect) return
     const sx = (e.clientX - rect.left - transform.x) / transform.scale
@@ -142,6 +150,7 @@ export default function FlowDiagram() {
 
   const onNodeMove = useCallback((e: React.PointerEvent, id: string) => {
     if (draggingId.current !== id) return
+    dragMoved.current = true
     const rect = svgRef.current?.getBoundingClientRect()
     if (!rect) return
     const sx = (e.clientX - rect.left - transform.x) / transform.scale
@@ -149,7 +158,14 @@ export default function FlowDiagram() {
     setPositions((p) => ({ ...p, [id]: { x: sx - dragOffset.current.x, y: sy - dragOffset.current.y } }))
   }, [transform])
 
-  const onNodeUp = useCallback(() => { draggingId.current = null }, [])
+  const onNodeUp = useCallback(() => {
+    if (draggingId.current && dragMoved.current) {
+      // Guardado perezoso al soltar (docs/08 §3)
+      setPositions((p) => { saveLayout(DIAGRAM_ID, p); return p })
+    }
+    draggingId.current = null
+    dragMoved.current = false
+  }, [])
 
   const nodeMap = getNodeMap(positions)
 
@@ -161,7 +177,7 @@ export default function FlowDiagram() {
 
   return (
     <div style={{
-      display: 'flex', flexDirection: 'column', height: '100%', gap: 0,
+      display: 'flex', flexDirection: 'column', height: '100%',
       background: 'var(--bg-surface)', borderRadius: 'var(--r-lg)',
       border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden',
     }}>
@@ -172,11 +188,27 @@ export default function FlowDiagram() {
       }}>
         <button onClick={fitView} style={btnStyle}>⊡ Centrar vista</button>
         <button onClick={handleRestore} style={btnStyle}>↺ Restaurar layout</button>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 4 }}>
-          Rueda: zoom · arrastrar fondo: desplazar · arrastrar nodo: reposicionar
-        </span>
-        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-          {NODES.length} nodos · {EDGES.length} aristas
+
+        {/* Estado por salida (camino lógico) */}
+        <div style={{ display: 'flex', gap: 10, marginLeft: 8 }}>
+          {(['S1', 'S2', 'S3'] as OutputId[]).map((out) => {
+            const oc = flowTrace.perOutput[out]?.outcome ?? 'desenergizada'
+            const st = OUTCOME_STYLE[oc]
+            return (
+              <span key={out} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5,
+                fontFamily: 'var(--font-mono)', fontWeight: 600, color: st.color,
+              }}>
+                <span>{st.icon}</span>{out}
+              </span>
+            )
+          })}
+        </div>
+
+        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>
+          {mode === 'AUTO'
+            ? 'Verde = camino recorrido · Rojo = alarma alcanzada'
+            : 'En MANUAL solo se resalta el tramo de modo (el flujo modela la lógica AUTO)'}
         </span>
       </div>
 
@@ -191,6 +223,9 @@ export default function FlowDiagram() {
             <marker id="arrow" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
               <polygon points="0 0, 9 3.5, 0 7" fill="var(--dead)" />
             </marker>
+            <marker id="arrow-on" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+              <polygon points="0 0, 9 3.5, 0 7" fill="var(--energized)" />
+            </marker>
           </defs>
 
           <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.scale})`}>
@@ -203,15 +238,19 @@ export default function FlowDiagram() {
               const x2 = tgt.x + tgt.w / 2, y2 = tgt.y + tgt.h / 2
               const mx = (x1 + x2) / 2, my = (y1 + y2) / 2
               const label = edge.label || CONNECTOR_LABELS[edge.target] || ''
+              const active = visited.has(edge.source) && visited.has(edge.target)
               return (
-                <g key={edge.id}>
-                  <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--dead)" strokeWidth={2.5} markerEnd="url(#arrow)" />
+                <g key={edge.id} opacity={active ? 1 : 0.3}>
+                  <line x1={x1} y1={y1} x2={x2} y2={y2}
+                    stroke={active ? 'var(--energized)' : 'var(--dead)'}
+                    strokeWidth={active ? 4 : 2.5}
+                    markerEnd={active ? 'url(#arrow-on)' : 'url(#arrow)'} />
                   {label && (
                     <g>
                       <rect x={mx - 16} y={my - 11} width={32} height={20} rx={5}
-                        fill="var(--bg-surface)" stroke="var(--border-strong)" strokeWidth={1} />
+                        fill="var(--bg-surface)" stroke={active ? 'var(--energized)' : 'var(--border-strong)'} strokeWidth={1} />
                       <text x={mx} y={my + 4} textAnchor="middle" fontSize={13} fontWeight={700}
-                        fill="var(--text-secondary)" fontFamily="var(--font-mono)">{label}</text>
+                        fill={active ? 'var(--energized-deep)' : 'var(--text-secondary)'} fontFamily="var(--font-mono)">{label}</text>
                     </g>
                   )}
                 </g>
@@ -223,12 +262,24 @@ export default function FlowDiagram() {
               const pos = positions[n.id] ?? { x: n.x, y: n.y }
               const isAnnotation = n.kind === 'annotation'
               const isDiamond = n.shape === 'decision'
-              const fill = isAnnotation ? 'var(--warn-tint)' : isDiamond ? 'var(--brand-tint)' : 'var(--bg-surface)'
-              const stroke = isAnnotation ? 'var(--warn)' : isDiamond ? 'var(--brand)' : 'var(--border-strong)'
-              const text = isAnnotation ? 'var(--warn)' : 'var(--text-primary)'
+              const isVisited = visited.has(n.id)
+              const isAlarm = isVisited && ALARM_NODE_IDS.has(n.id)
+
+              let fill: string, stroke: string, text: string, opacity = 1
+              if (isAnnotation) {
+                fill = 'var(--warn-tint)'; stroke = 'var(--warn)'; text = 'var(--warn)'
+              } else if (isAlarm) {
+                fill = 'var(--fault-tint)'; stroke = 'var(--fault)'; text = 'var(--fault-deep)'
+              } else if (isVisited) {
+                fill = 'var(--energized-tint)'; stroke = 'var(--energized)'; text = 'var(--energized-deep)'
+              } else {
+                fill = 'var(--bg-surface)'; stroke = 'var(--border-strong)'; text = 'var(--text-secondary)'
+                opacity = 0.4
+              }
+
               return (
                 <g key={n.id} transform={`translate(${pos.x}, ${pos.y})`} style={{ cursor: 'move' }}
-                  data-nodeid={n.id}
+                  opacity={opacity} data-nodeid={n.id}
                   onPointerDown={(e) => onNodeDown(e, n.id)}
                   onPointerMove={(e) => onNodeMove(e, n.id)}
                   onPointerUp={onNodeUp} onPointerCancel={onNodeUp}>
@@ -237,7 +288,7 @@ export default function FlowDiagram() {
                     : <rect width={n.w} height={n.h} rx={isAnnotation ? 4 : 8} />}
                   <style>{`
                     g[data-nodeid="${n.id}"] > rect, g[data-nodeid="${n.id}"] path {
-                      fill: ${fill}; stroke: ${stroke}; stroke-width: 2;
+                      fill: ${fill}; stroke: ${stroke}; stroke-width: ${isVisited ? 3 : 2};
                     }
                   `}</style>
                   <foreignObject x={6} y={4} width={n.w - 12} height={n.h - 8} style={{ pointerEvents: 'none' }}>
