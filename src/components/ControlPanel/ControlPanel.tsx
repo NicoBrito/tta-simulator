@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from '../../store/simulatorStore'
-import type { OutputId, ContactorId } from '../../engine'
+import type { OutputId, ContactorId, SourceId } from '../../engine'
 
 const RAS_OUT: Record<OutputId, string> = { S1: 'R-AS-BP', S2: 'R-AS-BA', S3: 'R-AS-BB' }
+const SOURCE_SHORT: Record<SourceId, string> = { P: 'PRINC.', A: 'DB A', B: 'DB B' }
+const OUT_LABEL: Record<OutputId, string> = { S1: 'S1 · TDAF', S2: 'S2 · Comp.', S3: 'S3 · Ilum.' }
 
 type Tone = 'good' | 'danger' | 'warn'
 
@@ -124,19 +126,27 @@ export default function ControlPanel() {
   const setBlackout = useSimulatorStore((s) => s.setBlackout)
   const setOutputAsymmetry = useSimulatorStore((s) => s.setOutputAsymmetry)
   const setContactorFault = useSimulatorStore((s) => s.setContactorFault)
+  const setOutputPref = useSimulatorStore((s) => s.setOutputPref)
   const reset = useSimulatorStore((s) => s.reset)
 
   const mode = inputs.modeSelector
   const isFalla = mode === 'FALLA_SELECTOR'
-
   const faultCount = Object.values(inputs.contactorFaults).filter(Boolean).length
+
+  function swapPref(out: OutputId, i: number, dir: -1 | 1) {
+    const prefs = [...inputs.outputs[out].prefs]
+    const j = i + dir
+    if (j < 0 || j >= prefs.length) return
+    ;[prefs[i], prefs[j]] = [prefs[j], prefs[i]]
+    prefs.forEach((src, idx) => setOutputPref(out, idx, src))
+  }
 
   return (
     <aside className="tta-scroll" style={{
       width: 308, flexShrink: 0, height: '100%', overflowY: 'auto',
       padding: '12px 10px', background: 'var(--bg-app)',
     }}>
-      {/* ── RESET ── accesible en la parte superior */}
+      {/* ── RESET ── */}
       <button type="button" onClick={reset} style={{
         width: '100%', padding: '11px 0', borderRadius: 'var(--r-md)',
         border: '1.5px solid var(--brand)', background: 'var(--brand-tint)',
@@ -177,6 +187,63 @@ export default function ControlPanel() {
             En MANUAL el operador comanda los KM; el motor no ejecuta transferencia automática.
           </div>
         )}
+      </Section>
+
+      {/* ── PREFERENCIAS DE FUENTE (AUTO) ── */}
+      <Section title="Preferencias de fuente (AUTO)" icon="🔀">
+        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.4 }}>
+          Orden en que el motor intenta conectar cada salida. 1° = preferente, 3° = último recurso.
+        </div>
+        {(['S1','S2','S3'] as OutputId[]).map((out) => {
+          const prefs = inputs.outputs[out].prefs
+          return (
+            <div key={out} style={{ marginBottom: 8 }}>
+              <div style={{
+                fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)', marginBottom: 4,
+              }}>{OUT_LABEL[out]}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {prefs.map((src, i) => (
+                  <div key={src} style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '5px 8px', borderRadius: 'var(--r-sm)',
+                    background: 'var(--bg-inset)', border: '1px solid var(--border)',
+                  }}>
+                    {/* Círculo numerado */}
+                    <span style={{
+                      width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
+                      background: i === 0 ? 'var(--energized)' : i === 1 ? 'var(--warn)' : 'var(--dead)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 8, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-mono)',
+                    }}>{i + 1}</span>
+                    {/* Nombre fuente */}
+                    <span style={{
+                      flex: 1, fontSize: 10.5, fontWeight: 700,
+                      color: 'var(--text-primary)', fontFamily: 'var(--font-mono)',
+                    }}>{SOURCE_SHORT[src]}</span>
+                    {/* Flechas */}
+                    <button type="button" disabled={i === 0} onClick={() => swapPref(out, i, -1)}
+                      style={{
+                        width: 18, height: 18, border: '1px solid var(--border)', borderRadius: 4,
+                        background: i === 0 ? 'var(--bg-subtle)' : 'var(--bg-surface)',
+                        color: i === 0 ? 'var(--text-muted)' : 'var(--text-secondary)',
+                        cursor: i === 0 ? 'default' : 'pointer', fontSize: 9, padding: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>▲</button>
+                    <button type="button" disabled={i === prefs.length - 1} onClick={() => swapPref(out, i, 1)}
+                      style={{
+                        width: 18, height: 18, border: '1px solid var(--border)', borderRadius: 4,
+                        background: i === prefs.length - 1 ? 'var(--bg-subtle)' : 'var(--bg-surface)',
+                        color: i === prefs.length - 1 ? 'var(--text-muted)' : 'var(--text-secondary)',
+                        cursor: i === prefs.length - 1 ? 'default' : 'pointer', fontSize: 9, padding: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>▼</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
       </Section>
 
       {/* ── BLACKOUT ── */}

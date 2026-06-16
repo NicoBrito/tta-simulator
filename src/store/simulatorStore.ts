@@ -38,8 +38,8 @@ interface SimulatorStore {
   toggleSourceUpstream: (src: SourceId) => void
   toggleBreaker: (src: SourceId) => void
   toggleOutputAsymmetry: (out: OutputId) => void
-  // Maniobra manual de contactores (solo modo MANUAL / FALLA_SELECTOR)
-  toggleManualContactor: (out: OutputId, src: SourceId) => void
+  // Maniobra manual de contactores — src=null significa posición OFF (todos los KM abiertos)
+  toggleManualContactor: (out: OutputId, src: SourceId | null) => void
 }
 
 let pulseTimer: ReturnType<typeof setTimeout> | null = null
@@ -199,7 +199,8 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
 
     toggleManualContactor: (out, src) => {
       const cur = get().inputs.manualSelection[out]
-      const next = cur === src ? null : src // clic en el cerrado lo abre; otro lo selecciona
+      // Si src es null → posición OFF directo. Si es la misma fuente → toggle a null. Si es otra → seleccionar.
+      const next = src === null ? null : cur === src ? null : src
       apply({
         ...get().inputs,
         manualSelection: { ...get().inputs.manualSelection, [out]: next },
