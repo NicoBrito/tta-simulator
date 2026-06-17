@@ -13,6 +13,7 @@ const C_FAULT   = 'var(--fault)'
 const C_WARN    = 'var(--warn)'
 const C_SURFACE = 'var(--bg-surface)'
 const C_INSET   = 'var(--bg-inset)'
+const C_HEADER  = 'var(--bg-header)'
 const C_TEXT    = 'var(--text-primary)'
 const C_MUTED   = 'var(--text-muted)'
 const C_SEC     = 'var(--text-secondary)'
@@ -206,7 +207,7 @@ export default function SingleLineDiagram() {
       {/* Encabezado */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 18px', borderBottom: `1px solid ${C_BORDER}`, background: C_INSET, flexShrink: 0,
+        padding: '10px 18px', borderBottom: `1px solid ${C_BORDER}`, background: C_HEADER, flexShrink: 0,
       }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 700, color: C_TEXT, letterSpacing: 0.2 }}>Diagrama unifilar</div>
@@ -414,7 +415,7 @@ function Ka9Module() {
       boxShadow: 'var(--shadow-sm)', overflow: 'hidden',
     }}>
       {/* Encabezado del subsistema */}
-      <div style={{ padding: '11px 14px', borderBottom: `1px solid ${C_BORDER}`, background: C_INSET, flexShrink: 0 }}>
+      <div style={{ padding: '11px 14px', borderBottom: `1px solid ${C_BORDER}`, background: C_HEADER, flexShrink: 0 }}>
         <div style={{ fontSize: 13.5, fontWeight: 700, color: C_TEXT, letterSpacing: 0.2 }}>Control de Clima</div>
         <div style={{ fontSize: 10.5, color: C_MUTED }}>Sistema independiente · KA-9</div>
       </div>

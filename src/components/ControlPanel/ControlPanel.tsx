@@ -32,7 +32,9 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
     }}>
       <button type="button" onClick={() => setOpen((o) => !o)} style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: 9,
-        padding: '11px 13px', border: 'none', background: 'transparent',
+        padding: '11px 13px', border: 'none',
+        background: 'var(--bg-header)',
+        borderBottom: open ? '1px solid var(--border)' : 'none',
         cursor: 'pointer', textAlign: 'left',
       }}>
         <span style={{ fontSize: 14 }}>{icon}</span>
@@ -53,7 +55,7 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} style={{ overflow: 'hidden' }}>
-            <div style={{ padding: '2px 13px 13px' }}>{children}</div>
+            <div style={{ padding: '11px 13px 13px' }}>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -147,7 +149,8 @@ export default function ControlPanel() {
   return (
     <aside className="tta-scroll" style={{
       width: 308, flexShrink: 0, height: '100%', overflowY: 'auto',
-      padding: '12px 10px', background: 'var(--bg-app)',
+      padding: '12px 10px', background: 'var(--bg-subtle)',
+      borderLeft: '1px solid var(--border-strong)',
     }}>
       {/* ── RESET ── */}
       <button type="button" onClick={reset} style={{

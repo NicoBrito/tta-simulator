@@ -17,8 +17,8 @@ export default function AlarmPanel() {
 
   return (
     <footer style={{
-      flexShrink: 0, background: 'var(--bg-surface)', borderTop: '1px solid var(--border)',
-      boxShadow: '0 -1px 3px rgba(15,29,51,0.04)',
+      flexShrink: 0, background: 'var(--bg-header)', borderTop: '1px solid var(--border-strong)',
+      boxShadow: '0 -2px 8px rgba(15,29,51,0.06)',
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '9px 18px' }}>
         <span style={{

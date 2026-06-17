@@ -3,16 +3,25 @@
   --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  /* ── Superficies (tema claro industrial) ── */
-  --bg-app: #f4f6fb;          /* canvas general, off-white frío */
-  --bg-surface: #ffffff;      /* tarjetas, paneles, SVG */
-  --bg-subtle: #eef2f9;       /* zonas hundidas / secciones */
-  --bg-inset: #f8fafc;        /* fondo de inputs */
+  /* ── Superficies (tema claro industrial) ──
+     Jerarquía de profundidad: ink (chrome) → header → surface (cuerpo) → app (lienzo) */
+  --bg-app: #e6ecf5;          /* canvas general, gris-azulado frío (más profundo → las tarjetas resaltan) */
+  --bg-surface: #ffffff;      /* cuerpo de tarjetas, paneles, SVG */
+  --bg-header: #e8eef8;       /* encabezados de tarjeta/sección (tinte slate, claramente distinto del cuerpo blanco) */
+  --bg-subtle: #eaeff7;       /* zonas hundidas / segmentos */
+  --bg-inset: #f4f7fc;        /* fondo de inputs/chips */
+
+  /* ── Chrome oscuro (navbar / barras superiores) ── */
+  --ink: #13243f;             /* navy del chrome superior */
+  --ink-soft: #1e3556;        /* superficies secundarias sobre el chrome */
+  --ink-line: rgba(148, 173, 209, 0.22); /* divisores sobre el chrome */
+  --on-ink: #eaf1fc;          /* texto principal sobre chrome */
+  --on-ink-muted: #93a7c6;    /* texto secundario sobre chrome */
 
   /* ── Bordes ── */
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --border-soft: #eef2f7;
+  --border: #dbe2ec;
+  --border-strong: #c3cedd;
+  --border-soft: #e9eef5;
 
   /* ── Texto ── */
   --text-primary: #0f1d33;
@@ -44,11 +53,11 @@
   --warn-glow: rgba(217, 119, 6, 0.2);
   --warn-tint: #fdf3e6;
 
-  /* ── Sombras ── */
-  --shadow-sm: 0 1px 2px rgba(15, 29, 51, 0.05), 0 1px 3px rgba(15, 29, 51, 0.04);
-  --shadow-md: 0 2px 4px rgba(15, 29, 51, 0.05), 0 6px 16px rgba(15, 29, 51, 0.08);
-  --shadow-lg: 0 8px 30px rgba(15, 29, 51, 0.12);
-  --shadow-brand: 0 4px 14px rgba(19, 81, 216, 0.25);
+  /* ── Sombras (un poco más marcadas → más sensación de elevación) ── */
+  --shadow-sm: 0 1px 2px rgba(15, 29, 51, 0.06), 0 1px 4px rgba(15, 29, 51, 0.06);
+  --shadow-md: 0 2px 6px rgba(15, 29, 51, 0.07), 0 8px 20px rgba(15, 29, 51, 0.10);
+  --shadow-lg: 0 10px 34px rgba(15, 29, 51, 0.16);
+  --shadow-brand: 0 4px 14px rgba(19, 81, 216, 0.28);
 
   /* ── Radios ── */
   --r-sm: 6px;
