@@ -5,6 +5,10 @@ import type { OutputId, ContactorId, SourceId } from '../../engine'
 
 const SOURCE_SHORT: Record<SourceId, string> = { P: 'PRINC.', A: 'DB A', B: 'DB B' }
 const OUT_LABEL: Record<OutputId, string> = { S1: 'S1 · TDAF', S2: 'S2 · Comp.', S3: 'S3 · Ilum.' }
+const ALL_SRCS: SourceId[] = ['P', 'A', 'B']
+// Color y etiqueta por nivel de prioridad
+const PRIO_COLOR = ['var(--energized)', 'var(--warn)', 'var(--dead)']
+const PRIO_LABEL = ['1ª', '2ª', '3ª']
 
 type Tone = 'good' | 'danger' | 'warn'
 
@@ -130,12 +134,14 @@ export default function ControlPanel() {
   const isFalla = mode === 'FALLA_SELECTOR'
   const faultCount = Object.values(inputs.contactorFaults).filter(Boolean).length
 
-  function swapPref(out: OutputId, i: number, dir: -1 | 1) {
+  // Asigna `src` a la prioridad `slot` intercambiándolo con su posición actual
+  // (mantiene la lista como una permutación válida, sin fuentes repetidas).
+  function setPrefAt(out: OutputId, slot: number, src: SourceId) {
     const prefs = [...inputs.outputs[out].prefs]
-    const j = i + dir
-    if (j < 0 || j >= prefs.length) return
-    ;[prefs[i], prefs[j]] = [prefs[j], prefs[i]]
-    prefs.forEach((src, idx) => setOutputPref(out, idx, src))
+    const cur = prefs.indexOf(src)
+    if (cur < 0 || cur === slot) return
+    ;[prefs[slot], prefs[cur]] = [prefs[cur], prefs[slot]]
+    prefs.forEach((s, idx) => setOutputPref(out, idx, s))
   }
 
   return (
@@ -188,55 +194,55 @@ export default function ControlPanel() {
 
       {/* ── PREFERENCIAS DE FUENTE (AUTO) ── */}
       <Section title="Preferencias de fuente (AUTO)" icon="🔀">
-        <div style={{ fontSize: 9.5, color: 'var(--text-muted)', marginBottom: 6, lineHeight: 1.35 }}>
-          Orden de conmutación. 1° = preferente. S3 solo DB A / DB B.
+        <div style={{ fontSize: 9.5, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.35 }}>
+          Elige qué fuente ocupa cada prioridad. Toca una fuente para asignarla; la actual queda
+          marcada. <strong>1ª</strong> = preferente. S3 solo DB A / DB B.
         </div>
         {(['S1','S2','S3'] as OutputId[]).map((out) => {
           const prefs = inputs.outputs[out].prefs
+          const sources = ALL_SRCS.filter((s) => prefs.includes(s))
           return (
-            <div key={out} style={{ marginBottom: 6 }}>
+            <div key={out} style={{ marginBottom: 9 }}>
               <div style={{
                 fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)',
-                fontFamily: 'var(--font-mono)', marginBottom: 3,
+                fontFamily: 'var(--font-mono)', marginBottom: 4,
               }}>{OUT_LABEL[out]}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {prefs.map((src, i) => (
-                  <div key={src} style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '4px 8px', borderRadius: 'var(--r-sm)',
-                    background: 'var(--bg-inset)', border: '1px solid var(--border)',
-                  }}>
-                    {/* Círculo numerado */}
-                    <span style={{
-                      width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
-                      background: i === 0 ? 'var(--energized)' : i === 1 ? 'var(--warn)' : 'var(--dead)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 8, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-mono)',
-                    }}>{i + 1}</span>
-                    {/* Nombre fuente */}
-                    <span style={{
-                      flex: 1, fontSize: 10.5, fontWeight: 700,
-                      color: 'var(--text-primary)', fontFamily: 'var(--font-mono)',
-                    }}>{SOURCE_SHORT[src]}</span>
-                    {/* Flechas */}
-                    <button type="button" disabled={i === 0} onClick={() => swapPref(out, i, -1)}
-                      style={{
-                        width: 18, height: 18, border: '1px solid var(--border)', borderRadius: 4,
-                        background: i === 0 ? 'var(--bg-subtle)' : 'var(--bg-surface)',
-                        color: i === 0 ? 'var(--text-muted)' : 'var(--text-secondary)',
-                        cursor: i === 0 ? 'default' : 'pointer', fontSize: 9, padding: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}>▲</button>
-                    <button type="button" disabled={i === prefs.length - 1} onClick={() => swapPref(out, i, 1)}
-                      style={{
-                        width: 18, height: 18, border: '1px solid var(--border)', borderRadius: 4,
-                        background: i === prefs.length - 1 ? 'var(--bg-subtle)' : 'var(--bg-surface)',
-                        color: i === prefs.length - 1 ? 'var(--text-muted)' : 'var(--text-secondary)',
-                        cursor: i === prefs.length - 1 ? 'default' : 'pointer', fontSize: 9, padding: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}>▼</button>
-                  </div>
-                ))}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {prefs.map((_, slot) => {
+                  const col = PRIO_COLOR[slot]
+                  return (
+                    <div key={slot} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {/* Insignia de prioridad */}
+                      <span style={{
+                        flexShrink: 0, minWidth: 30, textAlign: 'center',
+                        padding: '3px 0', borderRadius: 'var(--r-sm)',
+                        background: col, color: '#fff', fontSize: 9.5, fontWeight: 700,
+                        fontFamily: 'var(--font-mono)',
+                      }}>{PRIO_LABEL[slot]}</span>
+                      {/* Botones de fuente (la activa, resaltada) */}
+                      <div style={{ display: 'flex', gap: 4, flex: 1 }}>
+                        {sources.map((src) => {
+                          const active = prefs[slot] === src
+                          return (
+                            <button key={src} type="button"
+                              onClick={() => setPrefAt(out, slot, src)}
+                              title={active ? `${SOURCE_SHORT[src]} ya es la ${PRIO_LABEL[slot]} preferencia`
+                                : `Asignar ${SOURCE_SHORT[src]} como ${PRIO_LABEL[slot]} preferencia`}
+                              style={{
+                                flex: 1, padding: '6px 0', borderRadius: 'var(--r-sm)',
+                                fontSize: 10.5, fontWeight: 700, fontFamily: 'var(--font-mono)',
+                                cursor: active ? 'default' : 'pointer',
+                                border: `1.5px solid ${active ? col : 'var(--border)'}`,
+                                background: active ? col : 'var(--bg-inset)',
+                                color: active ? '#fff' : 'var(--text-secondary)',
+                                transition: 'all 0.15s ease',
+                              }}>{SOURCE_SHORT[src]}</button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )

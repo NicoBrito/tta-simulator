@@ -20,7 +20,8 @@ const C_BORDER  = 'var(--border)'
 const C_BRAND   = 'var(--brand)'
 
 // ── Layout ───────────────────────────────────────────────────────────────────
-// viewBox: 960 × 720  (ampliado para KA-9 abajo y relés de asimetría)
+// viewBox: 1040 × 580. Lado derecho re-espaciado para que las cajas de salida
+// (S1/S2/S3) y los selectores manuales no se superpongan.
 const COL: Record<SourceId, number> = { P: 170, A: 390, B: 610 }
 const ROW: Record<OutputId, number> = { S1: 300, S2: 400, S3: 500 }
 const BUS_Y   = 190   // bus principal de entrada
@@ -35,12 +36,12 @@ const KM_W = 28, KM_H = 44   // contactor
 const xBusL = 90
 const xBusR = 680
 
-// Etiquetas de salida (caja S1/S2/S3): centradas en xOutBox
-const xOutBox = 718
-
-// Separador y selectores manuales
-const xSep  = 760
-const SEL_X = 800
+// Relé R-AS de salida, caja de salida y columna de selectores (con holgura entre sí)
+const xRasOut = xBusR + 28   // relé R-AS de barra de salida  (686–726)
+const xOutBox = 748          // caja S1/S2/S3 (left)           (748–812)
+const OUTBOX_W = 64
+const xSep    = 846          // separador vertical
+const SEL_X   = 905          // centro de los selectores manuales
 
 // Nombres
 const SOURCE_NAMES: Record<SourceId, string> = { P: 'PRINCIPAL', A: 'DB A', B: 'DB B' }
@@ -112,8 +113,9 @@ function RotarySelector({ cx, cy, out, selection, active, onSelect }: {
   active: boolean
   onSelect: (src: SourceId | null) => void
 }) {
-  const R = 20
+  const R = 21
   const armLen = R - 4
+  const labelR = R + 13
   const positions = SEL_POSITIONS[out]
   const n = positions.length
   const toRad = (deg: number) => (deg * Math.PI) / 180
@@ -126,7 +128,8 @@ function RotarySelector({ cx, cy, out, selection, active, onSelect }: {
   const tipY = cy + Math.sin(armAngle) * armLen
   return (
     <g style={{ cursor: active ? 'pointer' : 'default' }}>
-      <text x={cx} y={cy - R - 8} textAnchor="middle" fontSize={8} fontWeight={700}
+      {/* Nombre del selector — bien por encima del arco de etiquetas para no montarse */}
+      <text x={cx} y={cy - R - 24} textAnchor="middle" fontSize={8.5} fontWeight={700}
         fill={active ? C_BRAND : C_MUTED} fontFamily={FONT_MONO}>{SEL_NAMES[out]}</text>
       <circle cx={cx} cy={cy} r={R} fill={active ? 'var(--brand-tint)' : C_INSET}
         stroke={active ? C_BRAND : C_MUTED} strokeWidth={active ? 2 : 1.5} />
@@ -134,16 +137,16 @@ function RotarySelector({ cx, cy, out, selection, active, onSelect }: {
         const rad = toRad(angleOf(i))
         const px = cx + Math.cos(rad) * (R - 5)
         const py = cy + Math.sin(rad) * (R - 5)
-        const lx = cx + Math.cos(rad) * (R + 9)
-        const ly = cy + Math.sin(rad) * (R + 9)
+        const lx = cx + Math.cos(rad) * labelR
+        const ly = cy + Math.sin(rad) * labelR
         const isSel = selIdx === i
         return (
           <g key={i} onClick={active ? () => onSelect(src) : undefined}
             style={{ cursor: active ? 'pointer' : 'default' }}>
-            {active && <circle cx={px} cy={py} r={7} fill="transparent" className="tta-hit" />}
-            <circle cx={px} cy={py} r={isSel ? 3.5 : 2}
+            {active && <circle cx={px} cy={py} r={8} fill="transparent" className="tta-hit" />}
+            <circle cx={px} cy={py} r={isSel ? 3.8 : 2}
               fill={isSel ? (active ? C_BRAND : C_SEC) : C_MUTED} />
-            <text x={lx} y={ly + 3} textAnchor="middle" fontSize={6.5} fontWeight={700}
+            <text x={lx} y={ly + 3} textAnchor="middle" fontSize={7.5} fontWeight={700}
               fill={isSel ? (active ? C_BRAND : C_SEC) : C_MUTED}
               fontFamily={FONT_MONO}>{posLabel(src)}</text>
           </g>
@@ -153,7 +156,8 @@ function RotarySelector({ cx, cy, out, selection, active, onSelect }: {
         stroke={active ? C_BRAND : C_SEC} strokeWidth={active ? 2.5 : 2}
         strokeLinecap="round" style={{ transition: 'all 0.3s ease' }} />
       <circle cx={cx} cy={cy} r={4} fill={active ? C_BRAND : C_SEC} />
-      <text x={cx} y={cy + R + 10} textAnchor="middle" fontSize={7} fontWeight={700}
+      {/* Valor seleccionado — debajo del arco */}
+      <text x={cx} y={cy + R + 15} textAnchor="middle" fontSize={8} fontWeight={700}
         fill={active ? C_BRAND : C_MUTED} fontFamily={FONT_MONO}>
         {posLabel(selection)}
       </text>
@@ -219,7 +223,7 @@ export default function SingleLineDiagram() {
       <div style={{ flex: 1, minHeight: 0, padding: 8, display: 'flex', gap: 10 }}>
         <Ka9Module />
         <div style={{ flex: 1, minWidth: 0 }}>
-        <svg viewBox="0 0 960 580" width="100%" height="100%"
+        <svg viewBox="0 0 1010 580" width="100%" height="100%"
           preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagrama unifilar TTA"
           style={{ fontFamily: FONT_MONO }}>
 
@@ -336,7 +340,7 @@ export default function SingleLineDiagram() {
             const ok     = inputs.outputs[out].outputAsymmetryOk
             return (
               <RelayAS key={out}
-                x={xBusR + 22} y={busY}
+                x={xRasOut} y={busY}
                 label={rasId}
                 ok={ok}
                 onClick={() => toggleOutputAsymmetry(out)} />
@@ -349,20 +353,21 @@ export default function SingleLineDiagram() {
             const color  = wireColor(status)
             const src    = connected[out]
             const busY   = ROW[out] + OUT_OFF
+            const cx     = xOutBox + OUTBOX_W / 2
             return (
               <g key={out} pointerEvents="none">
-                <rect x={xOutBox - 2} y={busY - 22} width={58} height={44} rx={8}
+                <rect x={xOutBox} y={busY - 22} width={OUTBOX_W} height={44} rx={8}
                   fill={C_INSET} stroke={color} strokeWidth={1.5} />
-                <text x={xOutBox + 27} y={busY - 8} textAnchor="middle" fontSize={11} fontWeight={700} fill={C_TEXT}>{out}</text>
-                <text x={xOutBox + 27} y={busY + 4} textAnchor="middle" fontSize={8} fill={C_SEC}>{OUTPUT_AMPS[out]}</text>
-                <text x={xOutBox + 27} y={busY + 16} textAnchor="middle" fontSize={7} fontWeight={600} fill={color}>
+                <text x={cx} y={busY - 8} textAnchor="middle" fontSize={11} fontWeight={700} fill={C_TEXT}>{out}</text>
+                <text x={cx} y={busY + 4} textAnchor="middle" fontSize={8} fill={C_SEC}>{OUTPUT_AMPS[out]}</text>
+                <text x={cx} y={busY + 16} textAnchor="middle" fontSize={7} fontWeight={600} fill={color}>
                   {src ? `◄ ${src}` : 'SIN FTE'}
                 </text>
               </g>
             )
           })}
           {(['S1','S2','S3'] as OutputId[]).map((out) => (
-            <text key={out} x={xOutBox + 27} y={ROW[out] + OUT_OFF + 30} textAnchor="middle" fontSize={7}
+            <text key={out} x={xOutBox + OUTBOX_W / 2} y={ROW[out] + OUT_OFF + 30} textAnchor="middle" fontSize={7}
               fill={C_MUTED} fontFamily="var(--font-sans)" pointerEvents="none">{OUTPUT_NAME[out]}</text>
           ))}
 
@@ -400,69 +405,69 @@ function Ka9Module() {
 
   const climaOn = !ka9            // contacto NC: clima conectado salvo blackout
   const colKa9  = ka9 ? C_WARN : C_MUTED
-  const xc = 75
+  const xc = 110
 
   return (
     <div style={{
-      width: 178, flexShrink: 0, height: '100%', display: 'flex', flexDirection: 'column',
-      background: C_SURFACE, border: `1px dashed ${C_BORDER}`, borderRadius: 'var(--r-md)',
+      width: 256, flexShrink: 0, height: '100%', display: 'flex', flexDirection: 'column',
+      background: C_SURFACE, border: `1.5px dashed ${C_BORDER}`, borderRadius: 'var(--r-lg)',
       boxShadow: 'var(--shadow-sm)', overflow: 'hidden',
     }}>
       {/* Encabezado del subsistema */}
-      <div style={{ padding: '9px 12px', borderBottom: `1px solid ${C_BORDER}`, background: C_INSET, flexShrink: 0 }}>
-        <div style={{ fontSize: 11.5, fontWeight: 700, color: C_TEXT, letterSpacing: 0.2 }}>Control de Clima</div>
-        <div style={{ fontSize: 9.5, color: C_MUTED }}>Sistema independiente · KA-9</div>
+      <div style={{ padding: '11px 14px', borderBottom: `1px solid ${C_BORDER}`, background: C_INSET, flexShrink: 0 }}>
+        <div style={{ fontSize: 13.5, fontWeight: 700, color: C_TEXT, letterSpacing: 0.2 }}>Control de Clima</div>
+        <div style={{ fontSize: 10.5, color: C_MUTED }}>Sistema independiente · KA-9</div>
       </div>
 
       {/* Esquema vertical */}
-      <div style={{ flex: 1, minHeight: 0, padding: 8, display: 'flex', flexDirection: 'column' }}>
-        <svg viewBox="0 0 150 258" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"
+      <div style={{ flex: 1, minHeight: 0, padding: 10, display: 'flex', flexDirection: 'column' }}>
+        <svg viewBox="0 0 220 314" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"
           style={{ fontFamily: FONT_MONO, flex: 1, minHeight: 0 }} role="img" aria-label="Control de clima KA-9">
 
           {/* Alimentación propia */}
-          <rect x={40} y={16} width={70} height={30} rx={6} fill={C_INSET} stroke={C_SEC} strokeWidth={1.5} />
-          <text x={xc} y={30} textAnchor="middle" fontSize={8} fontWeight={700} fill={C_SEC}>ALIM. PROPIA</text>
-          <text x={xc} y={41} textAnchor="middle" fontSize={7.5} fontWeight={600} fill={C_MUTED}>24 Vdc</text>
+          <rect x={55} y={20} width={110} height={44} rx={8} fill={C_INSET} stroke={C_SEC} strokeWidth={1.8} />
+          <text x={xc} y={42} textAnchor="middle" fontSize={11} fontWeight={700} fill={C_SEC}>ALIM. PROPIA</text>
+          <text x={xc} y={56} textAnchor="middle" fontSize={9.5} fontWeight={600} fill={C_MUTED}>24 Vdc</text>
 
           {/* Alim. → contacto (siempre con tensión propia) */}
-          <Wire x1={xc} y1={46} x2={xc} y2={88} status="on" onColor={C_ON_H} w={3} />
+          <Wire x1={xc} y1={64} x2={xc} y2={108} status="on" onColor={C_ON_H} w={4} />
 
           {/* Bobina KA-9 (la energiza el BLACKOUT) — clickeable */}
           <g onClick={() => setBlackout(!blackout)} style={{ cursor: 'pointer' }}>
             <title>{blackout ? 'Desactivar BLACKOUT' : 'Activar BLACKOUT (energiza KA-9)'}</title>
-            <circle cx={32} cy={120} r={18} fill="transparent" className="tta-hit" />
-            <text x={32} y={96} textAnchor="middle" fontSize={7.5} fontWeight={700} fill={C_MUTED}>BLACKOUT</text>
-            <circle cx={32} cy={120} r={13}
-              fill={ka9 ? 'rgba(217,119,6,0.12)' : C_INSET} stroke={colKa9} strokeWidth={2.2}
+            <circle cx={54} cy={146} r={30} fill="transparent" className="tta-hit" />
+            <text x={54} y={108} textAnchor="middle" fontSize={9.5} fontWeight={700} fill={C_MUTED}>BLACKOUT</text>
+            <circle cx={54} cy={146} r={22}
+              fill={ka9 ? 'rgba(217,119,6,0.12)' : C_INSET} stroke={colKa9} strokeWidth={2.6}
               className={ka9 ? 'tta-fault-blink' : undefined} />
-            <text x={32} y={118} textAnchor="middle" fontSize={7} fontWeight={700} fill={colKa9}>KA-9</text>
-            <text x={32} y={128} textAnchor="middle" fontSize={6.5} fontWeight={600} fill={colKa9}>{ka9 ? 'ON' : 'OFF'}</text>
-            {ka9 && <AlarmRing cx={32} cy={120} r={20} />}
+            <text x={54} y={144} textAnchor="middle" fontSize={10} fontWeight={700} fill={colKa9}>KA-9</text>
+            <text x={54} y={157} textAnchor="middle" fontSize={9} fontWeight={600} fill={colKa9}>{ka9 ? 'ON' : 'OFF'}</text>
+            {ka9 && <AlarmRing cx={54} cy={146} r={28} />}
           </g>
           {/* Vínculo de control (la bobina acciona el contacto) */}
-          <line x1={45} y1={120} x2={xc} y2={120} stroke={colKa9} strokeWidth={1.3} strokeDasharray="3 3" opacity={0.8} />
+          <line x1={76} y1={146} x2={xc} y2={146} stroke={colKa9} strokeWidth={1.6} strokeDasharray="4 3" opacity={0.85} />
 
           {/* Contacto NC del relé KA-9: cerrado normal, ABRE con blackout (deslastre) */}
-          <circle cx={xc} cy={88}  r={3} fill={colKa9} />
-          <circle cx={xc} cy={152} r={3} fill={colKa9} />
-          <line x1={xc} y1={152} x2={climaOn ? xc : xc + 15} y2={climaOn ? 94 : 100}
-            stroke={colKa9} strokeWidth={3} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
-          <text x={xc + 12} y={116} textAnchor="start" fontSize={8} fontWeight={700} fill={colKa9}>KA-9</text>
-          <text x={xc + 12} y={127} textAnchor="start" fontSize={7} fontWeight={600} fill={colKa9}>{climaOn ? 'CERR.' : 'ABIERTO'}</text>
+          <circle cx={xc} cy={108} r={4} fill={colKa9} />
+          <circle cx={xc} cy={184} r={4} fill={colKa9} />
+          <line x1={xc} y1={184} x2={climaOn ? xc : xc + 22} y2={climaOn ? 114 : 122}
+            stroke={colKa9} strokeWidth={4} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
+          <text x={xc + 18} y={140} textAnchor="start" fontSize={10} fontWeight={700} fill={colKa9}>KA-9</text>
+          <text x={xc + 18} y={154} textAnchor="start" fontSize={9} fontWeight={600} fill={colKa9}>{climaOn ? 'CERR.' : 'ABIERTO'}</text>
 
           {/* Contacto → CLIMA */}
-          <Wire x1={xc} y1={152} x2={xc} y2={196} status={climaOn ? 'on' : 'off'} onColor={C_ON_H} w={3} />
+          <Wire x1={xc} y1={184} x2={xc} y2={232} status={climaOn ? 'on' : 'off'} onColor={C_ON_H} w={4} />
 
           {/* Caja CLIMA */}
-          <rect x={25} y={196} width={100} height={46} rx={7}
-            fill={climaOn ? 'rgba(15,157,88,0.08)' : C_INSET} stroke={climaOn ? C_ON : C_MUTED} strokeWidth={2.2} />
-          <text x={xc} y={216} textAnchor="middle" fontSize={13} fontWeight={700} fill={climaOn ? C_ON : C_MUTED}>CLIMA</text>
-          <text x={xc} y={231} textAnchor="middle" fontSize={7.5} fontWeight={600} fill={climaOn ? C_ON : C_MUTED}>
+          <rect x={44} y={232} width={132} height={62} rx={9}
+            fill={climaOn ? 'rgba(15,157,88,0.08)' : C_INSET} stroke={climaOn ? C_ON : C_MUTED} strokeWidth={2.6} />
+          <text x={xc} y={262} textAnchor="middle" fontSize={19} fontWeight={700} fill={climaOn ? C_ON : C_MUTED}>CLIMA</text>
+          <text x={xc} y={280} textAnchor="middle" fontSize={10} fontWeight={600} fill={climaOn ? C_ON : C_MUTED}>
             {climaOn ? 'CONECTADO' : 'DESLASTRADO'}
           </text>
         </svg>
 
-        <div style={{ fontSize: 9, color: C_MUTED, textAlign: 'center', lineHeight: 1.4, paddingTop: 6, flexShrink: 0 }}>
+        <div style={{ fontSize: 10, color: C_MUTED, textAlign: 'center', lineHeight: 1.45, paddingTop: 8, flexShrink: 0 }}>
           Click en <strong style={{ fontFamily: FONT_MONO, color: C_SEC }}>KA-9</strong> para simular BLACKOUT.<br />
           Sin conexión a la red TTA.
         </div>
