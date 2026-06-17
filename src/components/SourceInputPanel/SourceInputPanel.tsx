@@ -65,25 +65,25 @@ export default function SourceInputPanel() {
           const borderCol = available ? 'var(--energized)' : s.breakerTrip ? 'var(--fault)' : 'var(--border)'
           return (
             <div key={src} style={{
-              flex: 1, padding: '6px 8px',
+              flex: 1, padding: '8px 9px',
               background: 'var(--bg-surface)',
               border: `1.5px solid ${borderCol}`,
               borderRadius: 'var(--r-md)', boxShadow: 'var(--shadow-sm)',
-              display: 'flex', flexDirection: 'column', gap: 5,
+              display: 'flex', flexDirection: 'column', gap: 6,
             }}>
               {/* Encabezado fuente */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: dotColor }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {SOURCE_NAMES[src]}
                   </div>
-                  <div style={{ fontSize: 8, color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: 9.5, color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {SOURCE_SUB[src]}
                   </div>
                 </div>
                 <span style={{
-                  fontSize: 7.5, fontWeight: 700, fontFamily: 'var(--font-mono)',
+                  fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-mono)',
                   padding: '2px 6px', borderRadius: 'var(--r-pill)',
                   background: available ? 'var(--energized-tint)' : 'var(--bg-subtle)',
                   color: available ? 'var(--energized-deep)' : 'var(--text-muted)',

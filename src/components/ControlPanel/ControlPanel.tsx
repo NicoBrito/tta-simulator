@@ -27,12 +27,12 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
   return (
     <div style={{
       background: 'var(--bg-surface)', border: '1px solid var(--border)',
-      borderRadius: 'var(--r-md)', marginBottom: 8, overflow: 'hidden',
+      borderRadius: 'var(--r-md)', marginBottom: 7, overflow: 'hidden',
       boxShadow: 'var(--shadow-sm)',
     }}>
       <button type="button" onClick={() => setOpen((o) => !o)} style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: 9,
-        padding: '11px 13px', border: 'none',
+        padding: '9px 12px', border: 'none',
         background: 'var(--bg-header)',
         borderBottom: open ? '1px solid var(--border)' : 'none',
         cursor: 'pointer', textAlign: 'left',
@@ -55,7 +55,7 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} style={{ overflow: 'hidden' }}>
-            <div style={{ padding: '11px 13px 13px' }}>{children}</div>
+            <div style={{ padding: '9px 12px 11px' }}>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -130,6 +130,7 @@ export default function ControlPanel() {
   const setMode = useSimulatorStore((s) => s.setMode)
   const setContactorFault = useSimulatorStore((s) => s.setContactorFault)
   const setOutputPref = useSimulatorStore((s) => s.setOutputPref)
+  const setBlackout = useSimulatorStore((s) => s.setBlackout)
   const reset = useSimulatorStore((s) => s.reset)
 
   const mode = inputs.modeSelector
@@ -149,15 +150,15 @@ export default function ControlPanel() {
   return (
     <aside className="tta-scroll" style={{
       width: 308, flexShrink: 0, height: '100%', overflowY: 'auto',
-      padding: '12px 10px', background: 'var(--bg-subtle)',
+      padding: '10px 9px', background: 'var(--bg-subtle)',
       borderLeft: '1px solid var(--border-strong)',
     }}>
       {/* ── RESET ── */}
       <button type="button" onClick={reset} style={{
-        width: '100%', padding: '11px 0', borderRadius: 'var(--r-md)',
+        width: '100%', padding: '9px 0', borderRadius: 'var(--r-md)',
         border: '1.5px solid var(--brand)', background: 'var(--brand-tint)',
         color: 'var(--brand)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-        marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+        marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
         boxShadow: 'var(--shadow-sm)', transition: 'all 0.15s',
       }}
         onMouseEnter={(e) => { e.currentTarget.style.background = '#d4e2fc' }}
@@ -195,8 +196,19 @@ export default function ControlPanel() {
         )}
       </Section>
 
+      {/* ── BLACKOUT / KA-9 ── */}
+      <Section title="Falla de red (BLACKOUT)" icon="🔌"
+        badge={inputs.blackout ? { text: 'BLACKOUT', tone: 'danger' } : undefined}>
+        <RowToggle label="Simular BLACKOUT (energiza KA-9)" tone="danger"
+          value={inputs.blackout} onChange={(v) => setBlackout(v)}
+          activeText="ACTIVO" inactiveText="OK" />
+        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2, lineHeight: 1.4 }}>
+          Energiza el relé KA-9 y deslastra el sistema de Clima (independiente de la red TTA).
+        </div>
+      </Section>
+
       {/* ── PREFERENCIAS DE FUENTE (AUTO) ── */}
-      <Section title="Preferencias de fuente (AUTO)" icon="🔀">
+      <Section title="Preferencias de fuente (AUTO)" icon="🔀" defaultOpen={false}>
         <div style={{ fontSize: 9.5, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.35 }}>
           Elige qué fuente ocupa cada prioridad. Toca una fuente para asignarla; la actual queda
           marcada. <strong>1ª</strong> = preferente. S3 solo DB A / DB B.
