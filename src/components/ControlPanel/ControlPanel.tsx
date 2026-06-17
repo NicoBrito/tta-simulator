@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from '../../store/simulatorStore'
 import type { OutputId, ContactorId, SourceId } from '../../engine'
 
-const RAS_OUT: Record<OutputId, string> = { S1: 'R-AS-BP', S2: 'R-AS-BA', S3: 'R-AS-BB' }
 const SOURCE_SHORT: Record<SourceId, string> = { P: 'PRINC.', A: 'DB A', B: 'DB B' }
 const OUT_LABEL: Record<OutputId, string> = { S1: 'S1 · TDAF', S2: 'S2 · Comp.', S3: 'S3 · Ilum.' }
 
@@ -24,7 +23,7 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
   return (
     <div style={{
       background: 'var(--bg-surface)', border: '1px solid var(--border)',
-      borderRadius: 'var(--r-md)', marginBottom: 10, overflow: 'hidden',
+      borderRadius: 'var(--r-md)', marginBottom: 8, overflow: 'hidden',
       boxShadow: 'var(--shadow-sm)',
     }}>
       <button type="button" onClick={() => setOpen((o) => !o)} style={{
@@ -112,19 +111,17 @@ function PillToggle({ label, value, onChange, tone = 'danger' }: {
 }
 
 
+// S3 no usa PRINCIPAL → sin KM3-P
 const CONTACTORS_BY_OUTPUT: Record<OutputId, ContactorId[]> = {
   S1: ['KM1-P', 'KM1-A', 'KM1-B'],
   S2: ['KM2-P', 'KM2-A', 'KM2-B'],
-  S3: ['KM3-P', 'KM3-A', 'KM3-B'],
+  S3: ['KM3-A', 'KM3-B'],
 }
 
 // ── Panel principal ────────────────────────────────────────────────────────────
 export default function ControlPanel() {
   const inputs = useSimulatorStore((s) => s.inputs)
-  const derived = useSimulatorStore((s) => s.derived)
   const setMode = useSimulatorStore((s) => s.setMode)
-  const setBlackout = useSimulatorStore((s) => s.setBlackout)
-  const setOutputAsymmetry = useSimulatorStore((s) => s.setOutputAsymmetry)
   const setContactorFault = useSimulatorStore((s) => s.setContactorFault)
   const setOutputPref = useSimulatorStore((s) => s.setOutputPref)
   const reset = useSimulatorStore((s) => s.reset)
@@ -191,22 +188,22 @@ export default function ControlPanel() {
 
       {/* ── PREFERENCIAS DE FUENTE (AUTO) ── */}
       <Section title="Preferencias de fuente (AUTO)" icon="🔀">
-        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.4 }}>
-          Orden en que el motor intenta conectar cada salida. 1° = preferente, 3° = último recurso.
+        <div style={{ fontSize: 9.5, color: 'var(--text-muted)', marginBottom: 6, lineHeight: 1.35 }}>
+          Orden de conmutación. 1° = preferente. S3 solo DB A / DB B.
         </div>
         {(['S1','S2','S3'] as OutputId[]).map((out) => {
           const prefs = inputs.outputs[out].prefs
           return (
-            <div key={out} style={{ marginBottom: 8 }}>
+            <div key={out} style={{ marginBottom: 6 }}>
               <div style={{
                 fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)',
-                fontFamily: 'var(--font-mono)', marginBottom: 4,
+                fontFamily: 'var(--font-mono)', marginBottom: 3,
               }}>{OUT_LABEL[out]}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 {prefs.map((src, i) => (
                   <div key={src} style={{
                     display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '5px 8px', borderRadius: 'var(--r-sm)',
+                    padding: '4px 8px', borderRadius: 'var(--r-sm)',
                     background: 'var(--bg-inset)', border: '1px solid var(--border)',
                   }}>
                     {/* Círculo numerado */}
@@ -244,29 +241,6 @@ export default function ControlPanel() {
             </div>
           )
         })}
-      </Section>
-
-      {/* ── BLACKOUT ── */}
-      <Section title="Blackout / clima" icon="🌩️"
-        badge={derived.ka9 ? { text: 'KA-9 ON', tone: 'warn' } : undefined}>
-        <RowToggle label="Señal BLACKOUT activa" tone="warn"
-          value={inputs.blackout} onChange={setBlackout} activeText="ON" inactiveText="OFF" />
-        <div style={{ fontSize: 10, color: 'var(--text-muted)', lineHeight: 1.4 }}>
-          {derived.ka9
-            ? 'KA-9 energizado: bota la carga de clima no crítica (RN-05).'
-            : 'Sin blackout: KA-9 desactivado.'}
-        </div>
-      </Section>
-
-      {/* ── ASIMETRÍA SALIDAS ── */}
-      <Section title="Asimetría barras de salida" icon="📊" defaultOpen={false}>
-        {(['S1', 'S2', 'S3'] as OutputId[]).map((out) => (
-          <RowToggle key={out} mono label={`${RAS_OUT[out]} · ${out}`}
-            value={inputs.outputs[out].outputAsymmetryOk}
-            onChange={(v) => setOutputAsymmetry(out, v)}
-            activeText="OK" inactiveText="FALLA"
-            tone={inputs.outputs[out].outputAsymmetryOk ? 'good' : 'warn'} />
-        ))}
       </Section>
 
       {/* ── FALLA CONTACTORES ── */}

@@ -119,18 +119,32 @@ igual que S1 y S2. Esto revierte la antigua restricción RN-22 ("S3 solo A/B").
 
 ---
 
-## 5. Discrepancia conocida: `flowLayout.json` vs lógica
+## 5. ~~Discrepancia conocida: `flowLayout.json` vs lógica~~ ✅ Resuelta
 
-> El diagrama base `src/data/flowLayout.json` proviene del `.drawio` **Ver 05**, que
-> modelaba **S3 con solo 2 preferencias (sin KM3-P)**. Tras la decisión de respetar el
-> documento, **el motor y la UI ya incluyen KM3-P**, pero el dibujo del flujo todavía
-> refleja la versión antigua.
+> **Resuelto:** se decidió que **S3 (Ilum. Emergencia) NO se alimenta de PRINCIPAL**:
+> sus únicas fuentes son **DB A y DB B**. Con esto el motor, el unifilar y el diagrama de
+> flujo quedan alineados: `flowLayout.json` ya dibujaba S3 con solo 2 ramas (`63`, `65`),
+> que ahora coinciden con `prefs S3 = [A, B]`. El resaltado (`trace`) de S3 es exacto.
 >
-> **Acción pendiente:** regenerar el `.drawio` / `flowLayout.json` con la rama de S3→PRINCIPAL
-> (KM3-P).
->
-> **Impacto en el resaltado (`trace`):** el resaltado de S1 y S2 es exacto. Para **S3**, el
-> diagrama solo tiene 2 nodos de decisión de preferencia (`63`, `65`, etiquetados DB A / DB B),
-> así que la 1ª preferencia de S3 hacia PRINCIPAL no tiene nodo propio que iluminar; se resaltan
-> los nodos de CONT, asimetría y terminal de S3, pero la cascada de preferencias de S3 queda
-> parcialmente representada hasta regenerar el diagrama. El motor y el unifilar sí son correctos.
+> Cambios asociados:
+> - `model.ts`: `S3.prefs = ['A','B']`.
+> - `cont.ts`: matriz S3 = `{A: KM3-A, B: KM3-B}` (sin KM3-P; el tipo conserva `KM3-P` pero no se usa).
+> - Unifilar: la barra S3 arranca en la columna DB A; no baja desde la columna PRINCIPAL.
+> - Selector `-S4` (S3): posiciones **OFF / DBA / DBB**.
+
+---
+
+## 6. Cambios recientes de UI / topología
+
+- **Selectores rotatorios** muestran etiquetas representativas (**OFF / P / DBA / DBB**) en
+  lugar de números y arrancan en **OFF** al cargar la app.
+- **Modo MANUAL ↔ AUTO:** la selección manual **nunca se sobrescribe** al cambiar de modo
+  (MANUAL→AUTO→MANUAL restaura la última configuración). En MANUAL una falla respeta el
+  selector (no conmuta automáticamente a otra fuente).
+- **KA-9 / Clima:** ahora es un **sistema independiente** (marco aparte, alimentación propia),
+  sin conexión eléctrica ni visual con la red TTA.
+- **Visual:** barras energizadas **sin animación**; verde distinto para barras verticales
+  (`#0f9d58`) y horizontales (`#046c46`); gris = sin energía, rojo = solo falla.
+- **Panel derecho** sin scroll: se quitaron las secciones redundantes *Blackout* y
+  *Asimetría de salida* (operables desde el unifilar: bobina KA-9 y relés R-AS).
+- Se eliminaron el **modo oscuro** y el **título principal** para maximizar el área del diagrama.

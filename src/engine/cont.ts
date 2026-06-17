@@ -3,10 +3,11 @@ import type { EngineInputs, OutputId, SourceId, ContactorId, ContactorState, Ala
 // Tabla de contactores por (salida, fuente) — docs/01 y docs/03 tabla C
 // Matriz salida × fuente. Las tres salidas admiten las tres fuentes
 // (según "Modo funcionamiento TTA": Iluminación Emergencia también puede tomar PRINCIPAL).
+// S3 (Ilum. Emergencia) NO admite PRINCIPAL: su matriz solo contempla A y B.
 const CONTACTORES: Record<OutputId, Partial<Record<SourceId, ContactorId>>> = {
   S1: { P: 'KM1-P', A: 'KM1-A', B: 'KM1-B' },
   S2: { P: 'KM2-P', A: 'KM2-A', B: 'KM2-B' },
-  S3: { P: 'KM3-P', A: 'KM3-A', B: 'KM3-B' },
+  S3: { A: 'KM3-A', B: 'KM3-B' },
 }
 
 export function getContactorId(out: OutputId, src: SourceId): ContactorId | null {

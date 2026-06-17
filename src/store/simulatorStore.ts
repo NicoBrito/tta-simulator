@@ -103,13 +103,10 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
     setActiveTab: (tab) => set({ activeTab: tab }),
 
     setMode: (mode) => {
-      const cur = get()
-      let manualSelection = cur.inputs.manualSelection
-      // Al pasar de AUTO a MANUAL/FALLA, "congelar" el estado actual como punto de partida
-      if (cur.inputs.modeSelector === 'AUTO' && mode !== 'AUTO') {
-        manualSelection = { ...cur.derived.connected }
-      }
-      apply({ ...cur.inputs, modeSelector: mode, manualSelection })
+      // La selección manual NUNCA se sobrescribe al cambiar de modo: persiste tal cual.
+      // Así, MANUAL → AUTO → MANUAL restaura exactamente la última configuración manual.
+      // Al cargar la app todos los selectores arrancan en OFF (manualSelection = null).
+      apply({ ...get().inputs, modeSelector: mode })
     },
 
     setBlackout: (v) => apply({ ...get().inputs, blackout: v }),
