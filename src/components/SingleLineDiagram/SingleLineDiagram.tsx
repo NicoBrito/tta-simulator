@@ -24,8 +24,12 @@ const C_BRAND   = 'var(--brand)'
 const COL: Record<SourceId, number> = { P: 170, A: 390, B: 610 }
 const ROW: Record<OutputId, number> = { S1: 300, S2: 400, S3: 500 }
 const BUS_Y   = 190   // bus principal de entrada
-const OUT_OFF = 32    // offset barra salida respecto al centro del KM
-const CB_Y    = 78    // top del rectángulo del CB
+const OUT_OFF = 34    // offset barra salida respecto al centro del KM
+const CB_Y    = 76    // top del rectángulo del CB
+
+// Dimensiones de los símbolos (más grandes para mejor legibilidad)
+const CB_W = 32, CB_H = 52   // interruptor (breaker)
+const KM_W = 28, KM_H = 44   // contactor
 
 // Barra de entrada: de xBusL a xBusR
 const xBusL = 90
@@ -37,9 +41,6 @@ const xOutBox = 718
 // Separador y selectores manuales
 const xSep  = 760
 const SEL_X = 800
-
-// KA-9 / CLIMA — fila debajo de S3
-const KA9_Y = 620   // Y de la línea del circuito KA-9
 
 // Nombres
 const SOURCE_NAMES: Record<SourceId, string> = { P: 'PRINCIPAL', A: 'DB A', B: 'DB B' }
@@ -170,9 +171,8 @@ export default function SingleLineDiagram() {
   const toggleOutputAsymmetry  = useSimulatorStore((s) => s.toggleOutputAsymmetry)
   const toggleManualContactor  = useSimulatorStore((s) => s.toggleManualContactor)
   const setSourceAsymmetry     = useSimulatorStore((s) => s.setSourceAsymmetry)
-  const setBlackout            = useSimulatorStore((s) => s.setBlackout)
 
-  const { contactors, connected, energized, ka9 } = derived
+  const { contactors, connected, energized } = derived
   const manual = inputs.modeSelector !== 'AUTO'
 
   const srcAvailable = (src: SourceId) => isAvailablePure(inputs, src)
@@ -215,9 +215,11 @@ export default function SingleLineDiagram() {
         <Legend />
       </div>
 
-      {/* SVG — viewBox ampliado a 960×720 */}
-      <div style={{ flex: 1, minHeight: 0, padding: 8 }}>
-        <svg viewBox="0 0 960 720" width="100%" height="100%"
+      {/* Zona de diagrama: panel KA-9 (sistema independiente) a la izquierda + unifilar */}
+      <div style={{ flex: 1, minHeight: 0, padding: 8, display: 'flex', gap: 10 }}>
+        <Ka9Module />
+        <div style={{ flex: 1, minWidth: 0 }}>
+        <svg viewBox="0 0 960 580" width="100%" height="100%"
           preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagrama unifilar TTA"
           style={{ fontFamily: FONT_MONO }}>
 
@@ -243,7 +245,7 @@ export default function SingleLineDiagram() {
 
                 <Wire x1={x} y1={64} x2={x} y2={CB_Y} status={status} />
                 <Breaker x={x} y={CB_Y} src={src} inputs={inputs} onClick={() => toggleBreaker(src)} />
-                <Wire x1={x} y1={CB_Y + 36} x2={x} y2={BUS_Y} status={status} />
+                <Wire x1={x} y1={CB_Y + CB_H} x2={x} y2={BUS_Y} status={status} />
               </g>
             )
           })}
@@ -269,7 +271,7 @@ export default function SingleLineDiagram() {
             return (
               <g key={out}>
                 {srcs.map((src) => (
-                  <Wire key={src} x1={COL[src]} y1={prevRow} x2={COL[src]} y2={ROW[out] - 15} status={colStatus(out, src)} onColor={C_ON_V} />
+                  <Wire key={src} x1={COL[src]} y1={prevRow} x2={COL[src]} y2={ROW[out] - KM_H / 2} status={colStatus(out, src)} onColor={C_ON_V} />
                 ))}
               </g>
             )
@@ -307,7 +309,7 @@ export default function SingleLineDiagram() {
               <g key={out}>
                 {srcs.map((src) => {
                   const isConn = connected[out] === src && energized[out]
-                  return <Wire key={src} x1={COL[src]} y1={ROW[out]+15} x2={COL[src]} y2={busY} status={isConn ? 'on' : 'off'} onColor={C_ON_V} />
+                  return <Wire key={src} x1={COL[src]} y1={ROW[out] + KM_H / 2} x2={COL[src]} y2={busY} status={isConn ? 'on' : 'off'} onColor={C_ON_V} />
                 })}
 
                 {/* Hit-area barra salida: simular asimetría */}
@@ -381,95 +383,89 @@ export default function SingleLineDiagram() {
               onSelect={(src) => toggleManualContactor(out, src)} />
           ))}
 
-          {/* ══ SISTEMA INDEPENDIENTE · CONTROL DE CLIMA (KA-9) ══ */}
-          {/* Sin ninguna conexión eléctrica ni visual con la red principal: alimentación propia. */}
-          {(() => {
-            const Y      = KA9_Y
-            const fx     = 76                  // x marco
-            const fy     = Y - 52              // y marco
-            const fw     = 470                 // ancho marco
-            const fh     = 104                 // alto marco
-            const xSup   = fx + 36             // alimentación propia
-            const xCoil  = xSup + 86           // bobina KA-9
-            const xC1    = xCoil + 40          // inicio contacto NC
-            const xC2    = xC1 + 70            // fin contacto NC
-            const xBox   = xC2 + 26            // caja CLIMA
-            const boxW   = 96
-            const colKa9 = ka9 ? C_WARN : C_MUTED
-            const climaOn = !ka9               // contacto NC: clima conectado salvo blackout
-
-            return (
-              <g>
-                {/* Marco del sistema independiente */}
-                <rect x={fx} y={fy} width={fw} height={fh} rx={10}
-                  fill="rgba(120,130,150,0.04)" stroke={C_BORDER} strokeWidth={1.2} strokeDasharray="6 4" />
-                <text x={fx + 12} y={fy + 16} fontSize={8.5} fontWeight={700}
-                  fill={C_SEC} fontFamily="var(--font-sans)">
-                  SISTEMA INDEPENDIENTE · CONTROL DE CLIMA (CARGA NO ESENCIAL)
-                </text>
-                <text x={fx + 12} y={fy + 28} fontSize={7} fontWeight={500}
-                  fill={C_MUTED} fontFamily="var(--font-sans)">
-                  Alimentación propia · sin conexión a la red TTA
-                </text>
-
-                {/* ── Alimentación propia (no proviene del bus principal) ── */}
-                <rect x={xSup - 22} y={Y - 16} width={44} height={32} rx={6}
-                  fill={C_INSET} stroke={C_SEC} strokeWidth={1.5} />
-                <text x={xSup} y={Y - 2} textAnchor="middle" fontSize={7} fontWeight={700}
-                  fill={C_SEC} fontFamily={FONT_MONO}>ALIM.</text>
-                <text x={xSup} y={Y + 8} textAnchor="middle" fontSize={6.5} fontWeight={600}
-                  fill={C_MUTED} fontFamily={FONT_MONO}>24Vdc</text>
-
-                {/* alim. → contacto: siempre con tensión propia (verde H) */}
-                <Wire x1={xSup + 22} y1={Y} x2={xC1} y2={Y} status="on" onColor={C_ON_H} />
-
-                {/* Bobina KA-9 (la energiza el BLACKOUT) — clickeable */}
-                <g onClick={() => setBlackout(!inputs.blackout)} style={{ cursor: 'pointer' }}>
-                  <title>{inputs.blackout ? 'Desactivar BLACKOUT' : 'Activar BLACKOUT (energiza KA-9)'}</title>
-                  <circle cx={xCoil} cy={Y - 34} r={12}
-                    fill={ka9 ? 'rgba(217,119,6,0.12)' : C_INSET}
-                    stroke={colKa9} strokeWidth={2}
-                    className={ka9 ? 'tta-fault-blink' : undefined} />
-                  <text x={xCoil} y={Y - 36} textAnchor="middle" fontSize={6} fontWeight={700}
-                    fill={colKa9} fontFamily={FONT_MONO}>KA-9</text>
-                  <text x={xCoil} y={Y - 28} textAnchor="middle" fontSize={5.5} fontWeight={600}
-                    fill={colKa9} fontFamily={FONT_MONO}>{ka9 ? 'ON' : 'OFF'}</text>
-                  <text x={xCoil} y={Y - 50} textAnchor="middle" fontSize={6} fontWeight={600}
-                    fill={C_MUTED} fontFamily={FONT_MONO}>BLACKOUT</text>
-                </g>
-                {/* Vínculo de control (línea punteada): la bobina acciona el contacto */}
-                <line x1={xCoil} y1={Y - 22} x2={(xC1 + xC2) / 2} y2={Y - 9}
-                  stroke={colKa9} strokeWidth={1.2} strokeDasharray="3 3" opacity={0.8} />
-
-                {/* Contacto NC del relé KA-9: cerrado normal, ABRE con blackout (deslastre) */}
-                <circle cx={xC1} cy={Y} r={2.5} fill={colKa9} />
-                <circle cx={xC2} cy={Y} r={2.5} fill={colKa9} />
-                <line
-                  x1={xC1 + 3} y1={Y}
-                  x2={climaOn ? xC2 - 3 : xC2 - 5}
-                  y2={climaOn ? Y : Y - 10}
-                  stroke={colKa9} strokeWidth={2.5} strokeLinecap="round"
-                  style={{ transition: 'all 0.25s ease' }} />
-                <text x={(xC1 + xC2) / 2} y={Y + 16} textAnchor="middle" fontSize={6.5} fontWeight={600}
-                  fill={colKa9} fontFamily={FONT_MONO}>{climaOn ? 'CERR.' : 'ABIERTO'}</text>
-
-                {/* contacto → CLIMA: energizado solo si el contacto está cerrado */}
-                <Wire x1={xC2} y1={Y} x2={xBox} y2={Y} status={climaOn ? 'on' : 'off'} onColor={C_ON_H} />
-
-                {/* Caja CLIMA */}
-                <rect x={xBox} y={Y - 18} width={boxW} height={36} rx={7}
-                  fill={climaOn ? 'rgba(15,157,88,0.08)' : C_INSET}
-                  stroke={climaOn ? C_ON : C_MUTED} strokeWidth={2} />
-                <text x={xBox + boxW / 2} y={Y - 3} textAnchor="middle" fontSize={12} fontWeight={700}
-                  fill={climaOn ? C_ON : C_MUTED} fontFamily={FONT_MONO}>CLIMA</text>
-                <text x={xBox + boxW / 2} y={Y + 12} textAnchor="middle" fontSize={7} fontWeight={600}
-                  fill={climaOn ? C_ON : C_MUTED} fontFamily={FONT_MONO}>
-                  {climaOn ? 'CONECTADO' : 'DESLASTRADO'}
-                </text>
-              </g>
-            )
-          })()}
         </svg>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Módulo KA-9 / Clima (sistema independiente, panel lateral izquierdo) ──────
+// Se separa del unifilar para no robarle altura y para reflejar que es un
+// sistema eléctricamente independiente (alimentación propia, sin conexión a la red TTA).
+function Ka9Module() {
+  const blackout    = useSimulatorStore((s) => s.inputs.blackout)
+  const ka9         = useSimulatorStore((s) => s.derived.ka9)
+  const setBlackout = useSimulatorStore((s) => s.setBlackout)
+
+  const climaOn = !ka9            // contacto NC: clima conectado salvo blackout
+  const colKa9  = ka9 ? C_WARN : C_MUTED
+  const xc = 75
+
+  return (
+    <div style={{
+      width: 178, flexShrink: 0, height: '100%', display: 'flex', flexDirection: 'column',
+      background: C_SURFACE, border: `1px dashed ${C_BORDER}`, borderRadius: 'var(--r-md)',
+      boxShadow: 'var(--shadow-sm)', overflow: 'hidden',
+    }}>
+      {/* Encabezado del subsistema */}
+      <div style={{ padding: '9px 12px', borderBottom: `1px solid ${C_BORDER}`, background: C_INSET, flexShrink: 0 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 700, color: C_TEXT, letterSpacing: 0.2 }}>Control de Clima</div>
+        <div style={{ fontSize: 9.5, color: C_MUTED }}>Sistema independiente · KA-9</div>
+      </div>
+
+      {/* Esquema vertical */}
+      <div style={{ flex: 1, minHeight: 0, padding: 8, display: 'flex', flexDirection: 'column' }}>
+        <svg viewBox="0 0 150 258" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"
+          style={{ fontFamily: FONT_MONO, flex: 1, minHeight: 0 }} role="img" aria-label="Control de clima KA-9">
+
+          {/* Alimentación propia */}
+          <rect x={40} y={16} width={70} height={30} rx={6} fill={C_INSET} stroke={C_SEC} strokeWidth={1.5} />
+          <text x={xc} y={30} textAnchor="middle" fontSize={8} fontWeight={700} fill={C_SEC}>ALIM. PROPIA</text>
+          <text x={xc} y={41} textAnchor="middle" fontSize={7.5} fontWeight={600} fill={C_MUTED}>24 Vdc</text>
+
+          {/* Alim. → contacto (siempre con tensión propia) */}
+          <Wire x1={xc} y1={46} x2={xc} y2={88} status="on" onColor={C_ON_H} w={3} />
+
+          {/* Bobina KA-9 (la energiza el BLACKOUT) — clickeable */}
+          <g onClick={() => setBlackout(!blackout)} style={{ cursor: 'pointer' }}>
+            <title>{blackout ? 'Desactivar BLACKOUT' : 'Activar BLACKOUT (energiza KA-9)'}</title>
+            <circle cx={32} cy={120} r={18} fill="transparent" className="tta-hit" />
+            <text x={32} y={96} textAnchor="middle" fontSize={7.5} fontWeight={700} fill={C_MUTED}>BLACKOUT</text>
+            <circle cx={32} cy={120} r={13}
+              fill={ka9 ? 'rgba(217,119,6,0.12)' : C_INSET} stroke={colKa9} strokeWidth={2.2}
+              className={ka9 ? 'tta-fault-blink' : undefined} />
+            <text x={32} y={118} textAnchor="middle" fontSize={7} fontWeight={700} fill={colKa9}>KA-9</text>
+            <text x={32} y={128} textAnchor="middle" fontSize={6.5} fontWeight={600} fill={colKa9}>{ka9 ? 'ON' : 'OFF'}</text>
+            {ka9 && <AlarmRing cx={32} cy={120} r={20} />}
+          </g>
+          {/* Vínculo de control (la bobina acciona el contacto) */}
+          <line x1={45} y1={120} x2={xc} y2={120} stroke={colKa9} strokeWidth={1.3} strokeDasharray="3 3" opacity={0.8} />
+
+          {/* Contacto NC del relé KA-9: cerrado normal, ABRE con blackout (deslastre) */}
+          <circle cx={xc} cy={88}  r={3} fill={colKa9} />
+          <circle cx={xc} cy={152} r={3} fill={colKa9} />
+          <line x1={xc} y1={152} x2={climaOn ? xc : xc + 15} y2={climaOn ? 94 : 100}
+            stroke={colKa9} strokeWidth={3} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
+          <text x={xc + 12} y={116} textAnchor="start" fontSize={8} fontWeight={700} fill={colKa9}>KA-9</text>
+          <text x={xc + 12} y={127} textAnchor="start" fontSize={7} fontWeight={600} fill={colKa9}>{climaOn ? 'CERR.' : 'ABIERTO'}</text>
+
+          {/* Contacto → CLIMA */}
+          <Wire x1={xc} y1={152} x2={xc} y2={196} status={climaOn ? 'on' : 'off'} onColor={C_ON_H} w={3} />
+
+          {/* Caja CLIMA */}
+          <rect x={25} y={196} width={100} height={46} rx={7}
+            fill={climaOn ? 'rgba(15,157,88,0.08)' : C_INSET} stroke={climaOn ? C_ON : C_MUTED} strokeWidth={2.2} />
+          <text x={xc} y={216} textAnchor="middle" fontSize={13} fontWeight={700} fill={climaOn ? C_ON : C_MUTED}>CLIMA</text>
+          <text x={xc} y={231} textAnchor="middle" fontSize={7.5} fontWeight={600} fill={climaOn ? C_ON : C_MUTED}>
+            {climaOn ? 'CONECTADO' : 'DESLASTRADO'}
+          </text>
+        </svg>
+
+        <div style={{ fontSize: 9, color: C_MUTED, textAlign: 'center', lineHeight: 1.4, paddingTop: 6, flexShrink: 0 }}>
+          Click en <strong style={{ fontFamily: FONT_MONO, color: C_SEC }}>KA-9</strong> para simular BLACKOUT.<br />
+          Sin conexión a la red TTA.
+        </div>
       </div>
     </div>
   )
@@ -485,27 +481,30 @@ function Breaker({ x, y, src, inputs, onClick }: {
   const stateText = trip ? 'TRIP' : closed ? 'CERR.' : 'ABIERTO'
   // Gris = abierto/sin energía · Verde = cerrado · Rojo = solo falla (trip)
   const color = trip ? C_FAULT : closed ? C_ON : C_DEAD
-  const W = 22; const H = 36
+  const W = CB_W, H = CB_H
   const rx_ = x - W / 2; const ry_ = y
   const cx_ = x; const midY = y + H / 2
+  const half = H * 0.3
   const bladeTop = closed
-    ? { x: cx_,     y: midY - 10 }
-    : { x: cx_ + 9, y: midY - 12 }
+    ? { x: cx_,              y: midY - half }
+    : { x: cx_ + W * 0.42,   y: midY - half }
+  // Etiqueta al costado para no chocar con el bus ni los relés R-AS
+  const labX = cx_ + W / 2 + 7
   return (
     <g className="tta-hit-group" onClick={onClick} style={{ cursor: 'pointer' }}>
       <title>{trip ? `Resetear ${CB_NAMES[src]}` : closed ? `Abrir ${CB_NAMES[src]}` : `Cerrar ${CB_NAMES[src]}`}</title>
-      <rect x={rx_} y={ry_} width={W} height={H} rx={4}
-        fill={closed ? 'rgba(15,157,88,0.10)' : 'rgba(224,36,36,0.08)'}
-        stroke={color} strokeWidth={2} className={trip ? 'tta-fault-blink' : undefined} />
-      <circle cx={cx_} cy={ry_}     r={2.5} fill={color} />
-      <circle cx={cx_} cy={ry_ + H} r={2.5} fill={color} />
-      <line x1={cx_} y1={midY + 10} x2={bladeTop.x} y2={bladeTop.y}
-        stroke={color} strokeWidth={2.5} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
-      <text x={cx_} y={ry_ + H + 13} textAnchor="middle" fontSize={8} fontWeight={700}
+      <rect x={rx_} y={ry_} width={W} height={H} rx={5}
+        fill={closed ? 'rgba(15,157,88,0.10)' : trip ? 'rgba(224,36,36,0.08)' : C_INSET}
+        stroke={color} strokeWidth={2.6} className={trip ? 'tta-fault-blink' : undefined} />
+      <circle cx={cx_} cy={ry_}     r={3.2} fill={color} />
+      <circle cx={cx_} cy={ry_ + H} r={3.2} fill={color} />
+      <line x1={cx_} y1={midY + half} x2={bladeTop.x} y2={bladeTop.y}
+        stroke={color} strokeWidth={3.2} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
+      <text x={labX} y={midY - 1} textAnchor="start" fontSize={11} fontWeight={700}
         fill={color} fontFamily={FONT_MONO}>{CB_NAMES[src]}</text>
-      <text x={cx_} y={ry_ + H + 22} textAnchor="middle" fontSize={7} fontWeight={600}
+      <text x={labX} y={midY + 11} textAnchor="start" fontSize={8.5} fontWeight={600}
         fill={color} fontFamily={FONT_MONO}>{stateText}</text>
-      {trip && <AlarmRing cx={cx_} cy={midY} r={22} />}
+      {trip && <AlarmRing cx={cx_} cy={midY} r={W} />}
     </g>
   )
 }
@@ -518,12 +517,15 @@ function Contactor({ x, y, label, state, maneuvering, faultPending, clickable, t
   const closed = state === 'cerrado'
   const fault  = state === 'falla'
   const color  = fault ? C_FAULT : closed ? C_ON : C_DEAD
-  const W = 18; const H = 30
+  const W = KM_W, H = KM_H
   const rx_ = x - W / 2; const ry_ = y - H / 2
   const cx_ = x; const midY = y
+  const half = H * 0.3
   const bladeTop = closed
-    ? { x: cx_,     y: midY - 9 }
-    : { x: cx_ + 7, y: midY - 11 }
+    ? { x: cx_,            y: midY - half }
+    : { x: cx_ + W * 0.42, y: midY - half }
+  const labX = cx_ + W / 2 + 6
+  const xx = W * 0.28
   return (
     <g pointerEvents={clickable ? 'auto' : 'none'} onClick={onClick}
       style={clickable ? { cursor: 'pointer' } : undefined}>
@@ -535,23 +537,23 @@ function Contactor({ x, y, label, state, maneuvering, faultPending, clickable, t
       {clickable && (
         <rect x={rx_ - 6} y={ry_ - 6} width={W + 12} height={H + 12} rx={8} className="tta-hit" />
       )}
-      <rect x={rx_} y={ry_} width={W} height={H} rx={4}
+      <rect x={rx_} y={ry_} width={W} height={H} rx={5}
         fill={closed ? 'rgba(15,157,88,0.10)' : fault ? 'rgba(224,36,36,0.08)' : C_INSET}
-        stroke={color} strokeWidth={1.8} className={maneuvering ? 'tta-maneuver' : undefined} />
-      <circle cx={cx_} cy={ry_}     r={2} fill={color} />
-      <circle cx={cx_} cy={ry_ + H} r={2} fill={color} />
+        stroke={color} strokeWidth={2.2} className={maneuvering ? 'tta-maneuver' : undefined} />
+      <circle cx={cx_} cy={ry_}     r={2.6} fill={color} />
+      <circle cx={cx_} cy={ry_ + H} r={2.6} fill={color} />
       {fault ? (
         <g className="tta-fault-blink">
-          <line x1={cx_ - 5} y1={midY - 5} x2={cx_ + 5} y2={midY + 5} stroke={C_FAULT} strokeWidth={2} strokeLinecap="round" />
-          <line x1={cx_ + 5} y1={midY - 5} x2={cx_ - 5} y2={midY + 5} stroke={C_FAULT} strokeWidth={2} strokeLinecap="round" />
+          <line x1={cx_ - xx} y1={midY - xx} x2={cx_ + xx} y2={midY + xx} stroke={C_FAULT} strokeWidth={2.6} strokeLinecap="round" />
+          <line x1={cx_ + xx} y1={midY - xx} x2={cx_ - xx} y2={midY + xx} stroke={C_FAULT} strokeWidth={2.6} strokeLinecap="round" />
         </g>
       ) : (
-        <line x1={cx_} y1={midY + 7} x2={bladeTop.x} y2={bladeTop.y}
-          stroke={color} strokeWidth={2} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
+        <line x1={cx_} y1={midY + half} x2={bladeTop.x} y2={bladeTop.y}
+          stroke={color} strokeWidth={2.6} strokeLinecap="round" style={{ transition: 'all 0.25s ease' }} />
       )}
-      <text x={cx_} y={ry_ + H + 11} textAnchor="middle" fontSize={7} fontWeight={600}
-        fill={C_MUTED} fontFamily={FONT_MONO}>{label}</text>
-      {fault && <AlarmRing cx={cx_} cy={midY} r={18} />}
+      <text x={labX} y={midY + 3} textAnchor="start" fontSize={8.5} fontWeight={700}
+        fill={fault ? C_FAULT : C_SEC} fontFamily={FONT_MONO}>{label}</text>
+      {fault && <AlarmRing cx={cx_} cy={midY} r={W * 0.85} />}
     </g>
   )
 }
