@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from '../../store/simulatorStore'
-import type { OutputId, ContactorId } from '../../engine'
+import type { OutputId, ContactorId, SourceId } from '../../engine'
 
-const RAS_OUT: Record<OutputId, string> = { S1: 'R-AS-BP', S2: 'R-AS-BA', S3: 'R-AS-BB' }
+const SOURCE_SHORT: Record<SourceId, string> = { P: 'PRINC.', A: 'DB A', B: 'DB B' }
+const OUT_LABEL: Record<OutputId, string> = { S1: 'S1 · TDAF', S2: 'S2 · Comp.', S3: 'S3 · Ilum.' }
+const ALL_SRCS: SourceId[] = ['P', 'A', 'B']
+// Color y etiqueta por nivel de prioridad
+const PRIO_COLOR = ['var(--energized)', 'var(--warn)', 'var(--dead)']
+const PRIO_LABEL = ['1ª', '2ª', '3ª']
 
 type Tone = 'good' | 'danger' | 'warn'
 
@@ -22,12 +27,14 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
   return (
     <div style={{
       background: 'var(--bg-surface)', border: '1px solid var(--border)',
-      borderRadius: 'var(--r-md)', marginBottom: 10, overflow: 'hidden',
+      borderRadius: 'var(--r-md)', marginBottom: 8, overflow: 'hidden',
       boxShadow: 'var(--shadow-sm)',
     }}>
       <button type="button" onClick={() => setOpen((o) => !o)} style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: 9,
-        padding: '11px 13px', border: 'none', background: 'transparent',
+        padding: '11px 13px', border: 'none',
+        background: 'var(--bg-header)',
+        borderBottom: open ? '1px solid var(--border)' : 'none',
         cursor: 'pointer', textAlign: 'left',
       }}>
         <span style={{ fontSize: 14 }}>{icon}</span>
@@ -48,7 +55,7 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} style={{ overflow: 'hidden' }}>
-            <div style={{ padding: '2px 13px 13px' }}>{children}</div>
+            <div style={{ padding: '11px 13px 13px' }}>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -110,33 +117,42 @@ function PillToggle({ label, value, onChange, tone = 'danger' }: {
 }
 
 
+// S3 no usa PRINCIPAL → sin KM3-P
 const CONTACTORS_BY_OUTPUT: Record<OutputId, ContactorId[]> = {
   S1: ['KM1-P', 'KM1-A', 'KM1-B'],
   S2: ['KM2-P', 'KM2-A', 'KM2-B'],
-  S3: ['KM3-P', 'KM3-A', 'KM3-B'],
+  S3: ['KM3-A', 'KM3-B'],
 }
 
 // ── Panel principal ────────────────────────────────────────────────────────────
 export default function ControlPanel() {
   const inputs = useSimulatorStore((s) => s.inputs)
-  const derived = useSimulatorStore((s) => s.derived)
   const setMode = useSimulatorStore((s) => s.setMode)
-  const setBlackout = useSimulatorStore((s) => s.setBlackout)
-  const setOutputAsymmetry = useSimulatorStore((s) => s.setOutputAsymmetry)
   const setContactorFault = useSimulatorStore((s) => s.setContactorFault)
+  const setOutputPref = useSimulatorStore((s) => s.setOutputPref)
   const reset = useSimulatorStore((s) => s.reset)
 
   const mode = inputs.modeSelector
   const isFalla = mode === 'FALLA_SELECTOR'
-
   const faultCount = Object.values(inputs.contactorFaults).filter(Boolean).length
+
+  // Asigna `src` a la prioridad `slot` intercambiándolo con su posición actual
+  // (mantiene la lista como una permutación válida, sin fuentes repetidas).
+  function setPrefAt(out: OutputId, slot: number, src: SourceId) {
+    const prefs = [...inputs.outputs[out].prefs]
+    const cur = prefs.indexOf(src)
+    if (cur < 0 || cur === slot) return
+    ;[prefs[slot], prefs[cur]] = [prefs[cur], prefs[slot]]
+    prefs.forEach((s, idx) => setOutputPref(out, idx, s))
+  }
 
   return (
     <aside className="tta-scroll" style={{
       width: 308, flexShrink: 0, height: '100%', overflowY: 'auto',
-      padding: '12px 10px', background: 'var(--bg-app)',
+      padding: '12px 10px', background: 'var(--bg-subtle)',
+      borderLeft: '1px solid var(--border-strong)',
     }}>
-      {/* ── RESET ── accesible en la parte superior */}
+      {/* ── RESET ── */}
       <button type="button" onClick={reset} style={{
         width: '100%', padding: '11px 0', borderRadius: 'var(--r-md)',
         border: '1.5px solid var(--brand)', background: 'var(--brand-tint)',
@@ -179,27 +195,61 @@ export default function ControlPanel() {
         )}
       </Section>
 
-      {/* ── BLACKOUT ── */}
-      <Section title="Blackout / clima" icon="🌩️"
-        badge={derived.ka9 ? { text: 'KA-9 ON', tone: 'warn' } : undefined}>
-        <RowToggle label="Señal BLACKOUT activa" tone="warn"
-          value={inputs.blackout} onChange={setBlackout} activeText="ON" inactiveText="OFF" />
-        <div style={{ fontSize: 10, color: 'var(--text-muted)', lineHeight: 1.4 }}>
-          {derived.ka9
-            ? 'KA-9 energizado: bota la carga de clima no crítica (RN-05).'
-            : 'Sin blackout: KA-9 desactivado.'}
+      {/* ── PREFERENCIAS DE FUENTE (AUTO) ── */}
+      <Section title="Preferencias de fuente (AUTO)" icon="🔀">
+        <div style={{ fontSize: 9.5, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.35 }}>
+          Elige qué fuente ocupa cada prioridad. Toca una fuente para asignarla; la actual queda
+          marcada. <strong>1ª</strong> = preferente. S3 solo DB A / DB B.
         </div>
-      </Section>
-
-      {/* ── ASIMETRÍA SALIDAS ── */}
-      <Section title="Asimetría barras de salida" icon="📊" defaultOpen={false}>
-        {(['S1', 'S2', 'S3'] as OutputId[]).map((out) => (
-          <RowToggle key={out} mono label={`${RAS_OUT[out]} · ${out}`}
-            value={inputs.outputs[out].outputAsymmetryOk}
-            onChange={(v) => setOutputAsymmetry(out, v)}
-            activeText="OK" inactiveText="FALLA"
-            tone={inputs.outputs[out].outputAsymmetryOk ? 'good' : 'warn'} />
-        ))}
+        {(['S1','S2','S3'] as OutputId[]).map((out) => {
+          const prefs = inputs.outputs[out].prefs
+          const sources = ALL_SRCS.filter((s) => prefs.includes(s))
+          return (
+            <div key={out} style={{ marginBottom: 9 }}>
+              <div style={{
+                fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)', marginBottom: 4,
+              }}>{OUT_LABEL[out]}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {prefs.map((_, slot) => {
+                  const col = PRIO_COLOR[slot]
+                  return (
+                    <div key={slot} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {/* Insignia de prioridad */}
+                      <span style={{
+                        flexShrink: 0, minWidth: 30, textAlign: 'center',
+                        padding: '3px 0', borderRadius: 'var(--r-sm)',
+                        background: col, color: '#fff', fontSize: 9.5, fontWeight: 700,
+                        fontFamily: 'var(--font-mono)',
+                      }}>{PRIO_LABEL[slot]}</span>
+                      {/* Botones de fuente (la activa, resaltada) */}
+                      <div style={{ display: 'flex', gap: 4, flex: 1 }}>
+                        {sources.map((src) => {
+                          const active = prefs[slot] === src
+                          return (
+                            <button key={src} type="button"
+                              onClick={() => setPrefAt(out, slot, src)}
+                              title={active ? `${SOURCE_SHORT[src]} ya es la ${PRIO_LABEL[slot]} preferencia`
+                                : `Asignar ${SOURCE_SHORT[src]} como ${PRIO_LABEL[slot]} preferencia`}
+                              style={{
+                                flex: 1, padding: '6px 0', borderRadius: 'var(--r-sm)',
+                                fontSize: 10.5, fontWeight: 700, fontFamily: 'var(--font-mono)',
+                                cursor: active ? 'default' : 'pointer',
+                                border: `1.5px solid ${active ? col : 'var(--border)'}`,
+                                background: active ? col : 'var(--bg-inset)',
+                                color: active ? '#fff' : 'var(--text-secondary)',
+                                transition: 'all 0.15s ease',
+                              }}>{SOURCE_SHORT[src]}</button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
       </Section>
 
       {/* ── FALLA CONTACTORES ── */}

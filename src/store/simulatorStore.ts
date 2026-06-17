@@ -38,8 +38,8 @@ interface SimulatorStore {
   toggleSourceUpstream: (src: SourceId) => void
   toggleBreaker: (src: SourceId) => void
   toggleOutputAsymmetry: (out: OutputId) => void
-  // Maniobra manual de contactores (solo modo MANUAL / FALLA_SELECTOR)
-  toggleManualContactor: (out: OutputId, src: SourceId) => void
+  // Maniobra manual de contactores — src=null significa posición OFF (todos los KM abiertos)
+  toggleManualContactor: (out: OutputId, src: SourceId | null) => void
 }
 
 let pulseTimer: ReturnType<typeof setTimeout> | null = null
@@ -103,13 +103,10 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
     setActiveTab: (tab) => set({ activeTab: tab }),
 
     setMode: (mode) => {
-      const cur = get()
-      let manualSelection = cur.inputs.manualSelection
-      // Al pasar de AUTO a MANUAL/FALLA, "congelar" el estado actual como punto de partida
-      if (cur.inputs.modeSelector === 'AUTO' && mode !== 'AUTO') {
-        manualSelection = { ...cur.derived.connected }
-      }
-      apply({ ...cur.inputs, modeSelector: mode, manualSelection })
+      // La selección manual NUNCA se sobrescribe al cambiar de modo: persiste tal cual.
+      // Así, MANUAL → AUTO → MANUAL restaura exactamente la última configuración manual.
+      // Al cargar la app todos los selectores arrancan en OFF (manualSelection = null).
+      apply({ ...get().inputs, modeSelector: mode })
     },
 
     setBlackout: (v) => apply({ ...get().inputs, blackout: v }),
@@ -199,7 +196,8 @@ export const useSimulatorStore = create<SimulatorStore>((set, get) => {
 
     toggleManualContactor: (out, src) => {
       const cur = get().inputs.manualSelection[out]
-      const next = cur === src ? null : src // clic en el cerrado lo abre; otro lo selecciona
+      // Si src es null → posición OFF directo. Si es la misma fuente → toggle a null. Si es otra → seleccionar.
+      const next = src === null ? null : cur === src ? null : src
       apply({
         ...get().inputs,
         manualSelection: { ...get().inputs.manualSelection, [out]: next },

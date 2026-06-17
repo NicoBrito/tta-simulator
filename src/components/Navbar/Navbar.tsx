@@ -6,23 +6,13 @@ const TABS: { id: ActiveTab; label: string; hint: string }[] = [
   { id: 'flujo', label: 'Vista de Flujo', hint: 'Por qué pasa' },
 ]
 
-function BoltLogo() {
-  return (
-    <div style={{
-      width: 40, height: 40, borderRadius: 11, flexShrink: 0,
-      background: 'linear-gradient(140deg, var(--brand) 0%, var(--brand-dark) 100%)',
-      boxShadow: 'var(--shadow-brand)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-    }}>
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <path d="M13 2L4.5 13.5H11L10 22L19.5 10H13L13 2Z"
-          fill="#fff" stroke="#fff" strokeWidth="1.2" strokeLinejoin="round" />
-      </svg>
-    </div>
-  )
-}
+// Acentos legibles sobre el chrome navy
+const BRAND_LIGHT = '#5b8def'
+const GREEN_LIGHT = '#34d399'
+const RED_LIGHT = '#f87171'
+const AMBER_LIGHT = '#fbbf24'
 
-export default function Navbar({ dark, onToggleDark }: { dark: boolean; onToggleDark: () => void }) {
+export default function Navbar() {
   const activeTab = useSimulatorStore((s) => s.activeTab)
   const setActiveTab = useSimulatorStore((s) => s.setActiveTab)
   const mode = useSimulatorStore((s) => s.derived.mode)
@@ -30,50 +20,53 @@ export default function Navbar({ dark, onToggleDark }: { dark: boolean; onToggle
   const alarmCount = useSimulatorStore((s) => s.derived.alarms.length)
 
   const ok = alarmCount === 0
-  const statusColor = ok ? 'var(--energized)' : 'var(--fault)'
+  const statusColor = ok ? GREEN_LIGHT : RED_LIGHT
 
   return (
     <header style={{
-      background: 'var(--bg-surface)',
-      borderBottom: '1px solid var(--border)',
-      boxShadow: 'var(--shadow-sm)',
+      background: 'var(--ink)',
+      boxShadow: 'var(--shadow-md)',
       flexShrink: 0,
+      position: 'relative',
+      zIndex: 20,
     }}>
-      {/* Acento superior */}
-      <div style={{ height: 3, background: 'linear-gradient(90deg, var(--brand), var(--energized))' }} />
+      {/* Acento superior de marca (sin verde, reservado para "energizado") */}
+      <div style={{ height: 3, background: `linear-gradient(90deg, var(--brand), ${BRAND_LIGHT})` }} />
 
-      {/* Fila de marca */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 14,
-        padding: '12px 22px 10px',
-      }}>
-        <BoltLogo />
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: -0.3, color: 'var(--text-primary)', lineHeight: 1.1 }}>
-            Simulador TTA
-          </div>
-          <div style={{ fontSize: 11.5, color: 'var(--text-muted)', fontWeight: 500 }}>
-            Tablero de Transferencia Automática · 220 V / 50 Hz
-          </div>
-        </div>
+      {/* Fila única: tabs + estado */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, padding: '0 18px' }}>
+        {TABS.map((t) => {
+          const active = activeTab === t.id
+          return (
+            <button key={t.id} type="button" onClick={() => setActiveTab(t.id)}
+              style={{
+                position: 'relative', border: 'none', background: 'transparent',
+                padding: '10px 18px 11px', cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1,
+              }}>
+              <span style={{
+                fontSize: 13.5, fontWeight: active ? 700 : 500,
+                color: active ? 'var(--on-ink)' : 'var(--on-ink-muted)',
+                transition: 'color 0.18s',
+              }}>{t.label}</span>
+              <span style={{ fontSize: 10, color: 'var(--on-ink-muted)', opacity: active ? 0.9 : 0.6 }}>{t.hint}</span>
+              <span style={{
+                position: 'absolute', left: 0, right: 0, bottom: 0, height: 3,
+                borderRadius: '3px 3px 0 0',
+                background: active ? BRAND_LIGHT : 'transparent',
+                transition: 'background 0.18s',
+              }} />
+            </button>
+          )
+        })}
 
         {/* Estado a la derecha */}
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Toggle modo oscuro */}
-          <button type="button" onClick={onToggleDark} title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: 34, height: 34, borderRadius: 'var(--r-md)', flexShrink: 0,
-              border: '1px solid var(--border)', background: 'var(--bg-subtle)',
-              cursor: 'pointer', fontSize: 17, transition: 'all 0.15s',
-            }}>
-            {dark ? '☀️' : '🌙'}
-          </button>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 9, paddingBottom: 8 }}>
           {ka9 && (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '5px 12px', borderRadius: 'var(--r-pill)', fontSize: 11.5, fontWeight: 600,
-              background: 'var(--warn-tint)', color: 'var(--warn)', border: '1px solid var(--warn)',
+              padding: '5px 12px', borderRadius: 'var(--r-pill)', fontSize: 11.5, fontWeight: 700,
+              background: 'rgba(217,119,6,0.18)', color: AMBER_LIGHT, border: '1px solid rgba(217,119,6,0.5)',
               fontFamily: 'var(--font-mono)',
             }}>
               ● KA-9 ACTIVO
@@ -82,53 +75,25 @@ export default function Navbar({ dark, onToggleDark }: { dark: boolean; onToggle
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 7,
             padding: '6px 14px', borderRadius: 'var(--r-pill)', fontSize: 12, fontWeight: 600,
-            background: 'var(--bg-subtle)', color: 'var(--text-secondary)',
-            border: '1px solid var(--border)',
+            background: 'var(--ink-soft)', color: 'var(--on-ink-muted)',
+            border: '1px solid var(--ink-line)',
           }}>
             Modo
-            <strong style={{ fontFamily: 'var(--font-mono)', color: mode === 'AUTO' ? 'var(--energized)' : 'var(--warn)' }}>
+            <strong style={{ fontFamily: 'var(--font-mono)', color: mode === 'AUTO' ? GREEN_LIGHT : AMBER_LIGHT }}>
               {mode === 'FALLA_SELECTOR' ? 'FALLA SEL.' : mode}
             </strong>
           </span>
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 7,
             padding: '6px 14px', borderRadius: 'var(--r-pill)', fontSize: 12, fontWeight: 600,
-            background: ok ? 'var(--energized-tint)' : 'var(--fault-tint)',
-            color: statusColor, border: `1px solid ${statusColor}`,
+            background: ok ? 'rgba(15,157,88,0.18)' : 'rgba(224,36,36,0.18)',
+            color: statusColor, border: `1px solid ${ok ? 'rgba(15,157,88,0.5)' : 'rgba(224,36,36,0.55)'}`,
           }}>
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: statusColor }}
               className={ok ? undefined : 'tta-fault-blink'} />
             {ok ? 'Sistema nominal' : `${alarmCount} alarma${alarmCount > 1 ? 's' : ''}`}
           </span>
         </div>
-      </div>
-
-      {/* Fila de tabs */}
-      <div style={{ display: 'flex', gap: 4, padding: '0 18px' }}>
-        {TABS.map((t) => {
-          const active = activeTab === t.id
-          return (
-            <button key={t.id} type="button" onClick={() => setActiveTab(t.id)}
-              style={{
-                position: 'relative', border: 'none', background: 'transparent',
-                padding: '10px 18px 12px', cursor: 'pointer',
-                display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1,
-              }}>
-              <span style={{
-                fontSize: 13.5, fontWeight: active ? 700 : 500,
-                color: active ? 'var(--brand)' : 'var(--text-secondary)',
-                transition: 'color 0.18s',
-              }}>{t.label}</span>
-              <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{t.hint}</span>
-              <span style={{
-                position: 'absolute', left: 0, right: 0, bottom: -1, height: 2.5,
-                borderRadius: '2px 2px 0 0',
-                background: active ? 'var(--brand)' : 'transparent',
-                transition: 'background 0.18s',
-              }} />
-            </button>
-          )
-        })}
       </div>
     </header>
   )

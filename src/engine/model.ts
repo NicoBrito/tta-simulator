@@ -12,10 +12,11 @@ export function nominalInputs(): EngineInputs {
       B: { upstreamEnergized: true, breakerClosed: true, breakerTrip: false, asymmetryOk: true },
     },
     outputs: {
-      // Orden de preferencias por defecto según la imagen del documento: Principal, DB A, DB B
+      // Orden de preferencias por defecto. S1/S2: Principal, DB A, DB B.
+      // S3 (Ilum. Emergencia) NO se alimenta de PRINCIPAL: solo DB A y DB B.
       S1: { prefs: ['P', 'A', 'B'], outputAsymmetryOk: true },
       S2: { prefs: ['P', 'A', 'B'], outputAsymmetryOk: true },
-      S3: { prefs: ['P', 'A', 'B'], outputAsymmetryOk: true },
+      S3: { prefs: ['A', 'B'], outputAsymmetryOk: true },
     },
     contactorFaults: {},
     manualSelection: { S1: null, S2: null, S3: null },

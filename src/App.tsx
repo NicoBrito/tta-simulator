@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from './store/simulatorStore'
 import Navbar from './components/Navbar/Navbar'
@@ -51,12 +50,10 @@ function TransferToasts() {
 
 export default function App() {
   const activeTab = useSimulatorStore((s) => s.activeTab)
-  const [dark, setDark] = useState(false)
 
   return (
-    <div data-theme={dark ? 'dark' : undefined}
-      style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-app)' }}>
-      <Navbar dark={dark} onToggleDark={() => setDark((d) => !d)} />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-app)' }}>
+      <Navbar />
 
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
         {/* Área de diagrama */}

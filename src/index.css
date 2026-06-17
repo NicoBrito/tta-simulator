@@ -34,12 +34,6 @@ body {
 }
 .tta-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* Conductor energizado con corriente animada */
-.tta-conductor-flow {
-  stroke-dasharray: 6 10;
-  animation: tta-flow 0.9s linear infinite;
-}
-
 /* Zona clickeable sobre el unifilar */
 .tta-hit {
   fill: transparent;
