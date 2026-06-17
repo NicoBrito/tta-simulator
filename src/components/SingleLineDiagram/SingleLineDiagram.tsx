@@ -260,10 +260,10 @@ export default function SingleLineDiagram() {
             status={(['P','A','B'] as SourceId[]).some(srcAvailable) ? 'on' : 'off'} w={5} onColor={C_ON_H} />
           <text x={xBusL - 6} y={BUS_Y - 8} textAnchor="end" fontSize={8} fill={C_MUTED} fontFamily="var(--font-sans)">BUS DE ENTRADA</text>
 
-          {/* R-AS de barras de ENTRADA — sobre el bus principal */}
+          {/* R-AS de barras de ENTRADA — al costado DERECHO del conductor (pegado, margen mínimo) */}
           {(['P', 'A', 'B'] as SourceId[]).map((src) => (
             <RelayAS key={src}
-              x={COL[src]} y={BUS_Y - 26}
+              x={COL[src] + 22} y={BUS_Y - 26}
               label={`R-AS-${src}`}
               ok={inputs.sources[src].asymmetryOk}
               onClick={() => setSourceAsymmetry(src, !inputs.sources[src].asymmetryOk)} />
