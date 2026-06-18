@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useSimulatorStore } from '../../store/simulatorStore'
 import type { OutputId, ContactorId, SourceId } from '../../engine'
 
@@ -18,24 +16,22 @@ function tonePalette(tone: Tone) {
   return { bg: 'var(--energized-tint)', fg: 'var(--energized-deep)', bd: 'var(--energized)', dot: 'var(--energized)' }
 }
 
-// ── Sección colapsable ─────────────────────────────────────────────────────────
-function Section({ title, icon, badge, defaultOpen = true, children }: {
+// ── Sección (siempre abierta) ───────────────────────────────────────────────────
+function Section({ title, icon, badge, children }: {
   title: string; icon: string; badge?: { text: string; tone: Tone }
-  defaultOpen?: boolean; children: React.ReactNode
+  children: React.ReactNode
 }) {
-  const [open, setOpen] = useState(defaultOpen)
   return (
     <div style={{
       background: 'var(--bg-surface)', border: '1px solid var(--border)',
-      borderRadius: 'var(--r-md)', marginBottom: 8, overflow: 'hidden',
+      borderRadius: 'var(--r-md)', marginBottom: 7, overflow: 'hidden',
       boxShadow: 'var(--shadow-sm)',
     }}>
-      <button type="button" onClick={() => setOpen((o) => !o)} style={{
+      <div style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: 9,
-        padding: '11px 13px', border: 'none',
+        padding: '9px 12px',
         background: 'var(--bg-header)',
-        borderBottom: open ? '1px solid var(--border)' : 'none',
-        cursor: 'pointer', textAlign: 'left',
+        borderBottom: '1px solid var(--border)',
       }}>
         <span style={{ fontSize: 14 }}>{icon}</span>
         <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: 0.2, flex: 1 }}>
@@ -48,17 +44,8 @@ function Section({ title, icon, badge, defaultOpen = true, children }: {
             fontFamily: 'var(--font-mono)',
           }}>{badge.text}</span>
         )}
-        <motion.span animate={{ rotate: open ? 0 : -90 }} transition={{ duration: 0.18 }}
-          style={{ fontSize: 10, color: 'var(--text-muted)' }}>▼</motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} style={{ overflow: 'hidden' }}>
-            <div style={{ padding: '11px 13px 13px' }}>{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
+      <div style={{ padding: '9px 12px 11px' }}>{children}</div>
     </div>
   )
 }
@@ -130,6 +117,7 @@ export default function ControlPanel() {
   const setMode = useSimulatorStore((s) => s.setMode)
   const setContactorFault = useSimulatorStore((s) => s.setContactorFault)
   const setOutputPref = useSimulatorStore((s) => s.setOutputPref)
+  const setBlackout = useSimulatorStore((s) => s.setBlackout)
   const reset = useSimulatorStore((s) => s.reset)
 
   const mode = inputs.modeSelector
@@ -149,15 +137,15 @@ export default function ControlPanel() {
   return (
     <aside className="tta-scroll" style={{
       width: 308, flexShrink: 0, height: '100%', overflowY: 'auto',
-      padding: '12px 10px', background: 'var(--bg-subtle)',
+      padding: '10px 9px', background: 'var(--bg-subtle)',
       borderLeft: '1px solid var(--border-strong)',
     }}>
       {/* ── RESET ── */}
       <button type="button" onClick={reset} style={{
-        width: '100%', padding: '11px 0', borderRadius: 'var(--r-md)',
+        width: '100%', padding: '9px 0', borderRadius: 'var(--r-md)',
         border: '1.5px solid var(--brand)', background: 'var(--brand-tint)',
         color: 'var(--brand)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-        marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+        marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
         boxShadow: 'var(--shadow-sm)', transition: 'all 0.15s',
       }}
         onMouseEnter={(e) => { e.currentTarget.style.background = '#d4e2fc' }}
@@ -195,35 +183,39 @@ export default function ControlPanel() {
         )}
       </Section>
 
+      {/* ── BLACKOUT / KA-9 ── */}
+      <Section title="Falla de red (BLACKOUT)" icon="🔌"
+        badge={inputs.blackout ? { text: 'BLACKOUT', tone: 'danger' } : undefined}>
+        <RowToggle label="Simular BLACKOUT (energiza KA-9)" tone="danger"
+          value={inputs.blackout} onChange={(v) => setBlackout(v)}
+          activeText="ACTIVO" inactiveText="OK" />
+      </Section>
+
       {/* ── PREFERENCIAS DE FUENTE (AUTO) ── */}
       <Section title="Preferencias de fuente (AUTO)" icon="🔀">
-        <div style={{ fontSize: 9.5, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.35 }}>
-          Elige qué fuente ocupa cada prioridad. Toca una fuente para asignarla; la actual queda
-          marcada. <strong>1ª</strong> = preferente. S3 solo DB A / DB B.
-        </div>
         {(['S1','S2','S3'] as OutputId[]).map((out) => {
           const prefs = inputs.outputs[out].prefs
           const sources = ALL_SRCS.filter((s) => prefs.includes(s))
           return (
-            <div key={out} style={{ marginBottom: 9 }}>
+            <div key={out} style={{ marginBottom: 6 }}>
               <div style={{
-                fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)',
-                fontFamily: 'var(--font-mono)', marginBottom: 4,
+                fontSize: 9, fontWeight: 700, color: 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)', marginBottom: 3,
               }}>{OUT_LABEL[out]}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 {prefs.map((_, slot) => {
                   const col = PRIO_COLOR[slot]
                   return (
-                    <div key={slot} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div key={slot} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                       {/* Insignia de prioridad */}
                       <span style={{
-                        flexShrink: 0, minWidth: 30, textAlign: 'center',
-                        padding: '3px 0', borderRadius: 'var(--r-sm)',
-                        background: col, color: '#fff', fontSize: 9.5, fontWeight: 700,
+                        flexShrink: 0, minWidth: 24, textAlign: 'center',
+                        padding: '2px 0', borderRadius: 'var(--r-sm)',
+                        background: col, color: '#fff', fontSize: 8.5, fontWeight: 700,
                         fontFamily: 'var(--font-mono)',
                       }}>{PRIO_LABEL[slot]}</span>
                       {/* Botones de fuente (la activa, resaltada) */}
-                      <div style={{ display: 'flex', gap: 4, flex: 1 }}>
+                      <div style={{ display: 'flex', gap: 3, flex: 1 }}>
                         {sources.map((src) => {
                           const active = prefs[slot] === src
                           return (
@@ -232,8 +224,8 @@ export default function ControlPanel() {
                               title={active ? `${SOURCE_SHORT[src]} ya es la ${PRIO_LABEL[slot]} preferencia`
                                 : `Asignar ${SOURCE_SHORT[src]} como ${PRIO_LABEL[slot]} preferencia`}
                               style={{
-                                flex: 1, padding: '6px 0', borderRadius: 'var(--r-sm)',
-                                fontSize: 10.5, fontWeight: 700, fontFamily: 'var(--font-mono)',
+                                flex: 1, padding: '4px 0', borderRadius: 'var(--r-sm)',
+                                fontSize: 9.5, fontWeight: 700, fontFamily: 'var(--font-mono)',
                                 cursor: active ? 'default' : 'pointer',
                                 border: `1.5px solid ${active ? col : 'var(--border)'}`,
                                 background: active ? col : 'var(--bg-inset)',
@@ -253,7 +245,7 @@ export default function ControlPanel() {
       </Section>
 
       {/* ── FALLA CONTACTORES ── */}
-      <Section title="Falla de contactores" icon="⚠️" defaultOpen={false}
+      <Section title="Falla de contactores" icon="⚠️"
         badge={faultCount > 0 ? { text: `${faultCount}`, tone: 'danger' } : undefined}>
         {(['S1', 'S2', 'S3'] as OutputId[]).map((out) => (
           <div key={out} style={{ marginBottom: 8 }}>
