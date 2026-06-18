@@ -33,40 +33,36 @@ export function maneuver(
   if (!kmToClose) return false
 
   const others = getOtherContactors(out, src)
-  let contactorOk = true
 
   // REGLA: RN-30 — abrir otros contactores de la misma salida (exclusividad)
   for (const km of others) {
     if (inputs.contactorFaults[km]) {
       contactors[km] = 'falla'
-      // REGLA: RN-31 — no confirmó apertura
+      // REGLA: RN-31 — no confirmó apertura → alarma, pero la maniobra continúa
+      // (un KM que no abre en otro ramal no impide cerrar el ramal deseado)
       pushAlarm(alarms, {
         id: 'AL-05',
         mensaje: `Falla Contactor ${km} (no abrió)`,
         key: `AL-05-${km}-open`,
       })
-      contactorOk = false
     } else {
       contactors[km] = 'abierto' // REGLA: RN-31 — apertura confirmada
     }
   }
 
-  if (contactorOk) {
-    // REGLA: RN-32 — cerrar el contactor elegido
-    if (inputs.contactorFaults[kmToClose]) {
-      contactors[kmToClose] = 'falla'
-      pushAlarm(alarms, {
-        id: 'AL-05',
-        mensaje: `Falla Contactor ${kmToClose} (no cerró)`,
-        key: `AL-05-${kmToClose}-close`,
-      })
-      contactorOk = false
-    } else {
-      contactors[kmToClose] = 'cerrado' // REGLA: RN-33 — cierre confirmado
-    }
+  // REGLA: RN-32 — cerrar el contactor elegido
+  if (inputs.contactorFaults[kmToClose]) {
+    contactors[kmToClose] = 'falla'
+    pushAlarm(alarms, {
+      id: 'AL-05',
+      mensaje: `Falla Contactor ${kmToClose} (no cerró)`,
+      key: `AL-05-${kmToClose}-close`,
+    })
+    return false // REGLA: RN-34 — maniobra fallida, el motor probará la siguiente preferencia
   }
 
-  return contactorOk // REGLA: RN-33/34
+  contactors[kmToClose] = 'cerrado' // REGLA: RN-33 — cierre confirmado
+  return true
 }
 
 function pushAlarm(alarms: Alarm[], alarm: Alarm): void {
