@@ -86,60 +86,55 @@ function processOutput(
   alarms: Alarm[],
 ): void {
   const prefs = inputs.outputs[outId].prefs
-  let selectedSrc: SourceId | null = null
 
   // REGLA: RN-23 — cascada de selección por preferencias
+  // Una fuente se descarta si: no tiene energía disponible O su contactor está en falla.
+  // En ambos casos se intenta la siguiente preferencia.
   for (const src of prefs) {
-    if (isAvailable(inputs, src, alarms)) {
-      selectedSrc = src
-      break
+    if (!isAvailable(inputs, src, outId, alarms)) continue
+
+    // REGLA: RN-25 — invocar subproceso CONT con (Salida, Fuente elegida)
+    const contactorOk = maneuver(inputs, outId, src, contactors, alarms)
+
+    if (!contactorOk) {
+      // Falla de contactor en esta fuente → descartarla y probar la siguiente preferencia
+      // (un problema de cableado en KM1-P no debe dejar S1 sin energía si KM1-A está OK)
+      continue
     }
-  }
 
-  if (!selectedSrc) {
-    // REGLA: RN-24 — ninguna preferencia disponible
-    alarms.push({ id: 'AL-04', mensaje: `Sin energía disponible para ${outId}`, key: `AL-04-${outId}` })
-    return
-  }
+    connected[outId] = src
 
-  // REGLA: RN-25 — invocar subproceso CONT con (Salida, Fuente elegida)
-  const contactorOk = maneuver(inputs, outId, selectedSrc, contactors, alarms)
-
-  if (!contactorOk) {
-    alarms.push({
-      id: 'AL-04',
-      mensaje: `Sin energía disponible para ${outId} (falla maniobra)`,
-      key: `AL-04-${outId}-cont`,
-    })
-    return
-  }
-
-  connected[outId] = selectedSrc
-
-  // REGLA: RN-40 — leer R-AS-Bx después de confirmar contactores
-  if (inputs.outputs[outId].outputAsymmetryOk) {
-    energized[outId] = true // REGLA: RN-41 — salida energizada
-  } else {
-    // REGLA: RN-42 — asimetría en barra de salida → abrir contactor y desenergizar
-    alarms.push({
-      id: 'AL-06',
-      mensaje: `Falla asimétrica en BARRA de salida ${outId}`,
-      key: `AL-06-${outId}`,
-    })
-    const kmConnected = getContactorId(outId, selectedSrc)
-    if (kmConnected) {
-      if (inputs.contactorFaults[kmConnected]) {
-        contactors[kmConnected] = 'falla'
-        alarms.push({
-          id: 'AL-05',
-          mensaje: `Falla Contactor ${kmConnected} (no abrió post-asimetría)`,
-          key: `AL-05-${kmConnected}-rasb`,
-        })
-      } else {
-        contactors[kmConnected] = 'abierto'
+    // REGLA: RN-40 — leer R-AS-Bx después de confirmar contactores
+    if (inputs.outputs[outId].outputAsymmetryOk) {
+      energized[outId] = true // REGLA: RN-41 — salida energizada
+    } else {
+      // REGLA: RN-42 — asimetría en barra de salida → abrir contactor y desenergizar
+      alarms.push({
+        id: 'AL-06',
+        mensaje: `Falla asimétrica en BARRA de salida ${outId}`,
+        key: `AL-06-${outId}`,
+      })
+      const kmConnected = getContactorId(outId, src)
+      if (kmConnected) {
+        if (inputs.contactorFaults[kmConnected]) {
+          contactors[kmConnected] = 'falla'
+          alarms.push({
+            id: 'AL-05',
+            mensaje: `Falla Contactor ${kmConnected} (no abrió post-asimetría)`,
+            key: `AL-05-${kmConnected}-rasb`,
+          })
+        } else {
+          contactors[kmConnected] = 'abierto'
+        }
       }
+      connected[outId] = null
+      energized[outId] = false
     }
-    connected[outId] = null
-    energized[outId] = false
+    return // maniobra completada (con o sin energía final): no seguir probando fuentes
+  }
+
+  // REGLA: RN-24 — ninguna preferencia disponible o todos los contactores fallaron
+  if (!connected[outId]) {
+    alarms.push({ id: 'AL-04', mensaje: `Sin energía disponible para ${outId}`, key: `AL-04-${outId}` })
   }
 }

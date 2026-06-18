@@ -173,7 +173,7 @@ export default function ControlPanel() {
             )
           })}
         </div>
-        <RowToggle label="Simular falla de selector (DI12 = DI13)" tone="warn"
+        <RowToggle label="Simular falla selector Automático/Manual" tone="warn"
           value={isFalla} onChange={(v) => setMode(v ? 'FALLA_SELECTOR' : 'AUTO')}
           activeText="ALARMA" inactiveText="OK" />
         {mode === 'MANUAL' && (
