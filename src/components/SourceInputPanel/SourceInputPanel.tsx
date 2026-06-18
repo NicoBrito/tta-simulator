@@ -10,7 +10,7 @@ const ALL_SRCS: SourceId[] = ['P', 'A', 'B']
 // ── Símbolo breaker pequeño ───────────────────────────────────────────────────
 function BreakerSVG({ closed, color }: { closed: boolean; color: string }) {
   return (
-    <svg width="26" height="16" viewBox="0 0 26 16" style={{ display: 'block' }}>
+    <svg width="32" height="20" viewBox="0 0 26 16" style={{ display: 'block' }}>
       <circle cx={2}  cy={8} r={2.5} fill={color} />
       <circle cx={24} cy={8} r={2.5} fill={color} />
       <line x1={4.5} y1={8} x2={closed ? 21.5 : 21} y2={closed ? 8 : 2.5}
@@ -31,13 +31,13 @@ function CtrlBtn({ topLabel, icon, stateLabel, isActive, isFault, isWarn, title,
   return (
     <button type="button" title={title} onClick={onClick} style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between',
-      gap: 2, padding: '5px 4px', flex: 1, height: 52, minWidth: 0,
+      gap: 3, padding: '7px 4px', flex: 1, height: 64, minWidth: 0,
       border: `1.5px solid ${borderColor}`, borderRadius: 'var(--r-md)',
       background: bgColor, cursor: 'pointer', transition: 'all 0.15s ease',
     }}>
-      <span style={{ fontSize: 7, fontWeight: 700, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{topLabel}</span>
-      <span style={{ color: iconColor, fontSize: 14, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
-      <span style={{ fontSize: 7, fontWeight: 700, color: stateColor, fontFamily: 'var(--font-mono)' }}>{stateLabel}</span>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{topLabel}</span>
+      <span style={{ color: iconColor, fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</span>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: stateColor, fontFamily: 'var(--font-mono)' }}>{stateLabel}</span>
     </button>
   )
 }
@@ -65,26 +65,26 @@ export default function SourceInputPanel() {
           const borderCol = available ? 'var(--energized)' : s.breakerTrip ? 'var(--fault)' : 'var(--border)'
           return (
             <div key={src} style={{
-              flex: 1, padding: '8px 9px',
+              flex: 1, padding: '10px 11px',
               background: 'var(--bg-surface)',
               border: `1.5px solid ${borderCol}`,
               borderRadius: 'var(--r-md)', boxShadow: 'var(--shadow-sm)',
-              display: 'flex', flexDirection: 'column', gap: 6,
+              display: 'flex', flexDirection: 'column', gap: 7,
             }}>
               {/* Encabezado fuente */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: dotColor }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 9, height: 9, borderRadius: '50%', flexShrink: 0, background: dotColor }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: 19, fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1.15 }}>
                     {SOURCE_NAMES[src]}
                   </div>
-                  <div style={{ fontSize: 9.5, color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {SOURCE_SUB[src]}
                   </div>
                 </div>
                 <span style={{
-                  fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-mono)',
-                  padding: '2px 6px', borderRadius: 'var(--r-pill)',
+                  fontSize: 10.5, fontWeight: 700, fontFamily: 'var(--font-mono)',
+                  padding: '3px 7px', borderRadius: 'var(--r-pill)',
                   background: available ? 'var(--energized-tint)' : 'var(--bg-subtle)',
                   color: available ? 'var(--energized-deep)' : 'var(--text-muted)',
                   border: `1px solid ${available ? 'var(--energized)' : 'var(--border)'}`,
